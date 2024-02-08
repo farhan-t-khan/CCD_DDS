@@ -16,16 +16,17 @@ using System.Windows.Shapes;
 namespace CCD_DDS
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for DriftPage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class DriftPage : Page
     {
-        // Define instances of pages
-
-        public MainWindow()
+        public DriftPage()
         {
             InitializeComponent();
-            MainContentFrame.Navigate(new HomePage()); 
+        }
+        public void NavigateToHome(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new HomePage());
         }
     }
 }
