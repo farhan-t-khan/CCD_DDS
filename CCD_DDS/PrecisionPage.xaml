@@ -49,6 +49,25 @@
         <TextBlock x:Name="ScreenNameTextBlock" Text="Precision"/>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20">
             <Button Content="Back" Click="NavigateToHome"/>
-        </StackPanel>        
+        </StackPanel>
+        <StackPanel Margin="100">
+            <ComboBox Name="driftComboBox">
+                <ComboBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock>Gas 1: 500 ppm</TextBlock>
+                    </StackPanel>
+                </ComboBoxItem>
+                <ComboBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock>Gas 2: 1000 ppm</TextBlock>
+                    </StackPanel>
+                </ComboBoxItem>
+                <ComboBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock>Gas 3: 10000 ppm</TextBlock>
+                    </StackPanel>
+                </ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
     </Grid>
 </Page>

@@ -9,11 +9,15 @@
 
   <ItemGroup>
     <None Remove="Bascom-Turner.ico" />
+    <None Remove="Resource\click.wav" />
     <None Remove="Resource\logoblockonly.jpg" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resource\Bascom-Turner.ico" />
+    <Content Include="Resource\click.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Resource\logoblockonly.jpg" />
   </ItemGroup>
 

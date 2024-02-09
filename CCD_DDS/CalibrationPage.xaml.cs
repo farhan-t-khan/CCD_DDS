@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -20,12 +21,15 @@ namespace CCD_DDS
     /// </summary>
     public partial class CalibrationPage : Page
     {
+        private SoundPlayer clickSoundPlayer;
         public CalibrationPage()
         {
             InitializeComponent();
+            clickSoundPlayer = new SoundPlayer("Resource\\click.wav");
         }
         public void NavigateToHome(object sender, RoutedEventArgs e)
         {
+            clickSoundPlayer.Play();
             NavigationService.Navigate(new HomePage());
         }
     }
