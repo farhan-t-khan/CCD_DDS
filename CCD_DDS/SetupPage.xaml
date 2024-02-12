@@ -5,11 +5,11 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:CCD_DDS"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="1200" d:DesignWidth="800"
       Title="SetupPage">
     <Page.Resources>
         <Style TargetType="TextBlock">
-            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="FontSize" Value="10"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="Foreground" Value="SteelBlue"/>
@@ -44,11 +44,106 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <Border BorderBrush="LightGray" BorderThickness="1" />
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="5"/>
+                            <TextBlock x:Name="Watermark" Margin="5" Foreground="Gray" Visibility="Collapsed"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Text" Value=""/>
+                                    <Condition Property="IsKeyboardFocused" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Watermark" Property="Visibility" Value="Visible"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
     <Grid>
-        <TextBlock x:Name="ScreenNameTextBlock" Text="Setup"/>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20">
-            <Button Content="Back" Click="NavigateToHome"/>
-        </StackPanel>        
+        <TextBlock x:Name="ScreenNameTextBlock" Text="Setup" Margin="0 20 0 10" FontSize="30"/>
+        <!-- Input fields for Gas 1 -->
+        <StackPanel Margin="20 60 0 0">
+            <TextBlock Text="Gas 1" HorizontalAlignment="Left"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Concentration:" Margin="0 10 5 0"/>
+                <TextBox x:Name="Gas1ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Amount:" Margin="0 10 5 0"/>
+                <TextBox x:Name="Gas1AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+            </StackPanel>
+            <DatePicker x:Name="Gas1ExpirationDatePicker" Margin="0 5"/>
+            <CheckBox x:Name="Gas1CheckBox" Content="Selected"/>
+        </StackPanel>
+        <!-- Input fields for Gas 2 -->
+        <StackPanel Margin="20 220 0 0">
+            <TextBlock Text="Gas 2" HorizontalAlignment="Left"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Concentration:" Margin="0 10 5 0"/>
+                <TextBox x:Name="Gas2ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Amount:" Margin="0 10 5 0"/>
+                <TextBox x:Name="Gas2AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+            </StackPanel>
+            <DatePicker x:Name="Gas2ExpirationDatePicker" Margin="0 5"/>
+            <CheckBox x:Name="Gas2CheckBox" Content="Selected"/>
+        </StackPanel>
+        <!-- Input fields for Gas 3 -->
+        <StackPanel Margin="20 380 0 0">
+            <TextBlock Text="Gas 3" HorizontalAlignment="Left"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Concentration:" Margin="0 10 5 0"/>
+                <TextBox x:Name="Gas3ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Amount:" Margin="0 10 5 0"/>
+                <TextBox x:Name="Gas3AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+            </StackPanel>
+            <DatePicker x:Name="Gas3ExpirationDatePicker" Margin="0 5"/>
+            <CheckBox x:Name="Gas3CheckBox" Content="Selected"/>
+        </StackPanel>
+
+        <!-- Input fields for Gas 4 -->
+        <StackPanel Margin="20 540 0 0">
+            <TextBlock Text="Gas 4" HorizontalAlignment="Left"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Concentration:" Margin="0 10 5 0"/>
+                <TextBox x:Name="Gas4ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Amount:" Margin="0 10 5 0"/>
+                <TextBox x:Name="Gas4AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+            </StackPanel>
+            <DatePicker x:Name="Gas4ExpirationDatePicker" Margin="0 5"/>
+            <CheckBox x:Name="Gas4CheckBox" Content="Selected"/>
+        </StackPanel>
+
+        <!-- Input fields for Gas 5 -->
+        <StackPanel Margin="20 700 0 0">
+            <TextBlock Text="Gas 5" HorizontalAlignment="Left"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Concentration:" Margin="0 10 5 0"/>
+                <TextBox x:Name="Gas5ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Amount:" Margin="0 10 5 0"/>
+                <TextBox x:Name="Gas5AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+            </StackPanel>
+            <DatePicker x:Name="Gas5ExpirationDatePicker" Margin="0 5"/>
+            <CheckBox x:Name="Gas5CheckBox" Content="Selected"/>
+        </StackPanel>
+
+        <!-- Button to save the data -->
+        <Button Content="Save" Click="SaveButton_Click" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="50 0 0 20"/>
+        <Button Content="Back" Click="NavigateToHome" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="50 0 150 20"/>
     </Grid>
 </Page>
