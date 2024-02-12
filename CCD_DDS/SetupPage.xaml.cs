@@ -67,12 +67,43 @@ namespace CCD_DDS
         }
         private void NumericTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
+            TextBox textBox = sender as TextBox;
+
+            // Check if the input is a digit or a single decimal point
             foreach (char c in e.Text)
             {
-                if (!char.IsDigit(c))
+                if (!char.IsDigit(c) && c != '.')
                 {
                     e.Handled = true; // Mark the event as handled to prevent non-numeric input
-                    break;
+                    return;
+                }
+            }
+
+            // Check if the input is a decimal point and if the text is empty
+            if (e.Text == "." && string.IsNullOrEmpty(textBox.Text))
+            {
+                textBox.Text = "0."; // Attach "0" and the decimal point
+                textBox.CaretIndex = textBox.Text.Length; // Move the caret to the end
+                e.Handled = true; // Mark the event as handled
+                return;
+            }
+
+            // Check if the input is a decimal point and the text already contains one
+            if (e.Text == "." && textBox.Text.Contains("."))
+            {
+                e.Handled = true; // Mark the event as handled to prevent multiple decimal points
+                return;
+            }
+
+            // Check if the input contains a decimal point, and if so, prevent another one
+            if (e.Text == "." && textBox.SelectionLength == 0)
+            {
+                int caretIndex = textBox.CaretIndex;
+                int decimalIndex = textBox.Text.IndexOf('.');
+                if (decimalIndex != -1 && caretIndex > decimalIndex)
+                {
+                    e.Handled = true;
+                    return;
                 }
             }
         }

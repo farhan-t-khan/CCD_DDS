@@ -58,7 +58,10 @@
                 <TextBlock Text="Amount:" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas1AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
-            <DatePicker x:Name="Gas1ExpirationDatePicker" Margin="0 5"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Expiration Date:" Margin="0 5 5 0"/>
+                <DatePicker x:Name="Gas1ExpirationDatePicker" Margin="0 5" Width="200" HorizontalAlignment="Left"/>
+            </StackPanel>
             <CheckBox x:Name="Gas1CheckBox" Content="Selected"/>
         </StackPanel>
         <!-- Input fields for Gas 2 -->
@@ -72,7 +75,10 @@
                 <TextBlock Text="Amount:" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas2AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
-            <DatePicker x:Name="Gas2ExpirationDatePicker" Margin="0 5"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Expiration Date:" Margin="0 5 5 0"/>
+                <DatePicker x:Name="Gas2ExpirationDatePicker" Margin="0 5" Width="200" HorizontalAlignment="Left"/>
+            </StackPanel>
             <CheckBox x:Name="Gas2CheckBox" Content="Selected"/>
         </StackPanel>
         <!-- Input fields for Gas 3 -->
@@ -86,7 +92,10 @@
                 <TextBlock Text="Amount:" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas3AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
-            <DatePicker x:Name="Gas3ExpirationDatePicker" Margin="0 5"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Expiration Date:" Margin="0 5 5 0"/>
+                <DatePicker x:Name="Gas3ExpirationDatePicker" Margin="0 5" Width="200" HorizontalAlignment="Left"/>
+            </StackPanel>
             <CheckBox x:Name="Gas3CheckBox" Content="Selected"/>
         </StackPanel>
 
@@ -101,7 +110,10 @@
                 <TextBlock Text="Amount:" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas4AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
-            <DatePicker x:Name="Gas4ExpirationDatePicker" Margin="0 5"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Expiration Date:" Margin="0 5 5 0"/>
+                <DatePicker x:Name="Gas4ExpirationDatePicker" Margin="0 5" Width="200" HorizontalAlignment="Left"/>
+            </StackPanel>
             <CheckBox x:Name="Gas4CheckBox" Content="Selected"/>
         </StackPanel>
 
@@ -116,7 +128,10 @@
                 <TextBlock Text="Amount:" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas5AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
-            <DatePicker x:Name="Gas5ExpirationDatePicker" Margin="0 5"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Expiration Date:" Margin="0 5 5 0"/>
+                <DatePicker x:Name="Gas5ExpirationDatePicker" Margin="0 5" Width="200" HorizontalAlignment="Left"/>
+            </StackPanel>
             <CheckBox x:Name="Gas5CheckBox" Content="Selected"/>
         </StackPanel>
 
