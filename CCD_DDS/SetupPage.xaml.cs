@@ -13,58 +13,206 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
+using System.Formats.Asn1;
+using System.Globalization;
+using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace CCD_DDS
 {
-    /// <summary>
-    /// Interaction logic for SetupPage.xaml
-    /// </summary>
     public partial class SetupPage : Page
     {
+        private const string FileName = "SetupData.csv";
         private SoundPlayer clickSoundPlayer;
         public SetupPage()
         {
             clickSoundPlayer = new SoundPlayer("Resource\\click.wav");
             InitializeComponent();
+            LoadDataFromFile();
+        }
+        // Method to load data from CSV file
+        private void LoadDataFromFile()
+        {
+            try
+            {
+                // Check if the file exists
+                if (File.Exists(FileName))
+                {
+                    // Open the CSV file for reading
+                    using (var reader = new StreamReader(FileName))
+                    using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                    {
+                        // Read the records into GasData objects
+                        var records = csv.GetRecords<GasData>().ToList();
+
+                        // Populate the UI with the data
+                        foreach (var gasData in records)
+                        {
+                            switch (gasData.Gas)
+                            {
+                                case "Gas 1":
+                                    Gas1ConcentrationTextBox.Text = gasData.Concentration;
+                                    Gas1AmountTextBox.Text = gasData.Amount;
+                                    Gas1ExpirationDatePicker.SelectedDate = ParseDate(gasData.Expiration);
+                                    Gas1CheckBox.IsChecked = ParseBool(gasData.Selected);
+                                    break;
+                                case "Gas 2":
+                                    Gas2ConcentrationTextBox.Text = gasData.Concentration;
+                                    Gas2AmountTextBox.Text = gasData.Amount;
+                                    Gas2ExpirationDatePicker.SelectedDate = ParseDate(gasData.Expiration);
+                                    Gas2CheckBox.IsChecked = ParseBool(gasData.Selected);
+                                    break;
+                                case "Gas 3":
+                                    Gas3ConcentrationTextBox.Text = gasData.Concentration;
+                                    Gas3AmountTextBox.Text = gasData.Amount;
+                                    Gas3ExpirationDatePicker.SelectedDate = ParseDate(gasData.Expiration);
+                                    Gas3CheckBox.IsChecked = ParseBool(gasData.Selected);
+                                    break;
+                                case "Gas 4":
+                                    Gas4ConcentrationTextBox.Text = gasData.Concentration;
+                                    Gas4AmountTextBox.Text = gasData.Amount;
+                                    Gas4ExpirationDatePicker.SelectedDate = ParseDate(gasData.Expiration);
+                                    Gas4CheckBox.IsChecked = ParseBool(gasData.Selected);
+                                    break;
+                                case "Gas 5":
+                                    Gas5ConcentrationTextBox.Text = gasData.Concentration;
+                                    Gas5AmountTextBox.Text = gasData.Amount;
+                                    Gas5ExpirationDatePicker.SelectedDate = ParseDate(gasData.Expiration);
+                                    Gas5CheckBox.IsChecked = ParseBool(gasData.Selected);
+                                    break;
+                                default:
+                                    // Handle unrecognized gas names if necessary
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while loading data: {ex.Message}");
+            }
+        }
+
+        private DateTime? ParseDate(string date)
+        {
+            return string.IsNullOrEmpty(date) ? null : (DateTime?)DateTime.Parse(date);
+        }
+
+        private bool? ParseBool(string value)
+        {
+            if (bool.TryParse(value, out bool result))
+            {
+                return result;
+            }
+            return null;
         }
         public void NavigateToHome(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
             NavigationService.Navigate(new HomePage());
         }
+        /*        private void SaveButton_Click(object sender, RoutedEventArgs e)
+                {
+                    try
+                    {
+                        // Create or append to the CSV file
+                        using (var writer = new StreamWriter(FileName, append: false))
+                        using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
+                        {
+                            // Write the records
+                            csv.WriteRecord(new GasData
+                            {
+                                Gas = "Gas 1",
+                                Concentration = Gas1ConcentrationTextBox.Text,
+                                Amount = Gas1AmountTextBox.Text,
+                                Expiration = Gas1ExpirationDatePicker.SelectedDate?.ToString() ?? string.Empty,
+                                Selected = Gas1CheckBox.IsChecked.ToString() ?? "false"
+                            });
+
+                            csv.WriteRecord(new GasData
+                            {
+                                Gas = "Gas 2",
+                                Concentration = Gas2ConcentrationTextBox.Text,
+                                Amount = Gas2AmountTextBox.Text,
+                                Expiration = Gas2ExpirationDatePicker.SelectedDate?.ToString() ?? string.Empty,
+                                Selected = Gas2CheckBox.IsChecked.ToString() ?? "false"
+                            });
+
+                            csv.WriteRecord(new GasData
+                            {
+                                Gas = "Gas 3",
+                                Concentration = Gas3ConcentrationTextBox.Text,
+                                Amount = Gas3AmountTextBox.Text,
+                                Expiration = Gas3ExpirationDatePicker.SelectedDate?.ToString() ?? string.Empty,
+                                Selected = Gas3CheckBox.IsChecked.ToString() ?? "false"
+                            });
+
+                            csv.WriteRecord(new GasData
+                            {
+                                Gas = "Gas 4",
+                                Concentration = Gas4ConcentrationTextBox.Text,
+                                Amount = Gas4AmountTextBox.Text,
+                                Expiration = Gas4ExpirationDatePicker.SelectedDate?.ToString() ?? string.Empty,
+                                Selected = Gas4CheckBox.IsChecked.ToString() ?? "false"
+                            });
+
+                            csv.WriteRecord(new GasData
+                            {
+                                Gas = "Gas 5",
+                                Concentration = Gas5ConcentrationTextBox.Text,
+                                Amount = Gas5AmountTextBox.Text,
+                                Expiration = Gas5ExpirationDatePicker.SelectedDate?.ToString() ?? string.Empty,
+                                Selected = Gas5CheckBox.IsChecked.ToString() ?? "false"
+                            });
+
+                            MessageBox.Show("Data saved successfully!");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"An error occurred while saving data: {ex.Message}");
+                    }
+                }*/
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            // Save the data entered by the user for each gas item
-            // You can access the input fields like Gas1ConcentrationTextBox.Text, Gas1AmountTextBox.Text, etc.
-            // Save the data to a text file or a database
-            // Example:
-            string gas1Concentration = Gas1ConcentrationTextBox.Text;
-            string gas1Amount = Gas1AmountTextBox.Text;
-            DateTime gas1Expiration = Gas1ExpirationDatePicker.SelectedDate ?? DateTime.MinValue;
-            bool gas1Selected = Gas1CheckBox.IsChecked ?? false;
+            try
+            {
+                // Create or append to the CSV file
+                using (var writer = new StreamWriter(FileName, append: false))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    // Write headers
+                    csv.WriteHeader<GasData>();
+                    csv.NextRecord();
 
-            string gas2Concentration = Gas2ConcentrationTextBox.Text;
-            string gas2Amount = Gas2AmountTextBox.Text;
-            DateTime gas2Expiration = Gas2ExpirationDatePicker.SelectedDate ?? DateTime.MinValue;
-            bool gas2Selected = Gas2CheckBox.IsChecked ?? false;
+                    // Write the records
+                    WriteGasData(csv, "Gas 1", Gas1ConcentrationTextBox.Text, Gas1AmountTextBox.Text, Gas1ExpirationDatePicker.SelectedDate, Gas1CheckBox.IsChecked ?? false);
+                    WriteGasData(csv, "Gas 2", Gas2ConcentrationTextBox.Text, Gas2AmountTextBox.Text, Gas2ExpirationDatePicker.SelectedDate, Gas2CheckBox.IsChecked ?? false);
+                    WriteGasData(csv, "Gas 3", Gas3ConcentrationTextBox.Text, Gas3AmountTextBox.Text, Gas3ExpirationDatePicker.SelectedDate, Gas3CheckBox.IsChecked ?? false);
+                    WriteGasData(csv, "Gas 4", Gas4ConcentrationTextBox.Text, Gas4AmountTextBox.Text, Gas4ExpirationDatePicker.SelectedDate, Gas4CheckBox.IsChecked ?? false);
+                    WriteGasData(csv, "Gas 5", Gas5ConcentrationTextBox.Text, Gas5AmountTextBox.Text, Gas5ExpirationDatePicker.SelectedDate, Gas5CheckBox.IsChecked ?? false);
 
-            string gas3Concentration = Gas3ConcentrationTextBox.Text;
-            string gas3Amount = Gas3AmountTextBox.Text;
-            DateTime gas3Expiration = Gas3ExpirationDatePicker.SelectedDate ?? DateTime.MinValue;
-            bool gas3Selected = Gas3CheckBox.IsChecked ?? false;
-
-            string gas4Concentration = Gas4ConcentrationTextBox.Text;
-            string gas4Amount = Gas4AmountTextBox.Text;
-            DateTime gas4Expiration = Gas4ExpirationDatePicker.SelectedDate ?? DateTime.MinValue;
-            bool gas4Selected = Gas4CheckBox.IsChecked ?? false;
-
-            string gas5Concentration = Gas5ConcentrationTextBox.Text;
-            string gas5Amount = Gas5AmountTextBox.Text;
-            DateTime gas5Expiration = Gas5ExpirationDatePicker.SelectedDate ?? DateTime.MinValue;
-            bool gas5Selected = Gas5CheckBox.IsChecked ?? false;
-
-            MessageBox.Show("Data saved successfully!");
+                    MessageBox.Show("Data saved successfully!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while saving data: {ex.Message}");
+            }
         }
+
+        private void WriteGasData(CsvWriter csv, string gas, string concentration, string amount, DateTime? expiration, bool selected)
+        {
+            csv.WriteField(gas);
+            csv.WriteField(concentration);
+            csv.WriteField(amount);
+            csv.WriteField(expiration?.ToString() ?? string.Empty);
+            csv.WriteField(selected.ToString()); // Convert bool? to string
+            csv.NextRecord();
+        }
+
         private void NumericTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             TextBox textBox = sender as TextBox;
@@ -106,6 +254,14 @@ namespace CCD_DDS
                     return;
                 }
             }
+        }
+        private class GasData
+        {
+            public string Gas { get; set; }
+            public string Concentration { get; set; }
+            public string Amount { get; set; }
+            public string Expiration { get; set; }
+            public string Selected { get; set; }
         }
     }
 }
