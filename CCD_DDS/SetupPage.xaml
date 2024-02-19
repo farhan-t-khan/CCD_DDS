@@ -51,11 +51,11 @@
         <StackPanel Margin="20 60 0 0">
             <TextBlock Text="Gas 1" HorizontalAlignment="Left"/>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Concentration:" Margin="0 2 5 0"/>
+                <TextBlock Text="Concentration (ppm):" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas1ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Amount:" Margin="0 2 5 0"/>
+                <TextBlock Text="Amount(L):" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas1AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
@@ -68,11 +68,11 @@
         <StackPanel Margin="20 220 0 0">
             <TextBlock Text="Gas 2" HorizontalAlignment="Left"/>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Concentration:" Margin="0 2 5 0"/>
+                <TextBlock Text="Concentration(ppm):" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas2ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Amount:" Margin="0 2 5 0"/>
+                <TextBlock Text="Amount(L):" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas2AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
@@ -85,11 +85,11 @@
         <StackPanel Margin="20 380 0 0">
             <TextBlock Text="Gas 3" HorizontalAlignment="Left"/>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Concentration:" Margin="0 2 5 0"/>
+                <TextBlock Text="Concentration(ppm):" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas3ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Amount:" Margin="0 2 5 0"/>
+                <TextBlock Text="Amount(L):" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas3AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
@@ -103,11 +103,11 @@
         <StackPanel Margin="20 540 0 0">
             <TextBlock Text="Gas 4" HorizontalAlignment="Left"/>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Concentration:" Margin="0 2 5 0"/>
+                <TextBlock Text="Concentration(ppm):" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas4ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Amount:" Margin="0 2 5 0"/>
+                <TextBlock Text="Amount(L):" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas4AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
@@ -121,11 +121,11 @@
         <StackPanel Margin="20 700 0 0">
             <TextBlock Text="Gas 5" HorizontalAlignment="Left"/>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Concentration:" Margin="0 2 5 0"/>
+                <TextBlock Text="Concentration(ppm):" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas5ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Amount:" Margin="0 2 5 0"/>
+                <TextBlock Text="Amount(L):" Margin="0 2 5 0"/>
                 <TextBox x:Name="Gas5AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
