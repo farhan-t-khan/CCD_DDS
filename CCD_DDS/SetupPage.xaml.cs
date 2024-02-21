@@ -24,6 +24,7 @@ namespace CCD_DDS
     public partial class SetupPage : Page
     {
         private const string FileName = "SetupData.csv";
+        //private const string FileName = "GasData.csv";
         private SoundPlayer clickSoundPlayer;
         public SetupPage()
         {
@@ -119,53 +120,18 @@ namespace CCD_DDS
                     {
                         // Create or append to the CSV file
                         using (var writer = new StreamWriter(FileName, append: false))
-                        using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
+                        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                         {
+                            // Write headers
+                            csv.WriteHeader<GasData>();
+                            csv.NextRecord();
+
                             // Write the records
-                            csv.WriteRecord(new GasData
-                            {
-                                Gas = "Gas 1",
-                                Concentration = Gas1ConcentrationTextBox.Text,
-                                Amount = Gas1AmountTextBox.Text,
-                                Expiration = Gas1ExpirationDatePicker.SelectedDate?.ToString() ?? string.Empty,
-                                Selected = Gas1CheckBox.IsChecked.ToString() ?? "false"
-                            });
-
-                            csv.WriteRecord(new GasData
-                            {
-                                Gas = "Gas 2",
-                                Concentration = Gas2ConcentrationTextBox.Text,
-                                Amount = Gas2AmountTextBox.Text,
-                                Expiration = Gas2ExpirationDatePicker.SelectedDate?.ToString() ?? string.Empty,
-                                Selected = Gas2CheckBox.IsChecked.ToString() ?? "false"
-                            });
-
-                            csv.WriteRecord(new GasData
-                            {
-                                Gas = "Gas 3",
-                                Concentration = Gas3ConcentrationTextBox.Text,
-                                Amount = Gas3AmountTextBox.Text,
-                                Expiration = Gas3ExpirationDatePicker.SelectedDate?.ToString() ?? string.Empty,
-                                Selected = Gas3CheckBox.IsChecked.ToString() ?? "false"
-                            });
-
-                            csv.WriteRecord(new GasData
-                            {
-                                Gas = "Gas 4",
-                                Concentration = Gas4ConcentrationTextBox.Text,
-                                Amount = Gas4AmountTextBox.Text,
-                                Expiration = Gas4ExpirationDatePicker.SelectedDate?.ToString() ?? string.Empty,
-                                Selected = Gas4CheckBox.IsChecked.ToString() ?? "false"
-                            });
-
-                            csv.WriteRecord(new GasData
-                            {
-                                Gas = "Gas 5",
-                                Concentration = Gas5ConcentrationTextBox.Text,
-                                Amount = Gas5AmountTextBox.Text,
-                                Expiration = Gas5ExpirationDatePicker.SelectedDate?.ToString() ?? string.Empty,
-                                Selected = Gas5CheckBox.IsChecked.ToString() ?? "false"
-                            });
+                            WriteGasData(csv, "Gas 1", Gas1ConcentrationTextBox.Text, Gas1AmountTextBox.Text, Gas1ExpirationDatePicker.SelectedDate, Gas1CheckBox.IsChecked ?? false);
+                            WriteGasData(csv, "Gas 2", Gas2ConcentrationTextBox.Text, Gas2AmountTextBox.Text, Gas2ExpirationDatePicker.SelectedDate, Gas2CheckBox.IsChecked ?? false);
+                            WriteGasData(csv, "Gas 3", Gas3ConcentrationTextBox.Text, Gas3AmountTextBox.Text, Gas3ExpirationDatePicker.SelectedDate, Gas3CheckBox.IsChecked ?? false);
+                            WriteGasData(csv, "Gas 4", Gas4ConcentrationTextBox.Text, Gas4AmountTextBox.Text, Gas4ExpirationDatePicker.SelectedDate, Gas4CheckBox.IsChecked ?? false);
+                            WriteGasData(csv, "Gas 5", Gas5ConcentrationTextBox.Text, Gas5AmountTextBox.Text, Gas5ExpirationDatePicker.SelectedDate, Gas5CheckBox.IsChecked ?? false);
 
                             MessageBox.Show("Data saved successfully!");
                         }
@@ -255,13 +221,5 @@ namespace CCD_DDS
                 }
             }
         }
-/*        private class GasData
-        {
-            public string Gas { get; set; }
-            public string Concentration { get; set; }
-            public string Amount { get; set; }
-            public string Expiration { get; set; }
-            public string Selected { get; set; }
-        }*/
     }
 }

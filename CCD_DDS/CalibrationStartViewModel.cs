@@ -9,6 +9,7 @@ using System.Windows.Input;
 
 using Prism.Commands;
 using Prism.Mvvm;
+using System.Media;
 
 namespace CCD_DDS
 {
@@ -16,6 +17,7 @@ namespace CCD_DDS
     {
         private string _displayText;
         private bool _isButtonVisible;
+        private SoundPlayer _soundPlayer;
 
         public string DisplayText
         {
@@ -33,6 +35,8 @@ namespace CCD_DDS
 
         public CalibrationStartViewModel()
         {
+            //Initialize Sound Player
+            _soundPlayer = new SoundPlayer("Resource\\click.wav");
             // Initialize properties
             DisplayText = "Connect Zero Air and press Yes on the detector";
             IsButtonVisible = true;
@@ -45,6 +49,7 @@ namespace CCD_DDS
         {
             // Handle logic when the "Yes" button is clicked
             // For example, change the display text and hide the button
+            _soundPlayer.Play();
             DisplayText = "Something else...";
             IsButtonVisible = false;
         }
