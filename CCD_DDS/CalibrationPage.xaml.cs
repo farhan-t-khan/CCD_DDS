@@ -92,6 +92,12 @@ namespace CCD_DDS
         {
             try
             {
+                // Check if the CalData.csv file exists
+                if (!File.Exists("CalData.csv"))
+                {
+                    MessageBox.Show("Calibration data file not found.");
+                    return;
+                }
                 // Read all lines from the CalData.csv file
                 List<string> calLines = File.ReadAllLines("CalData.csv").ToList();
 
