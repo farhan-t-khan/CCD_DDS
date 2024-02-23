@@ -1,6 +1,7 @@
 ﻿<Window x:Class="CCD_DDS.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prism="http://prismlibrary.com/"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CCD_DDS"
@@ -46,6 +47,6 @@
         </Style>
     </Window.Resources>
     <Grid x:Name="mainGridPanel">
-        <Frame x:Name="MainContentFrame" NavigationUIVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Frame x:Name="MainContentFrame" prism:RegionManager.RegionName="MainRegion" NavigationUIVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>        
 </Window>
