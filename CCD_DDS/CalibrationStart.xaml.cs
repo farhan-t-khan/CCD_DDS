@@ -32,5 +32,11 @@ namespace CCD_DDS
             clickSoundPlayer.Play();
             NavigationService.Navigate(new HomePage());
         }
+
+        public void NavigateToCalibrationComplete(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            NavigationService.Navigate(new CalibrationComplete());
+        }
     }
 }

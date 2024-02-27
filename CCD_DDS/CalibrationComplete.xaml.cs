@@ -1,10 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
-using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,17 +18,17 @@ using System.Windows.Shapes;
 namespace CCD_DDS
 {
     /// <summary>
-    /// Interaction logic for CalibrationPage.xaml
+    /// Interaction logic for CalibrationComplete.xaml
     /// </summary>
-    public partial class CalibrationPage : Page
+    public partial class CalibrationComplete : Page
     {
         private SoundPlayer clickSoundPlayer;
-        public CalibrationPage()
+        public CalibrationComplete()
         {
             InitializeComponent();
             clickSoundPlayer = new SoundPlayer("Resource\\click.wav");
             LoadGasData();
-            //LoadCalibrationData();
+            LoadCalibrationData();
         }
         public void NavigateToHome(object sender, RoutedEventArgs e)
         {
@@ -75,7 +75,7 @@ namespace CCD_DDS
 
                         // Add the TextBlock to the StackPanel
                         GasStackPanel.Children.Add(gasTextBlock);
-                        //GasStackPanel.Children.Add(gasTextBox);
+                        GasStackPanel.Children.Add(gasTextBox);
 
                         //Add the gas TextBox to the dictionary
                         gasTextBoxes.Add(gasName, gasTextBox);

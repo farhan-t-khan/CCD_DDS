@@ -67,8 +67,8 @@ namespace CCD_DDS
             _soundPlayer = new SoundPlayer("Resource\\click.wav");
 
             // Initialize properties
-            DisplayText = "Connect Zero Air and press Yes on the detector";
-            IsButtonVisible = true;
+            DisplayText = "";
+            IsButtonVisible = false;
             CancelText = "Cancel";
 
             // Initialize list with the selected gases and the tracker
@@ -77,35 +77,37 @@ namespace CCD_DDS
 
             //AutoZero before anything
             _nextCommand = new DelegateCommand(ExecuteAutoZeroCommand);
+            ExecuteAutoZeroCommand();
         }
 
         private async void ExecuteAutoZeroCommand()
         {
             _soundPlayer.Play();
-            DisplayText = "Running AutoZero in Zero Air...";
-            IsButtonVisible = false;
+            DisplayText = "Reading zero gas...";
+            //IsButtonVisible = false;
 
             // Show loading wheel
             IsAutoZeroInProgress = true;
 
             //await Task.Delay(18000); //Actual
-            await Task.Delay(2000); //Test
+            await Task.Delay(4000); //Test
 
             DisplayText = "AutoZero Successful";
-            IsButtonVisible = true;
+            //IsButtonVisible = true;
             IsAutoZeroInProgress = false;
             IsCalibrating = false;
-
+            await Task.Delay(2000);
 
             if (tracker < _selectedGases.Count)
             {
-                NextCommand = new DelegateCommand(ExecuteGasCalibrationCommand);
+                //NextCommand = new DelegateCommand(ExecuteGasCalibrationCommand);
+                ExecuteGasCalibrationCommand();
             } else
             {
                 //NextCommand = new DelegateCommand(NavigateToHome);
-                DisplayText = "Calibration Complete";
-                IsButtonVisible = false;
-                CancelText = "Ok";
+                DisplayText = "Successful";
+                IsButtonVisible = true;
+                CancelText = "Cancel";
 
             }
             
@@ -117,9 +119,11 @@ namespace CCD_DDS
         private async void ExecuteGasCalibrationCommand()
         {
 
-            DisplayText = $"Connect Calibration Gas {_selectedGases[tracker].Concentration} PPM";
-            IsButtonVisible = true;
-            NextCommand = new DelegateCommand(ExecuteCalibrating);
+            DisplayText = $"Reading Gas with {_selectedGases[tracker].Concentration} PPM";
+            //IsButtonVisible = true;
+            //NextCommand = new DelegateCommand(ExecuteCalibrating);
+            await Task.Delay(2000);
+            ExecuteCalibrating();
 
         }
 
@@ -127,7 +131,7 @@ namespace CCD_DDS
         {
 
             DisplayText = "Calibration in progress";
-            IsButtonVisible = false;
+            //IsButtonVisible = false;
             IsCalibrating = true;
 
             //await Task.Delay(28000); //Actual
@@ -135,63 +139,20 @@ namespace CCD_DDS
             CalibrationGasDetected();
 
         }
-        private void CalibrationGasDetected()
+        private async void CalibrationGasDetected()
         {
-            DisplayText = "Done. Continue to AutoZero";
-            IsButtonVisible = true;
+            DisplayText = "Done. Continuing to AutoZero";
+            //IsButtonVisible = true;
             IsCalibrating = false;
-            //tracker++;
-            //NextCommand = new DelegateCommand(ExecuteAutoZeroCommand);
-            NextCommand = new DelegateCommand(VerifyAutoZero);
-        }
-
-        private async void VerifyAutoZero()
-        {
-            //AutoZero
-            _soundPlayer.Play();
-            DisplayText = "Running AutoZero in Zero Air...";
-            IsButtonVisible = false;
-
-            // Show loading wheel
-            IsAutoZeroInProgress = true;
-
-            //await Task.Delay(18000); //Actual
-            await Task.Delay(2000); //Test
-
-            DisplayText = "AutoZero Successful";
-            IsButtonVisible = true;
-            IsAutoZeroInProgress = false;
-            IsCalibrating = false;
-
-            NextCommand = new DelegateCommand(VerifyCalibration);
-
-        }
-
-        private async void VerifyCalibration()
-        {
-            DisplayText = $"Connect Calibration Gas {_selectedGases[tracker].Concentration} PPM";
-            IsButtonVisible = true;
-            NextCommand = new DelegateCommand(VerifyExecuteCalibrating);
-
-        }
-
-        private async void VerifyExecuteCalibrating()
-        {
-            DisplayText = "Calibration in progress";
-            IsButtonVisible = false;
-            IsCalibrating = true;
-
-            //await Task.Delay(28000); //Actual
-            await Task.Delay(5000); //Test
-
-            //Assume gas was detected
-            IsCalibrating = false;
-            DisplayText = "Calibration gas detected";
-
             tracker++;
-            NextCommand = new DelegateCommand(ExecuteAutoZeroCommand);
-            IsButtonVisible = true;
+
+            await Task.Delay(2000);
+
+            //NextCommand = new DelegateCommand(ExecuteAutoZeroCommand);
+            ExecuteAutoZeroCommand();
         }
+
+
 
         private List<GasData> ReadSetupData(string filePath)
         {
@@ -223,12 +184,16 @@ namespace CCD_DDS
                         }
                     }
                 }
+                //Sort the selectedGases List 
+                selectedGases = selectedGases.OrderBy(g => Convert.ToInt32(g.Concentration)).ToList();
+                var lastItem = selectedGases.Last();
+                selectedGases.Insert(0, lastItem);
+
             }
             catch (Exception ex)
             {
                 //MessageBox.Show($"Error reading setup data: {ex.Message}");
             }
-
             return selectedGases;
         }
         public void NavigateToHome()
