@@ -19,3 +19,32 @@ namespace CCD_DDS
         }
     }
 }
+
+/*using Prism;
+using Prism.Ioc;
+using System.ComponentModel;
+using System.Windows;
+
+namespace CCD_DDS
+{
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
+    public partial class App : PrismApplication
+    {
+        protected override Window CreateShell()
+        {
+            return Container.Resolve<MainWindow>();
+        }
+
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+            containerRegistry.RegisterForNavigation<HomePage>();
+            containerRegistry.RegisterForNavigation<CalibrationPage>();
+            containerRegistry.RegisterForNavigation<PrecisionPage>();
+            containerRegistry.RegisterForNavigation<SetupPage>();
+
+            containerRegistry.Register<CalibrationStartPageViewModel>();
+        }
+    }
+}*/

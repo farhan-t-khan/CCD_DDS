@@ -19,6 +19,7 @@ namespace CCD_DDS
     public class CalibrationStartViewModel : BindableBase
     {
         private string _displayText;
+        private string _cancelText;
         private bool _isButtonVisible;
         private bool _isAutoZeroInProgress;
         private bool _isCalibrating;
@@ -30,6 +31,12 @@ namespace CCD_DDS
         {
             get { return _displayText; }
             set { SetProperty(ref _displayText, value); }
+        }
+
+        public string CancelText
+        {
+            get { return _cancelText; }
+            set { SetProperty(ref _cancelText, value); }
         }
 
         public bool IsButtonVisible
@@ -62,6 +69,7 @@ namespace CCD_DDS
             // Initialize properties
             DisplayText = "Connect Zero Air and press Yes on the detector";
             IsButtonVisible = true;
+            CancelText = "Cancel";
 
             // Initialize list with the selected gases and the tracker
             _selectedGases = ReadSetupData("SetupData.csv");
@@ -82,23 +90,34 @@ namespace CCD_DDS
 
             //await Task.Delay(18000); //Actual
             await Task.Delay(2000); //Test
-            if(tracker < _selectedGases.Count)
-            {
-                NextCommand = new DelegateCommand(ExecuteGasCalibrationCommand);
-            } else
-            {
-                NextCommand = new DelegateCommand(NavigateToHome);
-            }
-            
+
             DisplayText = "AutoZero Successful";
             IsButtonVisible = true;
             IsAutoZeroInProgress = false;
             IsCalibrating = false;
+
+
+            if (tracker < _selectedGases.Count)
+            {
+                NextCommand = new DelegateCommand(ExecuteGasCalibrationCommand);
+            } else
+            {
+                //NextCommand = new DelegateCommand(NavigateToHome);
+                DisplayText = "Calibration Complete";
+                IsButtonVisible = false;
+                CancelText = "Ok";
+
+            }
+            
+/*            DisplayText = "AutoZero Successful";
+            IsButtonVisible = true;
+            IsAutoZeroInProgress = false;
+            IsCalibrating = false;*/
         }
         private async void ExecuteGasCalibrationCommand()
         {
 
-            DisplayText = $"Connect Calibration Gas {tracker} PPM";
+            DisplayText = $"Connect Calibration Gas {_selectedGases[tracker].Concentration} PPM";
             IsButtonVisible = true;
             NextCommand = new DelegateCommand(ExecuteCalibrating);
 

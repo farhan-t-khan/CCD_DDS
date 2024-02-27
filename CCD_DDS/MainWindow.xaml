@@ -47,6 +47,6 @@
         </Style>
     </Window.Resources>
     <Grid x:Name="mainGridPanel">
-        <Frame x:Name="MainContentFrame" prism:RegionManager.RegionName="MainRegion" NavigationUIVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Frame x:Name="MainContentFrame" NavigationUIVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>        
 </Window>
