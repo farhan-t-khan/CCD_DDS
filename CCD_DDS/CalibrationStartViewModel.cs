@@ -82,7 +82,7 @@ namespace CCD_DDS
 
         private async void ExecuteAutoZeroCommand()
         {
-            _soundPlayer.Play();
+            //_soundPlayer.Play();
             DisplayText = "Reading zero gas...";
             //IsButtonVisible = false;
 
