@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CCD_DDS"
         mc:Ignorable="d"
-        Title="CCD_DDS" Height="1000" Width="1200" MinHeight="1000" MinWidth="800"
+        Title="CCD_DDS" Height="800" Width="1500" MinHeight="500" MinWidth="1000"
         Icon="Resource/Bascom-Turner.ico">
     <Window.Resources>
         <Style TargetType="TextBlock">
