@@ -178,6 +178,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Media;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -260,7 +261,7 @@ namespace CCD_DDS
                         ExpiryDate = string.IsNullOrWhiteSpace(values[4]) ? null : DateTime.Parse(values[4]),
                         LotNumber = values[5],
                         MeasuredConcentration = values[6],
-                        IsSelected = false, // Assuming checkboxes are initially unchecked
+                        IsSelected = Convert.ToBoolean(values[7]),
                         Status = ""
                     };
 
@@ -308,19 +309,87 @@ namespace CCD_DDS
             NavigationService.Navigate(new SetupPage());
         }
 
+        private void ToggleButtonVisibility(bool IsReadOnly)
+        {
+            // Toggle visibility of navigation buttons
+            CalibrateButton.Visibility = IsReadOnly ? Visibility.Visible : Visibility.Collapsed;
+            DriftButton.Visibility = IsReadOnly ? Visibility.Visible : Visibility.Collapsed;
+            PrecisionButton.Visibility = IsReadOnly ? Visibility.Visible : Visibility.Collapsed;
+
+            // Toggle visibility of Save and Cancel buttons
+            SaveButton.Visibility = IsReadOnly ? Visibility.Collapsed : Visibility.Visible;
+            CancelButton.Visibility = IsReadOnly ? Visibility.Collapsed : Visibility.Visible;
+        }
+
         private void EditButtonClick(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
-            if (IsReadOnly)
-            {
-                ScreenNameTextBlock.Text = "Edit";
-            }
-            else
-            {
-                ScreenNameTextBlock.Text = "Home";
-            }
-            // Toggle edit mode
             IsReadOnly = !IsReadOnly;
+            EditButton.Visibility = Visibility.Collapsed;
+            ToggleButtonVisibility(IsReadOnly);
+        }
+
+        private void SaveButtonClick(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            // Perform saving logic here
+            SaveDataToCsv();
+            // Reload data to refresh the table contents
+            RefreshDataGrid();
+
+            // Toggle back to view mode
+            IsReadOnly = true;
+            ToggleButtonVisibility(IsReadOnly);
+            EditButton.Visibility = Visibility.Visible;
+        }
+
+        private void CancelButtonClick(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            // Perform cancel logic here
+
+            // Reload data to refresh the table contents
+            RefreshDataGrid();
+            // Toggle back to view mode
+            IsReadOnly = true;
+            ToggleButtonVisibility(IsReadOnly);
+            EditButton.Visibility = Visibility.Visible;
+        }
+        private void SaveDataToCsv()
+        {
+            string csvFilePath = "TableData.csv";
+
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(csvFilePath, false))
+                {
+                    // Write header row
+                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Selected,Status");
+
+                    // Write data rows
+                    foreach (LeakData leakData in LeakDataList)
+                    {
+                        //Selected value is boolean and needs special handling
+                        string isSelected = leakData.IsSelected ? "True" : "False";
+
+                        string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
+                        writer.WriteLine($"{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
+                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{isSelected},{leakData.Status}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving data to CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void RefreshDataGrid()
+        {
+            // Reload data to refresh the table contents
+            dataGrid.ItemsSource = null;
+            LoadDataFromCsv();
+            dataGrid.ItemsSource = LeakDataList;
         }
 
         private void DataGrid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -339,6 +408,11 @@ namespace CCD_DDS
                 if (cell.Column.Header.ToString() == "Selected" && cell.DataContext is LeakData leakData && leakData.Port == "0")
                 {
                     // Prevent the checkbox from being unchecked
+                    e.Handled = true;
+                }
+                if (cell.Column.Header.ToString() == "Selected" && IsReadOnly)
+                {
+                    // Prevent the checkbox from being modified
                     e.Handled = true;
                 }
             }

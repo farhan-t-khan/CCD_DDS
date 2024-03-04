@@ -91,19 +91,29 @@ namespace CCD_DDS
             }
         }
 
+        /*        public bool IsSelected
+                {
+                    get { return _isSelected; }
+                    set
+                    {
+                        // Only allow setting IsSelected to true if Port is not 0
+                        if (Port != "0" || value == true)
+                        {
+                            _isSelected = value;
+                            OnPropertyChanged(nameof(IsSelected));
+                        }
+                    }
+                }*/
         public bool IsSelected
         {
             get { return _isSelected; }
             set
             {
-                // Only allow setting IsSelected to true if Port is not 0
-                if (Port != "0" || value == true)
-                {
-                    _isSelected = value;
-                    OnPropertyChanged(nameof(IsSelected));
-                }
+                _isSelected = value;
+                OnPropertyChanged(nameof(IsSelected));
             }
         }
+
 
         public string Status
         {
