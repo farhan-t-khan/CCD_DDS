@@ -121,7 +121,7 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Lot Number" Binding="{Binding LotNumber}" Width="100" />
                 <DataGridTextColumn Header="Measured Concentration (ppm)" Binding="{Binding MeasuredConcentration}" Width="230" />
-                <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected}"  Width="75">
+                <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Width="75">
                     <DataGridCheckBoxColumn.ElementStyle>
                         <Style TargetType="CheckBox">
                             <Setter Property="VerticalAlignment" Value="Center"/>

@@ -179,6 +179,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Media;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -329,14 +330,13 @@ namespace CCD_DDS
             ToggleButtonVisibility(IsReadOnly);
         }
 
-        private void SaveButtonClick(object sender, RoutedEventArgs e)
+        private async void SaveButtonClick(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
             // Perform saving logic here
             SaveDataToCsv();
             // Reload data to refresh the table contents
             RefreshDataGrid();
-
             // Toggle back to view mode
             IsReadOnly = true;
             ToggleButtonVisibility(IsReadOnly);
