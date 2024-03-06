@@ -177,6 +177,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Media;
 using System.Text;
 using System.Threading.Tasks;
@@ -478,6 +479,60 @@ namespace CCD_DDS
                 e.Handled = true;
             }
         }
+        private async void StartCalibration(object sender, RoutedEventArgs e)
+        {
+            foreach(LeakData leakData in LeakDataList)
+            {
+                leakData.Status = "";
+            }
+            RefreshItem();
 
+            var selectedItems = LeakDataList.Where(item => item.IsSelected && item.Port != "0").ToList();
+            foreach (LeakData leakData in selectedItems)
+            {
+                ReadZeroGas();
+                // Update the status to "Reading Gas"
+                leakData.Status = "Reading Gas";
+                // Refresh the UI to reflect the change
+                RefreshItem();
+                // Wait for a brief moment to simulate the reading process
+                await Task.Delay(2000);
+
+                // Update the status to "Calibrating..."
+                leakData.Status = "Calibrating...";
+
+                // Refresh the UI to reflect the change
+                RefreshItem();
+
+                // Wait for a brief moment to simulate the calibration process
+                await Task.Delay(2000);
+
+                // Once calibration is done, update the status to "Done"
+                leakData.Status = "Done";
+
+                // Refresh the UI to reflect the changes
+                RefreshItem();
+
+                // Wait for a brief moment before moving to the next item
+                await Task.Delay(500);
+            }
+        }
+        private void RefreshItem()
+        {
+            // This method forces the DataGrid to refresh its items, ensuring the UI reflects the changes immediately
+            dataGrid.Items.Refresh();
+        }
+
+        private async void ReadZeroGas()
+        {
+            LeakDataList[0].Status = "Reading Gas";
+            RefreshItem();
+            await Task.Delay(2000);
+            LeakDataList[0].Status = "Done";
+            RefreshItem();
+            await Task.Delay(500);
+            LeakDataList[0].Status = "";
+            RefreshItem();
+        }
     }
 }

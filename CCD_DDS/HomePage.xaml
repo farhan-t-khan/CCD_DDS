@@ -9,6 +9,7 @@
       Title="Home">
     <Page.Resources>
         <local:LeakDefinitionConverter x:Key="LeakDefinitionConverter" />
+        <local:StatusColorConverter x:Key="StatusColorConverter" />
         <!-- Styles for various controls -->
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="30"/>
@@ -161,7 +162,13 @@
                         </Style>
                     </DataGridCheckBoxColumn.ElementStyle>
                 </DataGridCheckBoxColumn>
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*" />
+                <DataGridTemplateColumn Header="Status" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Status}" Foreground="{Binding Status, Converter={StaticResource StatusColorConverter}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -171,7 +178,7 @@
             <Button x:Name="CancelButton" Content="Cancel" Click="CancelButtonClick" Margin="5" Visibility="Collapsed"/>
         </StackPanel>
         <StackPanel Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,20">
-            <Button x:Name="CalibrateButton" Content="Calibrate" Click="NavigateToCalibration" Margin="5"/>
+            <Button x:Name="CalibrateButton" Content="Calibrate" Click="StartCalibration" Margin="5"/>
             <Button x:Name="DriftButton" Content="Drift" Click="NavigateToDrift" Margin="5"/>
             <Button x:Name="PrecisionButton" Content="Precision" Click="NavigateToPrecision" Margin="5"/>
             <Button x:Name="EditButton" Content="Edit" Margin="5" Click="EditButtonClick"/>
