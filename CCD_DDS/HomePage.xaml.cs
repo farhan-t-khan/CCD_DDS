@@ -428,5 +428,33 @@ namespace CCD_DDS
                 }
             }
         }
+        private void DataGrid_TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Validate input to allow only numeric values and a single decimal point
+            TextBox textBox = sender as TextBox;
+            if (!string.IsNullOrEmpty(e.Text) && !char.IsDigit(e.Text[0]) && e.Text[0] != '.')
+            {
+                e.Handled = true;
+            }
+            else if (e.Text[0] == '.' && textBox.Text.Contains("."))
+            {
+                // Allowing only one decimal point
+                e.Handled = true;
+            }
+        }
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Validate input to allow only numeric values and a single decimal point
+            if (!string.IsNullOrEmpty(e.Text) && !char.IsDigit(e.Text[0]) && e.Text[0] != '.')
+            {
+                e.Handled = true;
+            }
+            else if (e.Text[0] == '.' && ((TextBox)sender).Text.Contains("."))
+            {
+                // Allowing only one decimal point
+                e.Handled = true;
+            }
+        }
+
     }
 }
