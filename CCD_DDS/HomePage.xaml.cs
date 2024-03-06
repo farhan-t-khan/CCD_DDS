@@ -234,6 +234,8 @@ namespace CCD_DDS
             IsReadOnly = true;
             // Load data from CSV
             LoadDataFromCsv();
+            LoadCalData();
+            SaveDataToCsv();
         }
 
         private void LoadDataFromCsv()
@@ -281,7 +283,28 @@ namespace CCD_DDS
                 MessageBox.Show($"Error loading data from CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        private void LoadCalData()
+        {
+            string csvFilePath = "CalRecord_03062024_1000.csv";
 
+            try
+            {
+                // Read all lines from the CSV file
+                string[] lines = File.ReadAllLines(csvFilePath);
+
+                // Skip the header row
+                for (int i = 1; i < lines.Length; i++)
+                {
+                    // Split the current line by commas
+                    string[] values = lines[i].Split(',');
+                    LeakDataList[i - 1].MeasuredConcentration = values[1];
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading data from CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         private void NavigateToCalibration(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
