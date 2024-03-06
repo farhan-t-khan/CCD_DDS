@@ -182,6 +182,7 @@
             <Button x:Name="DriftButton" Content="Drift" Click="NavigateToDrift" Margin="5"/>
             <Button x:Name="PrecisionButton" Content="Precision" Click="NavigateToPrecision" Margin="5"/>
             <Button x:Name="EditButton" Content="Edit" Margin="5" Click="EditButtonClick"/>
+            <Button x:Name="CalibrationCancelButton" Content="Cancel" Click="CalibrationCancelClick" Margin="5" Visibility="Collapsed"/>
         </StackPanel>
     </Grid>
 </Page>

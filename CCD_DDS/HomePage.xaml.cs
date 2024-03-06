@@ -180,6 +180,7 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -200,7 +201,8 @@ namespace CCD_DDS
         private SoundPlayer clickSoundPlayer;
         public List<string> LeakDefinitionOptions { get; set; }
         public List<LeakData> LeakDataList { get; set; }
-
+        private CancellationTokenSource source;
+        private CancellationToken token;
         private bool _isReadOnly = true;
         public bool IsReadOnly
         {
@@ -481,22 +483,39 @@ namespace CCD_DDS
         }
         private async void StartCalibration(object sender, RoutedEventArgs e)
         {
-            foreach(LeakData leakData in LeakDataList)
+            clickSoundPlayer.Play();
+            source = new CancellationTokenSource();
+            token = source.Token; 
+            foreach (LeakData leakData in LeakDataList)
             {
                 leakData.Status = "";
             }
             RefreshItem();
+            // Hide the other buttons and show the cancel button
+            CalibrateButton.Visibility = Visibility.Collapsed;
+            DriftButton.Visibility = Visibility.Collapsed;
+            PrecisionButton.Visibility = Visibility.Collapsed;
+            EditButton.Visibility = Visibility.Collapsed;
+            CalibrationCancelButton.Visibility = Visibility.Visible;
 
             var selectedItems = LeakDataList.Where(item => item.IsSelected && item.Port != "0").ToList();
             foreach (LeakData leakData in selectedItems)
             {
-                ReadZeroGas();
+                // Check for cancellation before each iteration
+                if (token.IsCancellationRequested)
+                {
+                    // Reset UI and exit the method
+                    ResetUI();
+                    return;
+                }
+
+                await ReadZeroGas();
                 // Update the status to "Reading Gas"
                 leakData.Status = "Reading Gas";
                 // Refresh the UI to reflect the change
                 RefreshItem();
                 // Wait for a brief moment to simulate the reading process
-                await Task.Delay(2000);
+                await Task.Delay(3000);
 
                 // Update the status to "Calibrating..."
                 leakData.Status = "Calibrating...";
@@ -516,21 +535,65 @@ namespace CCD_DDS
                 // Wait for a brief moment before moving to the next item
                 await Task.Delay(500);
             }
+            CalibrateButton.Visibility = Visibility.Visible;
+            DriftButton.Visibility = Visibility.Visible;
+            PrecisionButton.Visibility = Visibility.Visible;
+            EditButton.Visibility = Visibility.Visible;
+            CalibrationCancelButton.Visibility = Visibility.Collapsed;
+
         }
+        private void CalibrationCancelClick(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            // Cancel ongoing calibrations
+            if (source != null)
+            {
+                source.Cancel();
+            }
+            // Show the other buttons and hide the cancel button
+            CalibrateButton.Visibility = Visibility.Visible;
+            DriftButton.Visibility = Visibility.Visible;
+            PrecisionButton.Visibility = Visibility.Visible;
+            EditButton.Visibility = Visibility.Visible;
+            CalibrationCancelButton.Visibility = Visibility.Collapsed;
+        }
+
+        private void ResetUI()
+        {
+            foreach (LeakData leakData in LeakDataList)
+            {
+                leakData.Status = "";
+            }
+            RefreshItem();
+            // Show the other buttons and hide the cancel button
+            CalibrateButton.Visibility = Visibility.Visible;
+            DriftButton.Visibility = Visibility.Visible;
+            PrecisionButton.Visibility = Visibility.Visible;
+            EditButton.Visibility = Visibility.Visible;
+            CalibrationCancelButton.Visibility = Visibility.Collapsed;
+        }
+
         private void RefreshItem()
         {
             // This method forces the DataGrid to refresh its items, ensuring the UI reflects the changes immediately
             dataGrid.Items.Refresh();
         }
-
-        private async void ReadZeroGas()
+        private async Task ReadZeroGas()
         {
+            // Check for cancellation before starting the operation
+            if (token.IsCancellationRequested)
+            {
+                // Perform any necessary cleanup and exit early
+                ResetUI();
+                return;
+            }
+
             LeakDataList[0].Status = "Reading Gas";
             RefreshItem();
-            await Task.Delay(2000);
+            await Task.Delay(3000);
             LeakDataList[0].Status = "Done";
             RefreshItem();
-            await Task.Delay(500);
+            await Task.Delay(1000);
             LeakDataList[0].Status = "";
             RefreshItem();
         }
