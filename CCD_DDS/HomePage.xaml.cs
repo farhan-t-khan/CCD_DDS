@@ -357,6 +357,16 @@ namespace CCD_DDS
             CalibrationCancelButton.Visibility = Visibility.Visible;
 
             var selectedItems = LeakDataList.Where(item => item.IsSelected && item.Port != "0").ToList();
+
+            //Sort by concentration
+            selectedItems = selectedItems.OrderByDescending(item => item.Concentration).ToList();
+            
+            //Mark gas with highest concentration
+            var highest = selectedItems[selectedItems.Count - 1];
+            
+            //Insert at the beginning of the list
+            selectedItems.Insert(0, highest);
+            
             foreach (LeakData leakData in selectedItems)
             {
                 // Check for cancellation before each iteration
