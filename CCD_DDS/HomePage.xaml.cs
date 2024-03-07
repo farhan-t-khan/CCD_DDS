@@ -1,179 +1,4 @@
-﻿/*using System;
-using System.Media;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.ComponentModel;
-
-namespace CCD_DDS
-{
-    /// <summary>
-    /// Interaction logic for Home.xaml
-    /// </summary>
-    public partial class HomePage : Page, INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        private SoundPlayer clickSoundPlayer;
-        public List<string> LeakDefinitionOptions { get; set; }
-        public List<LeakData> LeakDataList { get; set; }
-
-        public bool _isReadOnly = true;
-        public bool IsReadOnly
-        {
-            get { return _isReadOnly; }
-            set
-            {
-                _isReadOnly = value;
-                OnPropertyChanged(nameof(IsReadOnly));
-            }
-        }
-        public HomePage()
-        {
-            InitializeComponent();
-            clickSoundPlayer = new SoundPlayer("Resource\\click.wav");
-            LeakDefinitionOptions = new List<string> { "100", "200", "500", "1000", "2000", "5000", "10000", "25000" };
-            DataContext = this;
-            IsReadOnly = true;
-            // Load data from CSV
-            LoadDataFromCsv();
-        }
-
-        private void LoadDataFromCsv()
-        {
-            string csvFilePath = "TableData.csv";
-            LeakDataList = new List<LeakData>();
-
-            try
-            {
-                // Read all lines from the CSV file
-                string[] lines = File.ReadAllLines(csvFilePath);
-
-                // Skip the header row
-                for (int i = 1; i < lines.Length; i++)
-                {
-                    // Split the current line by commas
-                    string[] values = lines[i].Split(',');
-
-                    // Create a new LeakData object and populate its properties
-                    LeakData leakData = new LeakData
-                    {
-                        Port = values[0],
-                        LeakDefinition = values[1],
-                        Concentration = values[2],
-                        TankCapacity = values[3],
-                        ExpiryDate = string.IsNullOrWhiteSpace(values[4]) ? null : DateTime.Parse(values[4]),
-                        LotNumber = values[5],
-                        MeasuredConcentration = values[6],
-                        IsSelected = false, // Assuming checkboxes are initially unchecked
-                        Status = ""
-                    };
-
-                    // If Port is 0, set the Leak Definition directly to "0"
-                    if (values[0] == "0")
-                    {
-                        leakData.LeakDefinition = "0";
-                    }
-
-                    // Add the LeakData object to the list
-                    LeakDataList.Add(leakData);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading data from CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void NavigateToCalibration(object sender, RoutedEventArgs e)
-        {
-            clickSoundPlayer.Play();
-            ScreenNameTextBlock.Text = "Calibration";
-            NavigationService.Navigate(new CalibrationPage());
-        }
-
-        private void NavigateToDrift(object sender, RoutedEventArgs e)
-        {
-            clickSoundPlayer.Play();
-            ScreenNameTextBlock.Text = "Drift";
-            NavigationService.Navigate(new DriftPage());
-        }
-
-        private void NavigateToPrecision(object sender, RoutedEventArgs e)
-        {
-            clickSoundPlayer.Play();
-            ScreenNameTextBlock.Text = "Precision";
-            NavigationService.Navigate(new PrecisionPage());
-        }
-
-        private void NavigateToSetup(object sender, RoutedEventArgs e)
-        {
-            clickSoundPlayer.Play();
-            ScreenNameTextBlock.Text = "Setup";
-            NavigationService.Navigate(new SetupPage());
-        }
-        private void EditButtonClick(object sender, RoutedEventArgs e)
-        {
-            clickSoundPlayer.Play();
-            if(IsReadOnly)
-            {
-                ScreenNameTextBlock.Text = "Edit";
-            } else
-            {
-                ScreenNameTextBlock.Text = "Home";
-            }
-            // Toggle edit mode
-            IsReadOnly = !IsReadOnly;
-        }
-
-        private void DataGrid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            DependencyObject depObj = (DependencyObject)e.OriginalSource;
-
-            // Traverse the visual tree to find the DataGridCell
-            while (depObj != null && !(depObj is DataGridCell))
-            {
-                depObj = VisualTreeHelper.GetParent(depObj);
-            }
-
-            if (depObj is DataGridCell cell)
-            {
-                // Check if the cell corresponds to the "Selected" column and the row is for Port 0
-                if (cell.Column.Header.ToString() == "Selected" && cell.DataContext is LeakData leakData && leakData.Port == "0")
-                {
-                    // Prevent the checkbox from being unchecked
-                    e.Handled = true;
-                }
-            }
-        }
-        private void DataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
-        {
-            if (e.Column.Header.ToString() == "Leak Definition" || e.Column.Header.ToString() == "Concentration (ppm)" || e.Column.Header.ToString() == "Measured Concentration (ppm)")
-            {
-                if (e.Row.Item is LeakData item && item.Port == "0")
-                {
-                    e.Cancel = true;
-                }
-            }
-        }
-    }
-}
-*/
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -237,10 +62,9 @@ namespace CCD_DDS
             IsReadOnly = true;
             // Load data from CSV
             LoadDataFromCsv();
-            LoadCalData();
-            SaveDataToCsv();
+            //LoadCalData();
+            //SaveDataToCsv();
         }
-
         private void LoadDataFromCsv()
         {
             string csvFilePath = "TableData.csv";
@@ -306,6 +130,37 @@ namespace CCD_DDS
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading data from CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void SaveCalData()
+        {
+            // Generate file name based on current date and time
+            string dateTimeString = DateTime.Now.ToString("MMddyyyy_HHmmss");
+            string csvFilePath = $"CalRecord_{dateTimeString}.csv";
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(csvFilePath, false))
+                {
+                    // Write header row
+                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm)");
+
+                    // Write data rows
+                    foreach (LeakData leakData in LeakDataList)
+                    {
+                        if (leakData.IsSelected)
+                        {
+                            string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
+                            writer.WriteLine($"{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
+                                $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration}");
+
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving data to CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         private void NavigateToCalibration(object sender, RoutedEventArgs e)
@@ -484,13 +339,16 @@ namespace CCD_DDS
         private async void StartCalibration(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
+            QuitAppButton.Visibility = Visibility.Collapsed;
             source = new CancellationTokenSource();
             token = source.Token; 
             foreach (LeakData leakData in LeakDataList)
             {
                 leakData.Status = "";
+                leakData.MeasuredConcentration = "";
             }
-            RefreshItem();
+            RefreshColumn(8);
+            RefreshColumn(6);
             // Hide the other buttons and show the cancel button
             CalibrateButton.Visibility = Visibility.Collapsed;
             DriftButton.Visibility = Visibility.Collapsed;
@@ -513,15 +371,35 @@ namespace CCD_DDS
                 // Update the status to "Reading Gas"
                 leakData.Status = "Reading Gas";
                 // Refresh the UI to reflect the change
-                RefreshItem();
+                RefreshColumn(8);
                 // Wait for a brief moment to simulate the reading process
                 await Task.Delay(3000);
 
                 // Update the status to "Calibrating..."
                 leakData.Status = "Calibrating...";
-
+                await Task.Delay(2000);
                 // Refresh the UI to reflect the change
-                RefreshItem();
+                RefreshColumn(8);
+
+                //Simulate calibration dummy values
+                
+                Random random = new Random();
+                double percent = random.Next(10, 21);
+                int sign = random.Next(0, 2);
+                
+                if (sign == 0)
+                {
+                    double concentration = Convert.ToDouble(leakData.Concentration);
+                    double newMeasuredConcentration = concentration + (percent / 100) * concentration;
+                    leakData.MeasuredConcentration = newMeasuredConcentration.ToString();
+
+                } else
+                {
+                    double concentration = Convert.ToDouble(leakData.Concentration);
+                    double newMeasuredConcentration = concentration - (percent / 100) * concentration;
+                    leakData.MeasuredConcentration = newMeasuredConcentration.ToString();
+                }
+                
 
                 // Wait for a brief moment to simulate the calibration process
                 await Task.Delay(2000);
@@ -530,16 +408,21 @@ namespace CCD_DDS
                 leakData.Status = "Done";
 
                 // Refresh the UI to reflect the changes
-                RefreshItem();
+                RefreshColumn(8);
 
                 // Wait for a brief moment before moving to the next item
                 await Task.Delay(500);
             }
+            SaveCalData();
+            SaveDataToCsv();
+            RefreshAll();
+
             CalibrateButton.Visibility = Visibility.Visible;
             DriftButton.Visibility = Visibility.Visible;
             PrecisionButton.Visibility = Visibility.Visible;
             EditButton.Visibility = Visibility.Visible;
             CalibrationCancelButton.Visibility = Visibility.Collapsed;
+            QuitAppButton.Visibility = Visibility.Visible;
 
         }
         private void CalibrationCancelClick(object sender, RoutedEventArgs e)
@@ -564,7 +447,7 @@ namespace CCD_DDS
             {
                 leakData.Status = "";
             }
-            RefreshItem();
+            RefreshAll();
             // Show the other buttons and hide the cancel button
             CalibrateButton.Visibility = Visibility.Visible;
             DriftButton.Visibility = Visibility.Visible;
@@ -573,11 +456,26 @@ namespace CCD_DDS
             CalibrationCancelButton.Visibility = Visibility.Collapsed;
         }
 
-        private void RefreshItem()
+        private void RefreshColumn(int columnIndex)
+        {
+            // Iterate through each row in the DataGrid
+            foreach (var item in dataGrid.Items)
+            {
+                // Get the corresponding property of the item based on the column index
+                var property = item.GetType().GetProperty(dataGrid.Columns[columnIndex].SortMemberPath);
+
+                // Update the property value
+                property?.SetValue(item, property.GetValue(item));
+            }
+        }
+
+
+        private void RefreshAll()
         {
             // This method forces the DataGrid to refresh its items, ensuring the UI reflects the changes immediately
             dataGrid.Items.Refresh();
         }
+
         private async Task ReadZeroGas()
         {
             // Check for cancellation before starting the operation
@@ -589,13 +487,23 @@ namespace CCD_DDS
             }
 
             LeakDataList[0].Status = "Reading Gas";
-            RefreshItem();
+            RefreshColumn(8);
             await Task.Delay(3000);
             LeakDataList[0].Status = "Done";
-            RefreshItem();
+            RefreshColumn(8);
             await Task.Delay(1000);
             LeakDataList[0].Status = "";
-            RefreshItem();
+            RefreshColumn(8);
+        }
+        private void QuitApplication_Click(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to exit?", "Confirm Exit", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
+            }
         }
     }
 }
