@@ -24,6 +24,7 @@ namespace CCD_DDS
         }
 
         private SoundPlayer clickSoundPlayer;
+        private SoundPlayer calSoundPlayer;
         public List<string> LeakDefinitionOptions { get; set; }
         public List<LeakData> LeakDataList { get; set; }
         private CancellationTokenSource source;
@@ -57,6 +58,7 @@ namespace CCD_DDS
         {
             InitializeComponent();
             clickSoundPlayer = new SoundPlayer("Resource\\click.wav");
+            //calSoundPlayer = new SoundPlayer("Resource\\cal.wav");
             LeakDefinitionOptions = new List<string> { "100", "200", "500", "1000", "2000", "5000", "10000", "25000" };
             DataContext = this;
             IsReadOnly = true;
@@ -386,6 +388,8 @@ namespace CCD_DDS
                 await Task.Delay(3000);
 
                 // Update the status to "Calibrating..."
+                //calSoundPlayer.Play();
+                //clickSoundPlayer.Play();
                 leakData.Status = "Calibrating...";
                 await Task.Delay(2000);
                 // Refresh the UI to reflect the change
@@ -394,7 +398,7 @@ namespace CCD_DDS
                 //Simulate calibration dummy values
                 
                 Random random = new Random();
-                double percent = random.Next(10, 21);
+                double percent = random.Next(2, 4);
                 int sign = random.Next(0, 2);
                 
                 if (sign == 0)

@@ -183,7 +183,7 @@
             <Button x:Name="PrecisionButton" Content="Precision" Click="NavigateToPrecision" Margin="5"/>
             <Button x:Name="EditButton" Content="Edit" Margin="5" Click="EditButtonClick"/>
             <Button x:Name="CalibrationCancelButton" Content="Cancel" Click="CalibrationCancelClick" Margin="5" Visibility="Collapsed"/>
-            <Button x:Name="QuitAppButton" Content="Quit" Click="QuitApplication_Click" HorizontalAlignment="Right" Visibility="Visible" Margin="5"/>
+            <Button x:Name="QuitAppButton" Content="Exit" Click="QuitApplication_Click" HorizontalAlignment="Right" Visibility="Visible" Margin="5"/>
         </StackPanel>
     </Grid>
 </Page>

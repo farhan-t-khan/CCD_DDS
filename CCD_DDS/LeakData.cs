@@ -14,6 +14,12 @@ namespace CCD_DDS
         private string _measuredConcentration;
         private bool _isSelected;
         private string _status;
+        private DateTime? _precisionDate;
+        private TimeSpan? _precisionTime;
+        private string? _measurement1;
+        private string? _measurement2;
+        private string? _measurement3;
+        private string? _precision;
 
         public string Port
         {
@@ -90,20 +96,6 @@ namespace CCD_DDS
                 OnPropertyChanged(nameof(MeasuredConcentration));
             }
         }
-
-        /*        public bool IsSelected
-                {
-                    get { return _isSelected; }
-                    set
-                    {
-                        // Only allow setting IsSelected to true if Port is not 0
-                        if (Port != "0" || value == true)
-                        {
-                            _isSelected = value;
-                            OnPropertyChanged(nameof(IsSelected));
-                        }
-                    }
-                }*/
         public bool IsSelected
         {
             get { return _isSelected; }
@@ -122,6 +114,62 @@ namespace CCD_DDS
             {
                 _status = value;
                 OnPropertyChanged(nameof(Status));
+            }
+        }
+
+        public DateTime? PrecisionDate
+        {
+            get { return _precisionDate; }
+            set
+            {
+                _precisionDate = value;
+                OnPropertyChanged(nameof(PrecisionDate));
+            }
+        }
+
+        public TimeSpan? PrecisionTime
+        {
+            get { return _precisionTime; }
+            set
+            {
+                _precisionTime = value;
+                OnPropertyChanged(nameof(PrecisionTime));
+            }
+        }
+        public string? Measurement1
+        {
+            get { return _measurement1; }
+            set 
+            {
+                _measurement1 = value;
+                OnPropertyChanged(nameof(Measurement1));
+            }
+        }
+        public string? Measurement2
+        {
+            get { return _measurement2; }
+            set
+            {
+                _measurement2 = value;
+                OnPropertyChanged(nameof(Measurement2));
+            }
+        }
+        public string? Measurement3
+        {
+            get { return _measurement3; }
+            set
+            {
+                _measurement3 = value;
+                OnPropertyChanged(nameof(Measurement3));
+            }
+        }
+        public string? Precision
+        {
+            get { return _precision; }
+            set
+            {
+                _precision = value;
+                OnPropertyChanged(nameof(Precision));
             }
         }
 
