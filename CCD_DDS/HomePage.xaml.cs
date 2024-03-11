@@ -32,11 +32,15 @@ namespace CCD_DDS
         private CancellationToken token;
         private bool _isReadOnly = true;
         private bool _isEditMode = false;
-
+      
         public bool IsEditMode
         {
             get { return _isEditMode;}
-            set { _isEditMode = value;}
+            set 
+            { 
+                _isEditMode = value;
+                OnPropertyChanged(nameof(IsEditMode));
+            }
         }
         public bool IsReadOnly
         {
@@ -370,12 +374,113 @@ namespace CCD_DDS
                 e.Handled = true;
             }
         }
+        /*        private async void StartCalibration(object sender, RoutedEventArgs e)
+                {
+                    clickSoundPlayer.Play();
+                    QuitAppButton.Visibility = Visibility.Collapsed;
+                    source = new CancellationTokenSource();
+                    token = source.Token; 
+                    foreach (LeakData leakData in LeakDataList)
+                    {
+                        leakData.Status = "";
+                        leakData.MeasuredConcentration = "";
+                    }
+                    RefreshColumn(8);
+                    RefreshColumn(6);
+                    // Hide the other buttons and show the cancel button
+                    CalibrateButton.Visibility = Visibility.Collapsed;
+                    DriftButton.Visibility = Visibility.Collapsed;
+                    PrecisionButton.Visibility = Visibility.Collapsed;
+                    EditButton.Visibility = Visibility.Collapsed;
+                    CalibrationCancelButton.Visibility = Visibility.Visible;
+
+                    var selectedItems = LeakDataList.Where(item => item.IsSelected && item.Port != "0").ToList();
+
+                    //Sort by concentration
+                    selectedItems = selectedItems.OrderByDescending(item => item.Concentration).ToList();
+
+                    //Mark gas with highest concentration
+                    var highest = selectedItems[selectedItems.Count - 1];
+
+                    //Insert at the beginning of the list
+                    selectedItems.Insert(0, highest);
+
+                    foreach (LeakData leakData in selectedItems)
+                    {
+                        // Check for cancellation before each iteration
+                        if (token.IsCancellationRequested)
+                        {
+                            // Reset UI and exit the method
+                            ResetUI();
+                            return;
+                        }
+
+                        await ReadZeroGas();
+                        // Update the status to "Reading Gas"
+                        leakData.Status = "Reading Gas";
+                        // Refresh the UI to reflect the change
+                        RefreshColumn(8);
+                        // Wait for a brief moment to simulate the reading process
+                        await Task.Delay(3000);
+
+                        // Update the status to "Calibrating..."
+                        //calSoundPlayer.Play();
+                        //clickSoundPlayer.Play();
+                        leakData.Status = "Calibrating...";
+                        await Task.Delay(2000);
+                        // Refresh the UI to reflect the change
+                        RefreshColumn(8);
+
+                        //Simulate calibration dummy values
+
+                        Random random = new Random();
+                        double percent = random.Next(2, 4);
+                        int sign = random.Next(0, 2);
+
+                        if (sign == 0)
+                        {
+                            double concentration = Convert.ToDouble(leakData.Concentration);
+                            double newMeasuredConcentration = concentration + (percent / 100) * concentration;
+                            leakData.MeasuredConcentration = newMeasuredConcentration.ToString();
+
+                        } else
+                        {
+                            double concentration = Convert.ToDouble(leakData.Concentration);
+                            double newMeasuredConcentration = concentration - (percent / 100) * concentration;
+                            leakData.MeasuredConcentration = newMeasuredConcentration.ToString();
+                        }
+
+
+                        // Wait for a brief moment to simulate the calibration process
+                        await Task.Delay(2000);
+
+                        // Once calibration is done, update the status to "Done"
+                        leakData.Status = "Done";
+
+                        // Refresh the UI to reflect the changes
+                        RefreshColumn(8);
+
+                        // Wait for a brief moment before moving to the next item
+                        await Task.Delay(500);
+                    }
+                    SaveCalData();
+                    SaveDataToCsv();
+                    RefreshAll();
+
+                    CalibrateButton.Visibility = Visibility.Visible;
+                    DriftButton.Visibility = Visibility.Visible;
+                    PrecisionButton.Visibility = Visibility.Visible;
+                    EditButton.Visibility = Visibility.Visible;
+                    CalibrationCancelButton.Visibility = Visibility.Collapsed;
+                    QuitAppButton.Visibility = Visibility.Visible;
+
+                }*/
         private async void StartCalibration(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
             QuitAppButton.Visibility = Visibility.Collapsed;
             source = new CancellationTokenSource();
-            token = source.Token; 
+            token = source.Token;
             foreach (LeakData leakData in LeakDataList)
             {
                 leakData.Status = "";
@@ -390,17 +495,17 @@ namespace CCD_DDS
             EditButton.Visibility = Visibility.Collapsed;
             CalibrationCancelButton.Visibility = Visibility.Visible;
 
-            var selectedItems = LeakDataList.Where(item => item.IsSelected && item.Port != "0").ToList();
+            var selectedItems = SelectedList.Where(item => item.Port != "0").ToList();
 
             //Sort by concentration
-            selectedItems = selectedItems.OrderByDescending(item => item.Concentration).ToList();
-            
+            selectedItems = selectedItems.OrderBy(item => int.Parse(item.Concentration)).ToList();
+
             //Mark gas with highest concentration
             var highest = selectedItems[selectedItems.Count - 1];
-            
+
             //Insert at the beginning of the list
             selectedItems.Insert(0, highest);
-            
+
             foreach (LeakData leakData in selectedItems)
             {
                 // Check for cancellation before each iteration
@@ -428,24 +533,25 @@ namespace CCD_DDS
                 RefreshColumn(8);
 
                 //Simulate calibration dummy values
-                
+
                 Random random = new Random();
                 double percent = random.Next(2, 4);
                 int sign = random.Next(0, 2);
-                
+
                 if (sign == 0)
                 {
                     double concentration = Convert.ToDouble(leakData.Concentration);
                     double newMeasuredConcentration = concentration + (percent / 100) * concentration;
                     leakData.MeasuredConcentration = newMeasuredConcentration.ToString();
 
-                } else
+                }
+                else
                 {
                     double concentration = Convert.ToDouble(leakData.Concentration);
                     double newMeasuredConcentration = concentration - (percent / 100) * concentration;
                     leakData.MeasuredConcentration = newMeasuredConcentration.ToString();
                 }
-                
+
 
                 // Wait for a brief moment to simulate the calibration process
                 await Task.Delay(2000);
@@ -471,6 +577,7 @@ namespace CCD_DDS
             QuitAppButton.Visibility = Visibility.Visible;
 
         }
+
         private void CalibrationCancelClick(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();

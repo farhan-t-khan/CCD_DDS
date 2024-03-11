@@ -10,6 +10,7 @@
     <Page.Resources>
         <local:LeakDefinitionConverter x:Key="LeakDefinitionConverter" />
         <local:StatusColorConverter x:Key="StatusColorConverter" />
+        <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <!-- Styles for various controls -->
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="30"/>
@@ -155,7 +156,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Width="75">
+                <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="75" Visibility="{Binding IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <DataGridCheckBoxColumn.ElementStyle>
                         <Style TargetType="CheckBox">
                             <Setter Property="VerticalAlignment" Value="Center"/>
