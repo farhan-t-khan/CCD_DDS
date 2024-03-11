@@ -27,9 +27,17 @@ namespace CCD_DDS
         private SoundPlayer calSoundPlayer;
         public List<string> LeakDefinitionOptions { get; set; }
         public List<LeakData> LeakDataList { get; set; }
+        public List<LeakData> SelectedList { get; set; }
         private CancellationTokenSource source;
         private CancellationToken token;
         private bool _isReadOnly = true;
+        private bool _isEditMode = false;
+
+        public bool IsEditMode
+        {
+            get { return _isEditMode;}
+            set { _isEditMode = value;}
+        }
         public bool IsReadOnly
         {
             get { return _isReadOnly; }
@@ -64,6 +72,8 @@ namespace CCD_DDS
             IsReadOnly = true;
             // Load data from CSV
             LoadDataFromCsv();
+            LoadSelected();
+            RefreshDataGrid();
             //LoadCalData();
             //SaveDataToCsv();
         }
@@ -110,6 +120,17 @@ namespace CCD_DDS
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading data from CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void LoadSelected()
+        {
+            SelectedList = new List<LeakData>();
+            for (int i = 0; i < LeakDataList.Count; i++)
+            {
+                if (LeakDataList[i].IsSelected)
+                {
+                    SelectedList.Add(LeakDataList[i]);
+                }
             }
         }
         private void LoadCalData()
@@ -209,8 +230,10 @@ namespace CCD_DDS
         {
             clickSoundPlayer.Play();
             IsReadOnly = !IsReadOnly;
+            IsEditMode = !IsEditMode;
             EditButton.Visibility = Visibility.Collapsed;
             ToggleButtonVisibility(IsReadOnly);
+            RefreshDataGrid();
         }
 
         private async void SaveButtonClick(object sender, RoutedEventArgs e)
@@ -218,6 +241,7 @@ namespace CCD_DDS
             clickSoundPlayer.Play();
             // Perform saving logic here
             SaveDataToCsv();
+            IsEditMode = !IsEditMode;
             // Reload data to refresh the table contents
             RefreshDataGrid();
             // Toggle back to view mode
@@ -229,6 +253,7 @@ namespace CCD_DDS
         private void CancelButtonClick(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
+            IsEditMode = !IsEditMode;
             // Perform cancel logic here
 
             // Reload data to refresh the table contents
@@ -272,7 +297,14 @@ namespace CCD_DDS
             // Reload data to refresh the table contents
             dataGrid.ItemsSource = null;
             LoadDataFromCsv();
-            dataGrid.ItemsSource = LeakDataList;
+            LoadSelected();
+            //dataGrid.ItemsSource = LeakDataList;
+            if (IsEditMode)
+            {
+                dataGrid.ItemsSource = LeakDataList;
+            } else {
+                dataGrid.ItemsSource = SelectedList;
+            }   
         }
 
         private void DataGrid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
