@@ -26,6 +26,7 @@ namespace CCD_DDS
         private SoundPlayer clickSoundPlayer;
         private SoundPlayer calSoundPlayer;
         public List<string> LeakDefinitionOptions { get; set; }
+        public List<string> TankCapacityOptions { get; set; }
         public List<LeakData> LeakDataList { get; set; }
         public List<LeakData> SelectedList { get; set; }
         private CancellationTokenSource source;
@@ -72,6 +73,7 @@ namespace CCD_DDS
             clickSoundPlayer = new SoundPlayer("Resource\\click.wav");
             //calSoundPlayer = new SoundPlayer("Resource\\cal.wav");
             LeakDefinitionOptions = new List<string> { "100", "200", "500", "1000", "2000", "5000", "10000", "25000" };
+            TankCapacityOptions = new List<string> { "Travel", "Small", "Medium", "Large"};
             DataContext = this;
             IsReadOnly = true;
             // Load data from CSV
