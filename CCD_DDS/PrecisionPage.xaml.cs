@@ -101,7 +101,7 @@ namespace CCD_DDS
                         ExpiryDate = string.IsNullOrWhiteSpace(values[4]) ? null : DateTime.Parse(values[4]),
                         LotNumber = values[5],
                         MeasuredConcentration = values[6],
-                        IsSelected = Convert.ToBoolean(values[7]),
+                        IsSelected = Convert.ToBoolean(values[8]),
                         Status = ""
                     };
 

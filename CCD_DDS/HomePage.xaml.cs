@@ -109,7 +109,8 @@ namespace CCD_DDS
                         ExpiryDate = string.IsNullOrWhiteSpace(values[4]) ? null : DateTime.Parse(values[4]),
                         LotNumber = values[5],
                         MeasuredConcentration = values[6],
-                        IsSelected = Convert.ToBoolean(values[7]),
+                        Tolerance = values[7],
+                        IsSelected = Convert.ToBoolean(values[8]),
                         Status = ""
                     };
 
@@ -278,7 +279,7 @@ namespace CCD_DDS
                 using (StreamWriter writer = new StreamWriter(csvFilePath, false))
                 {
                     // Write header row
-                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Selected,Status");
+                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status");
 
                     // Write data rows
                     foreach (LeakData leakData in LeakDataList)
@@ -288,7 +289,7 @@ namespace CCD_DDS
 
                         string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
                         writer.WriteLine($"{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
-                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{isSelected},{leakData.Status}");
+                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{leakData.Tolerance},{isSelected},{leakData.Status}");
                     }
                 }
             }

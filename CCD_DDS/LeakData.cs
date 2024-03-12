@@ -12,6 +12,7 @@ namespace CCD_DDS
         private DateTime? _expiryDate;
         private string _lotNumber;
         private string _measuredConcentration;
+        private string _tolerance;
         private bool _isSelected;
         private string _status;
         private DateTime? _precisionDate;
@@ -94,6 +95,15 @@ namespace CCD_DDS
             {
                 _measuredConcentration = value;
                 OnPropertyChanged(nameof(MeasuredConcentration));
+            }
+        }
+        public string Tolerance
+        {
+            get { return _tolerance; }
+            set
+            {
+                _tolerance = value;
+                OnPropertyChanged(nameof(Tolerance));
             }
         }
         public bool IsSelected
