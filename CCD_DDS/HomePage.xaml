@@ -82,7 +82,24 @@
 
     <Grid>
         <!-- Header TextBlock -->
-        <TextBlock x:Name="ScreenNameTextBlock" Text="Home"/>
+        <!--<TextBlock x:Name="ScreenNameTextBlock" Text="Home"/>-->
+        <TextBlock x:Name="ScreenNameTextBlock">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="30"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Top"/>
+                    <Setter Property="Foreground" Value="SteelBlue"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="Text" Value="Home"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                            <Setter Property="Text" Value="Calibration Setup"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
 
         <!-- DataGrid -->
         <DataGrid x:Name="dataGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50"
@@ -149,18 +166,6 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Lot Number" Binding="{Binding LotNumber}" Width="100" />
-                <!--<DataGridTemplateColumn Header="Measured Concentration (ppm)" Width="230">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding MeasuredConcentration}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <TextBox Text="{Binding MeasuredConcentration, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>-->
                 <DataGridTemplateColumn Header="Measured Concentration (ppm)"
                         Width="230"
                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}, ConverterParameter=Inverse}">
@@ -183,13 +188,6 @@
                         </Style>
                     </DataGridCheckBoxColumn.ElementStyle>
                 </DataGridCheckBoxColumn>
-                <!--<DataGridTemplateColumn Header="Status" Width="*">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Status}" Foreground="{Binding Status, Converter={StaticResource StatusColorConverter}}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
                 <DataGridTemplateColumn Header="Status"
                         Width="*"
                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}, ConverterParameter=Inverse}">
