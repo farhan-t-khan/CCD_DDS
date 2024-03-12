@@ -19,12 +19,16 @@ namespace CCD_DDS
             switch (status)
             {
                 case "Reading Gas":
-                    return Brushes.Red;
+                    return Brushes.Turquoise;
                 case "Calibrating...":
                     return Brushes.Blue; // Set color for Calibrating...
                 case "Done":
                     return Brushes.Green; // Set color for Done
                 // Add more cases for other status values as needed
+                case "Passed":
+                    return Brushes.Green;
+                case "Failed":
+                    return Brushes.Red;
                 default:
                     return defaultColor;
             }

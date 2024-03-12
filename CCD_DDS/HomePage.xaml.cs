@@ -342,7 +342,7 @@ namespace CCD_DDS
 
         private void DataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
         {
-            if (e.Column.Header.ToString() == "Leak Definition" || e.Column.Header.ToString() == "Concentration (ppm)" || e.Column.Header.ToString() == "Measured Concentration (ppm)")
+            if (e.Column.Header.ToString() == "Leak Definition (ppm)" || e.Column.Header.ToString() == "Actual Concentration (ppm)" || e.Column.Header.ToString() == "Calibration Tolerance (%)" || e.Column.Header.ToString() == "Measured Concentration (ppm)")
             {
                 if (e.Row.Item is LeakData item && item.Port == "0")
                 {
@@ -558,9 +558,22 @@ namespace CCD_DDS
 
                 // Wait for a brief moment to simulate the calibration process
                 await Task.Delay(2000);
+                
+                //Calculate Pass or Fail according to Tolerance set
+                double expectedConcentration = Convert.ToDouble(leakData.Concentration);
+                double tolerancePercentage = Convert.ToDouble(leakData.Tolerance);
 
-                // Once calibration is done, update the status to "Done"
-                leakData.Status = "Done";
+                double lowerBound = expectedConcentration - (expectedConcentration * tolerancePercentage / 100);
+                double upperBound = expectedConcentration + (expectedConcentration * tolerancePercentage / 100);
+
+                double measuredConcentration = Convert.ToDouble(leakData.MeasuredConcentration);
+
+                if (measuredConcentration >= lowerBound && measuredConcentration <= upperBound) {
+                    leakData.Status = "Passed";
+                } else
+                {
+                    leakData.Status = "Failed";
+                }
 
                 // Refresh the UI to reflect the changes
                 RefreshColumn(8);

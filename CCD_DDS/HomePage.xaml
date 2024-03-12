@@ -183,6 +183,20 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Calibration Tolerance (%)"
+                        Width="230"
+                        Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Tolerance}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Tolerance, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
                 <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         Width="75" Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
                     <DataGridCheckBoxColumn.ElementStyle>
