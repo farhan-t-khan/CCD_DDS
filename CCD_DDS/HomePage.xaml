@@ -7,6 +7,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Home">
+
     <Page.Resources>
         <local:LeakDefinitionConverter x:Key="LeakDefinitionConverter" />
         <local:StatusColorConverter x:Key="StatusColorConverter" />
@@ -78,6 +79,7 @@
             </Style.Triggers>
         </Style>
     </Page.Resources>
+
     <Grid>
         <!-- Header TextBlock -->
         <TextBlock x:Name="ScreenNameTextBlock" Text="Home"/>
@@ -90,6 +92,9 @@
                   BeginningEdit="DataGrid_BeginningEdit"
                   IsReadOnly="{Binding IsReadOnly}"
                   Background="{Binding DataGridBackground}">
+            <DataGrid.Resources>
+                <local:BindingProxy x:Key="proxy" Data="{Binding}" />
+            </DataGrid.Resources>
             <DataGrid.Columns>
                 <!-- Define columns -->
                 <DataGridTextColumn Header="Port" Binding="{Binding Port}" Width="*" FontSize="20" IsReadOnly="True"/>
@@ -156,7 +161,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="75" Visibility="{Binding IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="75" Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
                     <DataGridCheckBoxColumn.ElementStyle>
                         <Style TargetType="CheckBox">
                             <Setter Property="VerticalAlignment" Value="Center"/>

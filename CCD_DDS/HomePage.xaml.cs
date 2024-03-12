@@ -31,7 +31,7 @@ namespace CCD_DDS
         private CancellationTokenSource source;
         private CancellationToken token;
         private bool _isReadOnly = true;
-        private bool _isEditMode = false;
+        public bool _isEditMode = false;
       
         public bool IsEditMode
         {
