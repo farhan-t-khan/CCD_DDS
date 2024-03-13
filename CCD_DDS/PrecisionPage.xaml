@@ -204,7 +204,7 @@
             <Button x:Name="CancelButton" Content="Cancel" Click="CancelButtonClick" Margin="5" Visibility="Collapsed"/>
         </StackPanel>
         <StackPanel Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,20">
-            <Button x:Name="StartButton" Content="Start" Margin="5"/>
+            <Button x:Name="PrecisionStartButton" Content="Start" Margin="5"/>
             <Button x:Name="PrecisionBackButton" Content="Back" Click="NavigateToHome" Margin="5"/>
             <Button x:Name="PrecisionEditButton" Content="Edit" Click="EditButtonClick" Margin="5"/>
         </StackPanel>
