@@ -15,12 +15,16 @@ namespace CCD_DDS
         private string _tolerance;
         private bool _isSelected;
         private string _status;
+        
         private DateTime? _precisionDate;
         private TimeSpan? _precisionTime;
         private string? _measurement1;
         private string? _measurement2;
         private string? _measurement3;
         private string? _precision;
+        private bool _precisionIsSelected;
+
+
 
         public string Port
         {
@@ -180,6 +184,16 @@ namespace CCD_DDS
             {
                 _precision = value;
                 OnPropertyChanged(nameof(Precision));
+            }
+        }
+
+        public bool PrecisionIsSelected
+        {
+            get { return _precisionIsSelected; }
+            set
+            {
+                _precisionIsSelected = value;
+                OnPropertyChanged(nameof(PrecisionIsSelected));
             }
         }
 
