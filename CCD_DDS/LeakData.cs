@@ -24,7 +24,14 @@ namespace CCD_DDS
         private string? _precision;
         private bool _precisionIsSelected;
 
-
+        private DateTime? _driftDate1;
+        private TimeOnly? _driftTime1;
+        private string? _driftConcentration1;
+        private string? _driftConcentration2;
+        private DateTime? _driftDate2;
+        private TimeOnly? _driftTime2;
+        private string? _driftPercentage;
+        private bool _driftIsSelected;
 
         public string Port
         {
@@ -194,6 +201,88 @@ namespace CCD_DDS
             {
                 _precisionIsSelected = value;
                 OnPropertyChanged(nameof(PrecisionIsSelected));
+            }
+        }
+
+/*        
+        
+        
+        private string? _driftPercentage;*/
+
+
+        public DateTime? DriftDate1
+        {
+            get { return _driftDate1; }
+            set
+            {
+                _driftDate1 = value;
+                OnPropertyChanged(nameof(DriftDate1));
+            }
+        }
+
+        public TimeOnly? DriftTime1
+        {
+            get { return _driftTime1; }
+            set
+            {
+                _driftTime1 = value;
+                OnPropertyChanged(nameof(DriftTime1));
+            }
+        }
+
+        public string? DriftConcentration1
+        {
+            get { return _driftConcentration1; }
+            set
+            {
+                _driftConcentration1 = value;
+                OnPropertyChanged(nameof(DriftConcentration1));
+            }
+        }
+        public DateTime? DriftDate2
+        {
+            get { return _driftDate2; }
+            set
+            {
+                _driftDate2 = value;
+                OnPropertyChanged(nameof(DriftDate2));
+            }
+        }
+        public TimeOnly? DriftTime2
+        {
+            get { return _driftTime2; }
+            set
+            {
+                _driftTime2 = value;
+                OnPropertyChanged(nameof(DriftTime2));
+            }
+        }
+        public string? DriftConcentration2
+        {
+            get { return _driftConcentration2; }
+            set
+            {
+                _driftConcentration2 = value;
+                OnPropertyChanged(nameof(DriftConcentration2));
+            }
+        }
+        public string? DriftPercentage
+        {
+            get { return _driftPercentage; }
+            set
+            {
+                _driftPercentage = value;
+                OnPropertyChanged(nameof(DriftPercentage));
+            }
+        }
+
+        public bool DriftIsSelected
+        {
+            get { return _driftIsSelected; }
+            set
+            {
+                _precisionIsSelected = value;
+                OnPropertyChanged(nameof(DriftIsSelected));
             }
         }
 
