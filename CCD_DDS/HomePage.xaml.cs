@@ -1,6 +1,9 @@
-﻿using System;
+﻿using CsvHelper.Configuration;
+using CsvHelper;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Media;
@@ -162,30 +165,68 @@ namespace CCD_DDS
                 MessageBox.Show($"Error loading data from CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        /*        private void SaveCalData()
+                {
+                    // Generate file name based on current date and time
+                    string dateTimeString = DateTime.Now.ToString("MMddyyyy_HHmmss");
+                    string csvFilePath = $"CalRecord_{dateTimeString}.csv";
+                    try
+                    {
+                        using (StreamWriter writer = new StreamWriter(csvFilePath, false))
+                        {
+                            // Write header row
+                            writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm)");
+
+                            // Write data rows
+                            foreach (LeakData leakData in LeakDataList)
+                            {
+                                if (leakData.IsSelected)
+                                {
+                                    string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
+                                    writer.WriteLine($"{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
+                                        $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration}");
+
+                                }
+
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error saving data to CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }*/
+
         private void SaveCalData()
         {
-            // Generate file name based on current date and time
-            string dateTimeString = DateTime.Now.ToString("MMddyyyy_HHmmss");
-            string csvFilePath = $"CalRecord_{dateTimeString}.csv";
+            string csvFilePath = "Calibration.csv";
+
             try
             {
-                using (StreamWriter writer = new StreamWriter(csvFilePath, false))
+                // Open the file in append mode, creating it if it doesn't exist
+                using (StreamWriter writer = new StreamWriter(csvFilePath, true))
                 {
-                    // Write header row
-                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm)");
+                    // Check if the file is empty to determine if the header needs to be written
+                    if (writer.BaseStream.Length == 0)
+                    {
+                        writer.WriteLine("Calibration Date Time,Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm)");
+                    }
 
                     // Write data rows
-                    foreach (LeakData leakData in LeakDataList)
+                    foreach (LeakData leakData in SelectedList)
                     {
                         if (leakData.IsSelected)
                         {
                             string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
-                            writer.WriteLine($"{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
+                            string calDateTime = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
+
+                            writer.WriteLine($"{calDateTime},{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
                                 $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration}");
 
                         }
-
                     }
+                    // Write a divider line after each set of records
+                    writer.WriteLine("-----------------------------------");
                 }
             }
             catch (Exception ex)
@@ -193,6 +234,8 @@ namespace CCD_DDS
                 MessageBox.Show($"Error saving data to CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+
         private void NavigateToCalibration(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
