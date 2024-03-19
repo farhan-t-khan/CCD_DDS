@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
       xmlns:local="clr-namespace:CCD_DDS"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
@@ -13,6 +14,7 @@
         <local:TankCapacityConverter x:Key="TankCapacityConverter" />
         <local:StatusColorConverter x:Key="StatusColorConverter" />
         <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+ 
         <!-- Styles for various controls -->
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="30"/>
@@ -227,7 +229,58 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                
+
+                <DataGridTemplateColumn Header="Estimated Tank Level" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ProgressBar Value="{Binding TankLevel}" Minimum="0" Maximum="500">
+                                <ProgressBar.Style>
+                                    <Style TargetType="ProgressBar">
+                                        <!-- Set initial color based on TankLevelColor -->
+                                        <Setter Property="Foreground" Value="{Binding TankLevelColor}" />
+                                        <Style.Triggers>
+                                            <!-- DataTriggers for different TankLevel values -->
+                                            <DataTrigger Binding="{Binding TankLevel}" Value="0">
+                                                <Setter Property="Foreground" Value="Red" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding TankLevel}" Value="50">
+                                                <Setter Property="Foreground" Value="DarkRed" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding TankLevel}" Value="100">
+                                                <Setter Property="Foreground" Value="Orange" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding TankLevel}" Value="150">
+                                                <Setter Property="Foreground" Value="DarkOrange" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding TankLevel}" Value="200">
+                                                <Setter Property="Foreground" Value="Gold" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding TankLevel}" Value="250">
+                                                <Setter Property="Foreground" Value="Yellow" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding TankLevel}" Value="300">
+                                                <Setter Property="Foreground" Value="LightYellow" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding TankLevel}" Value="350">
+                                                <Setter Property="Foreground" Value="GreenYellow" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding TankLevel}" Value="400">
+                                                <Setter Property="Foreground" Value="LimeGreen" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding TankLevel}" Value="450">
+                                                <Setter Property="Foreground" Value="Green" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding TankLevel}" Value="500">
+                                                <Setter Property="Foreground" Value="DarkGreen" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ProgressBar.Style>
+                            </ProgressBar>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
                 <!--<DataGridTemplateColumn Header="Measured Conc (ppm)"
                         Width="230"
                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}, ConverterParameter=Inverse}">

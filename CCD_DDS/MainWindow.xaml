@@ -7,7 +7,8 @@
         xmlns:local="clr-namespace:CCD_DDS"
         mc:Ignorable="d"
         Title="CCD_DDS" Height="800" Width="1500" MinHeight="500" MinWidth="1000"
-        Icon="Resource/Bascom-Turner.ico">
+        Icon="Resource/Bascom-Turner.ico"
+        WindowState="Maximized">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="30"/>

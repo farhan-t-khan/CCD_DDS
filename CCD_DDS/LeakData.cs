@@ -16,6 +16,7 @@ namespace CCD_DDS
         private bool _isSelected;
         private string _status;
         private double _tankLevel = 0;
+        private string _tankLevelColor;
         
         private DateTime? _precisionDate;
         private TimeSpan? _precisionTime;
@@ -85,8 +86,12 @@ namespace CCD_DDS
             get { return _tankLevel; }
             set
             {
-                _tankLevel = value;
-                OnPropertyChanged(nameof(TankLevel));
+                if (_tankLevel != value)
+                {
+                    _tankLevel = value;
+                    OnPropertyChanged(nameof(TankLevel));
+                    UpdateTankLevelColor();
+                }
             }
         }
 
@@ -294,6 +299,42 @@ namespace CCD_DDS
             {
                 _precisionIsSelected = value;
                 OnPropertyChanged(nameof(DriftIsSelected));
+            }
+        }
+        public string TankLevelColor
+        {
+            get { return _tankLevelColor; }
+            set
+            {
+                if (_tankLevelColor != value)
+                {
+                    _tankLevelColor = value;
+                    OnPropertyChanged(nameof(TankLevelColor));
+                }
+            }
+        }
+
+        private void UpdateTankLevelColor()
+        {
+            if (TankLevel <= 100)
+            {
+                TankLevelColor = "Red";
+            }
+            else if (TankLevel <= 250)
+            {
+                TankLevelColor = "Orange";
+            }
+            else if (TankLevel <= 350)
+            {
+                TankLevelColor = "Yellow";
+            }
+            else if (TankLevel <= 450)
+            {
+                TankLevelColor = "GreenYellow";
+            }
+            else
+            {
+                TankLevelColor = "Green";
             }
         }
 

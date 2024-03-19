@@ -86,10 +86,11 @@
                   CanUserAddRows="False" PreviewMouseLeftButtonDown="DataGrid_PreviewMouseLeftButtonDown"
                   BeginningEdit="DataGrid_BeginningEdit"
                   IsReadOnly="{Binding IsReadOnly}"
-                  Background="{Binding DataGridBackground}">
+                  Background="{Binding DataGridBackground}"
+                  ColumnHeaderHeight="60">
             <DataGrid.Columns>
                 <!-- Define columns -->
-                <DataGridTextColumn Header="Port" Binding="{Binding Port}" Width="100" FontSize="20" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Port" Binding="{Binding Port}" Width="100" IsReadOnly="True"/>
                 <!-- Special handling for Leak Definition column -->
                 <DataGridTemplateColumn Header="Leak Definition (ppm)" Width="170">
                     <DataGridTemplateColumn.CellTemplate>
@@ -223,7 +224,7 @@
             <Button x:Name="CancelButton" Content="Cancel" Click="CancelButtonClick" Margin="5" Visibility="Collapsed"/>
         </StackPanel>
         <StackPanel Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,20">
-            <Button x:Name="DriftStartButton" Content="Start" Margin="5"/>
+            <Button x:Name="DriftStartButton" Content="Drift Check" Margin="5"/>
             <Button x:Name="DriftBackButton" Content="Back" Click="NavigateToHome" Margin="5"/>
             <Button x:Name="DriftEditButton" Content="Edit" Click="EditButtonClick" Margin="5"/>
         </StackPanel>

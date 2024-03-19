@@ -76,13 +76,14 @@ namespace CCD_DDS
             clickSoundPlayer = new SoundPlayer("Resource\\click.wav");
             //calSoundPlayer = new SoundPlayer("Resource\\cal.wav");
             LeakDefinitionOptions = new List<string> { "100", "200", "500", "1000", "2000", "5000", "10000", "25000" };
-            TankCapacityOptions = new List<string> { "Travel", "Small", "Medium", "Large"};
+            //TankCapacityOptions = new List<string> { "Travel", "Small", "Medium", "Large"};
             DataContext = this;
             IsReadOnly = true;
             // Load data from CSV
             LoadDataFromCsv();
             LoadSelected();
             RefreshDataGrid();
+            AssignRandomTankLevels();
             //LoadCalData();
             //SaveDataToCsv();
         }
@@ -165,6 +166,19 @@ namespace CCD_DDS
                 MessageBox.Show($"Error loading data from CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void AssignRandomTankLevels()
+        {
+            Random random = new Random();
+
+            foreach (var leakData in SelectedList)
+            {
+                // Generate a random tank level between 0 and 500
+                double randomTankLevel = random.NextDouble() * 500;
+                leakData.TankLevel = randomTankLevel;
+            }
+        }
+
         /*        private void SaveCalData()
                 {
                     // Generate file name based on current date and time
