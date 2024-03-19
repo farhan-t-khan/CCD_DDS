@@ -109,18 +109,36 @@
                   CanUserAddRows="False" PreviewMouseLeftButtonDown="DataGrid_PreviewMouseLeftButtonDown"
                   BeginningEdit="DataGrid_BeginningEdit"
                   IsReadOnly="{Binding IsReadOnly}"
-                  Background="{Binding DataGridBackground}">
+                  Background="{Binding DataGridBackground}" 
+                  ColumnHeaderHeight="60">
             <DataGrid.Resources>
                 <local:BindingProxy x:Key="proxy" Data="{Binding}" />
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <!-- Define columns -->
-                <DataGridTextColumn Header="Port" Binding="{Binding Port}" Width="*" FontSize="20" IsReadOnly="True"/>
-                <!-- Special handling for Leak Definition column -->
-                <DataGridTemplateColumn Header="Leak Definition (ppm)" Width="*">
+                <DataGridTemplateColumn Header="Port" Width="*" IsReadOnly="True">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding LeakDefinition, Converter={StaticResource LeakDefinitionConverter}}" />
+                            <TextBlock Text="{Binding Port}" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!--<DataGridTextColumn Header="Port" Binding="{Binding Port}" Width="*" FontSize="20" IsReadOnly="True"/>-->
+                <!-- Special handling for Leak Definition column -->
+                <DataGridTemplateColumn Header="Leak Definition (ppm)" Width="230">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding LeakDefinition, Converter={StaticResource LeakDefinitionConverter}}"  TextWrapping="Wrap" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -130,24 +148,41 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Tank Capacity" Width="*">
+                
+                <DataGridTemplateColumn Header="Tank Capacity (L)" Width="*">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding TankCapacity, Converter={StaticResource TankCapacityConverter}}" />
+                            <TextBlock Text="{Binding TankCapacity}" TextWrapping="Wrap" TextAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
+                    <!--<DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <!--<TextBox Text="{Binding TankCapacity, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>-->
+                            --><!--<TextBox Text="{Binding TankCapacity, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>--><!--
                             <ComboBox ItemsSource="{Binding DataContext.TankCapacityOptions, RelativeSource={RelativeSource AncestorType=Page}}"
                                       SelectedItem="{Binding TankCapacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>-->
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding TankCapacity, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
+                
                 <DataGridTemplateColumn Header="Expiry Date" Width="*">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding ExpiryDate, StringFormat=MM/dd/yyyy}" />
+                            <TextBlock Text="{Binding ExpiryDate, StringFormat=MM/dd/yyyy}" TextWrapping="Wrap" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -156,39 +191,69 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Lot Number" Binding="{Binding LotNumber}" Width="100" />
-                <DataGridTemplateColumn Header="Actual Concentration (ppm)" Width="230">
+                
+                <DataGridTemplateColumn Header="Lot Number">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Concentration}" />
+                            <TextBlock Text="{Binding LotNumber}" TextWrapping="Wrap" TextAlignment="Center" Width="100"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Concentration, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                            <TextBox Text="{Binding LotNumber, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Measured Concentration (ppm)"
+                
+                <DataGridTemplateColumn Header="Certified Conc (ppm)" Width="*">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Concentration}" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Concentration, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="Measured Conc (ppm)"
                         Width="230"
                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}, ConverterParameter=Inverse}">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding MeasuredConcentration}" />
+                            <TextBlock Text="{Binding MeasuredConcentration}" TextWrapping="Wrap" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding MeasuredConcentration, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                            <TextBox Text="{Binding MeasuredConcentration, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
+
                 <DataGridTemplateColumn Header="Calibration Tolerance (%)"
                         Width="230"
                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Tolerance}" />
+                            <TextBlock Text="{Binding Tolerance}" TextWrapping="Wrap" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -223,12 +288,12 @@
             <Button x:Name="CancelButton" Content="Cancel" Click="CancelButtonClick" Margin="5" Visibility="Collapsed"/>
         </StackPanel>
         <StackPanel Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,20">
-            <Button x:Name="CalibrateButton" Content="Calibrate" Click="StartCalibration" Margin="5"/>
+            <Button x:Name="CalibrationButton" Content="Calibration" Click="NavigateToCalibration" Margin="5"/>
+            <Button x:Name="EditButton" Content="Calibration Setup" Margin="5" Click="EditButtonClick"/>
             <Button x:Name="DriftButton" Content="Drift" Click="NavigateToDrift" Margin="5"/>
             <Button x:Name="PrecisionButton" Content="Precision" Click="NavigateToPrecision" Margin="5"/>
-            <Button x:Name="EditButton" Content="Edit" Margin="5" Click="EditButtonClick"/>
             <Button x:Name="CalibrationCancelButton" Content="Cancel" Click="CalibrationCancelClick" Margin="5" Visibility="Collapsed"/>
-            <Button x:Name="QuitAppButton" Content="Exit" Click="QuitApplication_Click" HorizontalAlignment="Right" Visibility="Visible" Margin="5"/>
+            <!--<Button x:Name="QuitAppButton" Content="Exit" Click="QuitApplication_Click" HorizontalAlignment="Right" Visibility="Visible" Margin="5"/>-->
         </StackPanel>
     </Grid>
 </Page>

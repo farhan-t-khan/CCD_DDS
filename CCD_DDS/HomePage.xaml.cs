@@ -267,7 +267,6 @@ namespace CCD_DDS
         private void ToggleButtonVisibility(bool IsReadOnly)
         {
             // Toggle visibility of navigation buttons
-            CalibrateButton.Visibility = IsReadOnly ? Visibility.Visible : Visibility.Collapsed;
             DriftButton.Visibility = IsReadOnly ? Visibility.Visible : Visibility.Collapsed;
             PrecisionButton.Visibility = IsReadOnly ? Visibility.Visible : Visibility.Collapsed;
 
@@ -282,6 +281,7 @@ namespace CCD_DDS
             IsReadOnly = !IsReadOnly;
             IsEditMode = !IsEditMode;
             EditButton.Visibility = Visibility.Collapsed;
+            CalibrationButton.Visibility = Visibility.Collapsed;
             ToggleButtonVisibility(IsReadOnly);
             RefreshDataGrid();
         }
@@ -298,6 +298,7 @@ namespace CCD_DDS
             IsReadOnly = true;
             ToggleButtonVisibility(IsReadOnly);
             EditButton.Visibility = Visibility.Visible;
+            CalibrationButton.Visibility = Visibility.Visible;
         }
 
         private void CancelButtonClick(object sender, RoutedEventArgs e)
@@ -312,6 +313,7 @@ namespace CCD_DDS
             IsReadOnly = true;
             ToggleButtonVisibility(IsReadOnly);
             EditButton.Visibility = Visibility.Visible;
+            CalibrationButton.Visibility = Visibility.Visible;
         }
         private void SaveDataToCsv()
         {
@@ -385,7 +387,7 @@ namespace CCD_DDS
 
         private void DataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
         {
-            if (e.Column.Header.ToString() == "Leak Definition (ppm)" || e.Column.Header.ToString() == "Actual Concentration (ppm)" || e.Column.Header.ToString() == "Calibration Tolerance (%)" || e.Column.Header.ToString() == "Measured Concentration (ppm)")
+            if (e.Column.Header.ToString() == "Leak Definition (ppm)" || e.Column.Header.ToString() == "Certified Conc (ppm)" || e.Column.Header.ToString() == "Calibration Tolerance (%)" || e.Column.Header.ToString() == "Measured Concentration (ppm)")
             {
                 if (e.Row.Item is LeakData item && item.Port == "0")
                 {
@@ -423,7 +425,7 @@ namespace CCD_DDS
         private async void StartCalibration(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
-            QuitAppButton.Visibility = Visibility.Collapsed;
+            //QuitAppButton.Visibility = Visibility.Collapsed;
             source = new CancellationTokenSource();
             token = source.Token;
             foreach (LeakData leakData in LeakDataList)
@@ -434,7 +436,6 @@ namespace CCD_DDS
             RefreshColumn(8);
             RefreshColumn(6);
             // Hide the other buttons and show the cancel button
-            CalibrateButton.Visibility = Visibility.Collapsed;
             DriftButton.Visibility = Visibility.Collapsed;
             PrecisionButton.Visibility = Visibility.Collapsed;
             EditButton.Visibility = Visibility.Collapsed;
@@ -487,14 +488,14 @@ namespace CCD_DDS
                 {
                     double concentration = Convert.ToDouble(leakData.Concentration);
                     double newMeasuredConcentration = concentration + (percent / 100) * concentration;
-                    leakData.MeasuredConcentration = newMeasuredConcentration.ToString();
+                    leakData.MeasuredConcentration = ((int)Math.Round(newMeasuredConcentration)).ToString();
 
                 }
                 else
                 {
                     double concentration = Convert.ToDouble(leakData.Concentration);
                     double newMeasuredConcentration = concentration - (percent / 100) * concentration;
-                    leakData.MeasuredConcentration = newMeasuredConcentration.ToString();
+                    leakData.MeasuredConcentration = ((int)Math.Round(newMeasuredConcentration)).ToString();
                 }
 
 
@@ -527,12 +528,12 @@ namespace CCD_DDS
             SaveDataToCsv();
             RefreshAll();
 
-            CalibrateButton.Visibility = Visibility.Visible;
+
             DriftButton.Visibility = Visibility.Visible;
             PrecisionButton.Visibility = Visibility.Visible;
             EditButton.Visibility = Visibility.Visible;
             CalibrationCancelButton.Visibility = Visibility.Collapsed;
-            QuitAppButton.Visibility = Visibility.Visible;
+            //QuitAppButton.Visibility = Visibility.Visible;
 
         }
 
@@ -545,7 +546,6 @@ namespace CCD_DDS
                 source.Cancel();
             }
             // Show the other buttons and hide the cancel button
-            CalibrateButton.Visibility = Visibility.Visible;
             DriftButton.Visibility = Visibility.Visible;
             PrecisionButton.Visibility = Visibility.Visible;
             EditButton.Visibility = Visibility.Visible;
@@ -560,7 +560,6 @@ namespace CCD_DDS
             }
             RefreshAll();
             // Show the other buttons and hide the cancel button
-            CalibrateButton.Visibility = Visibility.Visible;
             DriftButton.Visibility = Visibility.Visible;
             PrecisionButton.Visibility = Visibility.Visible;
             EditButton.Visibility = Visibility.Visible;

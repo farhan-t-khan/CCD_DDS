@@ -75,51 +75,6 @@ namespace CCD_DDS
                 OnPropertyChanged(nameof(DataGridBackground));
             }
         }
-        /*        private void LoadDataFromCsv()
-                {
-                    string csvFilePath = "TableData.csv";
-                    LeakDataList = new List<LeakData>();
-
-                    try
-                    {
-                        // Read all lines from the CSV file
-                        string[] lines = File.ReadAllLines(csvFilePath);
-
-                        // Skip the header row
-                        for (int i = 1; i < lines.Length; i++)
-                        {
-                            // Split the current line by commas
-                            string[] values = lines[i].Split(',');
-
-                            // Create a new LeakData object and populate its properties
-                            LeakData leakData = new LeakData
-                            {
-                                Port = values[0],
-                                LeakDefinition = values[1],
-                                Concentration = values[2],
-                                TankCapacity = values[3],
-                                ExpiryDate = string.IsNullOrWhiteSpace(values[4]) ? null : DateTime.Parse(values[4]),
-                                LotNumber = values[5],
-                                MeasuredConcentration = values[6],
-                                IsSelected = Convert.ToBoolean(values[8]),
-                                Status = ""
-                            };
-
-                            // If Port is 0, set the Leak Definition directly to "0"
-                            if (values[0] == "0")
-                            {
-                                leakData.LeakDefinition = "0";
-                            }
-
-                            // Add the LeakData object to the list
-                            LeakDataList.Add(leakData);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error loading data from CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }*/
         private void LoadDataFromCsv()
         {
             string csvFilePath = "TableData.csv";
