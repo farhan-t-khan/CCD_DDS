@@ -275,7 +275,7 @@ namespace CCD_DDS
             CancelButton.Visibility = IsReadOnly ? Visibility.Collapsed : Visibility.Visible;
         }
 
-        private void EditButtonClick(object sender, RoutedEventArgs e)
+/*        private void EditButtonClick(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
             IsReadOnly = !IsReadOnly;
@@ -284,7 +284,7 @@ namespace CCD_DDS
             CalibrationButton.Visibility = Visibility.Collapsed;
             ToggleButtonVisibility(IsReadOnly);
             RefreshDataGrid();
-        }
+        }*/
 
         private async void SaveButtonClick(object sender, RoutedEventArgs e)
         {
@@ -297,7 +297,7 @@ namespace CCD_DDS
             // Toggle back to view mode
             IsReadOnly = true;
             ToggleButtonVisibility(IsReadOnly);
-            EditButton.Visibility = Visibility.Visible;
+            //EditButton.Visibility = Visibility.Visible;
             CalibrationButton.Visibility = Visibility.Visible;
         }
 
@@ -312,7 +312,7 @@ namespace CCD_DDS
             // Toggle back to view mode
             IsReadOnly = true;
             ToggleButtonVisibility(IsReadOnly);
-            EditButton.Visibility = Visibility.Visible;
+            //EditButton.Visibility = Visibility.Visible;
             CalibrationButton.Visibility = Visibility.Visible;
         }
         private void SaveDataToCsv()
@@ -438,7 +438,7 @@ namespace CCD_DDS
             // Hide the other buttons and show the cancel button
             DriftButton.Visibility = Visibility.Collapsed;
             PrecisionButton.Visibility = Visibility.Collapsed;
-            EditButton.Visibility = Visibility.Collapsed;
+            //EditButton.Visibility = Visibility.Collapsed;
             CalibrationCancelButton.Visibility = Visibility.Visible;
 
             var selectedItems = SelectedList.Where(item => item.Port != "0").ToList();
@@ -531,7 +531,7 @@ namespace CCD_DDS
 
             DriftButton.Visibility = Visibility.Visible;
             PrecisionButton.Visibility = Visibility.Visible;
-            EditButton.Visibility = Visibility.Visible;
+            //EditButton.Visibility = Visibility.Visible;
             CalibrationCancelButton.Visibility = Visibility.Collapsed;
             //QuitAppButton.Visibility = Visibility.Visible;
 
@@ -548,7 +548,7 @@ namespace CCD_DDS
             // Show the other buttons and hide the cancel button
             DriftButton.Visibility = Visibility.Visible;
             PrecisionButton.Visibility = Visibility.Visible;
-            EditButton.Visibility = Visibility.Visible;
+            //EditButton.Visibility = Visibility.Visible;
             CalibrationCancelButton.Visibility = Visibility.Collapsed;
         }
 
@@ -562,7 +562,7 @@ namespace CCD_DDS
             // Show the other buttons and hide the cancel button
             DriftButton.Visibility = Visibility.Visible;
             PrecisionButton.Visibility = Visibility.Visible;
-            EditButton.Visibility = Visibility.Visible;
+            //EditButton.Visibility = Visibility.Visible;
             CalibrationCancelButton.Visibility = Visibility.Collapsed;
         }
 

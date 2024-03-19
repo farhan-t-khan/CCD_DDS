@@ -226,8 +226,32 @@ namespace CCD_DDS
             // Toggle visibility of Save and Cancel buttons
             CancelButton.Visibility = IsReadOnly ? Visibility.Collapsed : Visibility.Visible;
         }
-
-
+        private void EditButtonClick(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            IsReadOnly = !IsReadOnly;
+            IsEditMode = !IsEditMode;
+            EditButton.Visibility = Visibility.Collapsed;
+            CalibrationBackButton.Visibility = Visibility.Collapsed;
+            SaveButton.Visibility = Visibility.Visible;
+            ToggleButtonVisibility(IsReadOnly);
+            RefreshDataGrid();
+        }
+        private async void SaveButtonClick(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            // Perform saving logic here
+            SaveDataToCsv();
+            IsEditMode = !IsEditMode;
+            // Reload data to refresh the table contents
+            RefreshDataGrid();
+            // Toggle back to view mode
+            IsReadOnly = true;
+            ToggleButtonVisibility(IsReadOnly);
+            EditButton.Visibility = Visibility.Visible;
+            CalibrationBackButton.Visibility = Visibility.Visible;
+            SaveButton.Visibility = Visibility.Collapsed;
+        }
         private void CancelButtonClick(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
@@ -239,6 +263,9 @@ namespace CCD_DDS
             // Toggle back to view mode
             IsReadOnly = true;
             ToggleButtonVisibility(IsReadOnly);
+            EditButton.Visibility = Visibility.Visible;
+            CalibrationBackButton.Visibility = Visibility.Visible;
+            SaveButton.Visibility = Visibility.Collapsed;
         }
         private void SaveDataToCsv()
         {

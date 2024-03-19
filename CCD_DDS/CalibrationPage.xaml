@@ -277,11 +277,13 @@
 
         <!-- Navigation Buttons -->
         <StackPanel Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,150">
+            <Button x:Name="SaveButton" Content="Save" Click="SaveButtonClick" Margin="5" Visibility="Collapsed"/>
             <Button x:Name="CancelButton" Content="Cancel" Click="CancelButtonClick" Margin="5" Visibility="Collapsed"/>
         </StackPanel>
         <StackPanel Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,20">
             <Button x:Name="CalibrateButton" Content="Calibrate" Click="StartCalibration" Margin="5"/>
             <Button x:Name="CalibrationBackButton" Content="Back" Click="NavigateToHome" Margin="5"/>
+            <Button x:Name="EditButton" Content="Edit" Margin="5" Click="EditButtonClick"/>
             <Button x:Name="CalibrationCancelButton" Content="Cancel" Click="CalibrationCancelClick" Margin="5" Visibility="Collapsed"/>
             <!--<Button x:Name="QuitAppButton" Content="Exit" Click="QuitApplication_Click" HorizontalAlignment="Right" Visibility="Visible" Margin="5"/>-->
         </StackPanel>
