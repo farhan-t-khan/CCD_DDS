@@ -15,6 +15,7 @@ namespace CCD_DDS
         private string _tolerance;
         private bool _isSelected;
         private string _status;
+        private double _tankLevel = 0;
         
         private DateTime? _precisionDate;
         private TimeSpan? _precisionTime;
@@ -76,6 +77,16 @@ namespace CCD_DDS
             {
                 _tankCapacity = value;
                 OnPropertyChanged(nameof(TankCapacity));
+            }
+        }
+
+        public double TankLevel
+        {
+            get { return _tankLevel; }
+            set
+            {
+                _tankLevel = value;
+                OnPropertyChanged(nameof(TankLevel));
             }
         }
 
