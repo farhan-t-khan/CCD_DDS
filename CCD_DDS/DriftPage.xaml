@@ -118,7 +118,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Date" Width="100">
+                <DataGridTemplateColumn Header="Date" Width="50">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftDate1, StringFormat=\{0:MM/dd/yyyy\}, UpdateSourceTrigger=PropertyChanged}" />
@@ -131,7 +131,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Time Zero" Width="100">
+                <DataGridTemplateColumn Header="Time Zero" Width="90">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftTime1, StringFormat=\{0:hh\\:mm\}, UpdateSourceTrigger=PropertyChanged}" />
@@ -144,7 +144,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Calibrated Concentration (ppm)" Width="240">
+                <DataGridTemplateColumn Header="Calibrated Conc (ppm)" Width="170">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftConcentration1}" />
@@ -157,7 +157,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 
-                <DataGridTemplateColumn Header="Date" Width="*">
+                <DataGridTemplateColumn Header="Date" Width="50">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftDate2, StringFormat=\{0:MM/dd/yyyy\}, UpdateSourceTrigger=PropertyChanged}" />
@@ -170,7 +170,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 
-                <DataGridTemplateColumn Header="Time" Width="*">
+                <DataGridTemplateColumn Header="Time" Width="50">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftTime2, StringFormat=\{0:hh\\:mm\}, UpdateSourceTrigger=PropertyChanged}" />
@@ -183,7 +183,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Calibrated Concentration (ppm)" Width="240">
+                <DataGridTemplateColumn Header="Calibrated Conc (ppm)" Width="170">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftConcentration2}" />
@@ -196,7 +196,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Drift (%)" Width="*">
+                <DataGridTemplateColumn Header="Drift (%)" Width="70">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftPercentage}" />
@@ -209,7 +209,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridCheckBoxColumn Header="Selected" Binding="{Binding DriftIsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Width="*">
+                <DataGridCheckBoxColumn Header="Selected" Binding="{Binding DriftIsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Width="70">
                     <DataGridCheckBoxColumn.ElementStyle>
                         <Style TargetType="CheckBox">
                             <Setter Property="VerticalAlignment" Value="Center"/>

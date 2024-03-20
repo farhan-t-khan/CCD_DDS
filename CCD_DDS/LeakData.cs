@@ -17,6 +17,7 @@ namespace CCD_DDS
         private string _status;
         private double _tankLevel = 0;
         private string _tankLevelColor;
+        private int _tankPercent;
         
         private DateTime? _precisionDate;
         private TimeSpan? _precisionTime;
@@ -92,6 +93,15 @@ namespace CCD_DDS
                     OnPropertyChanged(nameof(TankLevel));
                     UpdateTankLevelColor();
                 }
+            }
+        }
+        public int TankPercent
+        {
+            get { return _tankPercent; }
+            set
+            {
+                _tankPercent = value;
+                OnPropertyChanged(nameof(TankPercent));
             }
         }
 
@@ -314,6 +324,7 @@ namespace CCD_DDS
             }
         }
 
+
         private void UpdateTankLevelColor()
         {
             if (TankLevel <= 100)
@@ -337,6 +348,7 @@ namespace CCD_DDS
                 TankLevelColor = "Green";
             }
         }
+
 
         // INotifyPropertyChanged implementation
         public event PropertyChangedEventHandler PropertyChanged;

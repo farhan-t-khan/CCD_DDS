@@ -176,6 +176,9 @@ namespace CCD_DDS
                 // Generate a random tank level between 0 and 500
                 double randomTankLevel = random.NextDouble() * 500;
                 leakData.TankLevel = randomTankLevel;
+
+                // Assign percentage
+                leakData.TankPercent = (int)(leakData.TankLevel / 500 * 100);
             }
         }
 
