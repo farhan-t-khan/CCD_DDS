@@ -169,6 +169,26 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="Estimated Tank Level (%)" Width="*"
+                                        Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding TankLevel}" TextWrapping="Wrap" TextAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding TankLevel, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
 
                 <DataGridTemplateColumn Header="Expiry Date" Width="*">
                     <DataGridTemplateColumn.HeaderStyle>
@@ -186,6 +206,21 @@
                             <DatePicker SelectedDate="{Binding ExpiryDate}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
+                    <DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding DaysUntilExpiry}" Value="0">
+                                    <Setter Property="Background" Value="Red" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DaysUntilExpiry}" Value="1">
+                                    <Setter Property="Background" Value="Yellow" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DaysUntilExpiry}" Value="2">
+                                    <Setter Property="Background" Value="{x:Null}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTemplateColumn.CellStyle>
                 </DataGridTemplateColumn>
 
                 <DataGridTemplateColumn Header="Lot Number">

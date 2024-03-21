@@ -18,7 +18,8 @@ namespace CCD_DDS
         private double _tankLevel;
         private string _tankLevelColor;
         private int _tankPercent;
-        
+        private int _daysUntilExpiry=0;
+
         private DateTime? _precisionDate;
         private TimeSpan? _precisionTime;
         private string? _measurement1;
@@ -112,6 +113,19 @@ namespace CCD_DDS
             {
                 _expiryDate = value;
                 OnPropertyChanged(nameof(ExpiryDate));
+                CalculateDaysUntilExpiry();
+            }
+        }
+        public int DaysUntilExpiry
+        {
+            get { return _daysUntilExpiry; }
+            set
+            {
+                if (_daysUntilExpiry != value)
+                {
+                    _daysUntilExpiry = value;
+                    OnPropertyChanged(nameof(DaysUntilExpiry));
+                }
             }
         }
 
@@ -345,6 +359,28 @@ namespace CCD_DDS
                 TankLevelColor = "Black"; // You can set any default color here
             }
         }
+
+
+
+        private void CalculateDaysUntilExpiry()
+        {
+            if (ExpiryDate.HasValue)
+            {
+                TimeSpan difference = ExpiryDate.Value - DateTime.Today;
+                DaysUntilExpiry = (int)difference.TotalDays;
+                if (DaysUntilExpiry < 5) {
+                    DaysUntilExpiry = 0;
+                } 
+                else if (DaysUntilExpiry < 60) {
+                    DaysUntilExpiry = 1;
+                } else { DaysUntilExpiry = 2; }
+            }
+            else
+            {
+                DaysUntilExpiry = 0;
+            }
+        }
+
 
 
         // INotifyPropertyChanged implementation
