@@ -15,7 +15,7 @@ namespace CCD_DDS
         private string _tolerance;
         private bool _isSelected;
         private string _status;
-        private double _tankLevel = 0;
+        private double _tankLevel;
         private string _tankLevelColor;
         private int _tankPercent;
         
@@ -87,7 +87,7 @@ namespace CCD_DDS
             get { return _tankLevel; }
             set
             {
-                if (_tankLevel != value)
+                if (_tankLevel != value && (value >= 0 || value <= 100))
                 {
                     _tankLevel = value;
                     OnPropertyChanged(nameof(TankLevel));
@@ -327,25 +327,22 @@ namespace CCD_DDS
 
         private void UpdateTankLevelColor()
         {
-            if (TankLevel <= 100)
+            if (TankLevel < 20)
             {
                 TankLevelColor = "Red";
             }
-            else if (TankLevel <= 250)
-            {
-                TankLevelColor = "Orange";
-            }
-            else if (TankLevel <= 350)
+            else if (TankLevel < 50)
             {
                 TankLevelColor = "Yellow";
             }
-            else if (TankLevel <= 450)
+            else if (TankLevel <= 100)
             {
-                TankLevelColor = "GreenYellow";
+                TankLevelColor = "Green";
             }
             else
             {
-                TankLevelColor = "Green";
+                // Set a default color if TankLevel is out of the specified ranges
+                TankLevelColor = "Black"; // You can set any default color here
             }
         }
 

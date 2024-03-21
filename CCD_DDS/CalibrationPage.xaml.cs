@@ -129,7 +129,8 @@ namespace CCD_DDS
                         MeasuredConcentration = values[6],
                         Tolerance = values[7],
                         IsSelected = Convert.ToBoolean(values[8]),
-                        Status = ""
+                        Status = "",
+                        TankLevel = Convert.ToDouble(values[10]),
                     };
 
                     // If Port is 0, set the Leak Definition directly to "0"
@@ -276,7 +277,7 @@ namespace CCD_DDS
                 using (StreamWriter writer = new StreamWriter(csvFilePath, false))
                 {
                     // Write header row
-                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status");
+                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status,Estimated Tank Level (%)");
 
                     // Write data rows
                     foreach (LeakData leakData in LeakDataList)
@@ -286,7 +287,7 @@ namespace CCD_DDS
 
                         string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
                         writer.WriteLine($"{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
-                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{leakData.Tolerance},{isSelected},{leakData.Status}");
+                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{leakData.Tolerance},{isSelected},{leakData.Status},{leakData.TankLevel}");
                     }
                 }
             }
@@ -380,6 +381,7 @@ namespace CCD_DDS
         {
             clickSoundPlayer.Play();
             //QuitAppButton.Visibility = Visibility.Collapsed;
+            EditButton.Visibility = Visibility.Collapsed;
             CalibrationBackButton.Visibility = Visibility.Collapsed;
             source = new CancellationTokenSource();
             token = source.Token;
@@ -486,7 +488,7 @@ namespace CCD_DDS
             CalibrateButton.Visibility = Visibility.Visible;
             CalibrationCancelButton.Visibility = Visibility.Collapsed;
             CalibrationBackButton.Visibility = Visibility.Visible;
-
+            EditButton.Visibility = Visibility.Visible;
         }
 
         private void CalibrationCancelClick(object sender, RoutedEventArgs e)

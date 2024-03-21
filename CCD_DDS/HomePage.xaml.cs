@@ -83,7 +83,7 @@ namespace CCD_DDS
             LoadDataFromCsv();
             LoadSelected();
             RefreshDataGrid();
-            AssignRandomTankLevels();
+            //AssignRandomTankLevels();
             //LoadCalData();
             //SaveDataToCsv();
         }
@@ -115,7 +115,8 @@ namespace CCD_DDS
                         MeasuredConcentration = values[6],
                         Tolerance = values[7],
                         IsSelected = Convert.ToBoolean(values[8]),
-                        Status = ""
+                        Status = "",
+                        TankLevel = Convert.ToDouble(values[10]),
                     };
 
                     // If Port is 0, set the Leak Definition directly to "0"
@@ -173,46 +174,15 @@ namespace CCD_DDS
 
             foreach (var leakData in SelectedList)
             {
-                // Generate a random tank level between 0 and 500
-                double randomTankLevel = random.NextDouble() * 500;
+                // Generate a random tank level between 0 and 100
+                double randomTankLevel = random.NextDouble() * 100;
                 leakData.TankLevel = randomTankLevel;
 
                 // Assign percentage
-                leakData.TankPercent = (int)(leakData.TankLevel / 500 * 100);
+                leakData.TankPercent = (int)(leakData.TankLevel);
             }
         }
 
-        /*        private void SaveCalData()
-                {
-                    // Generate file name based on current date and time
-                    string dateTimeString = DateTime.Now.ToString("MMddyyyy_HHmmss");
-                    string csvFilePath = $"CalRecord_{dateTimeString}.csv";
-                    try
-                    {
-                        using (StreamWriter writer = new StreamWriter(csvFilePath, false))
-                        {
-                            // Write header row
-                            writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm)");
-
-                            // Write data rows
-                            foreach (LeakData leakData in LeakDataList)
-                            {
-                                if (leakData.IsSelected)
-                                {
-                                    string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
-                                    writer.WriteLine($"{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
-                                        $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration}");
-
-                                }
-
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error saving data to CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }*/
 
         private void SaveCalData()
         {
@@ -292,7 +262,7 @@ namespace CCD_DDS
             CancelButton.Visibility = IsReadOnly ? Visibility.Collapsed : Visibility.Visible;
         }
 
-/*        private void EditButtonClick(object sender, RoutedEventArgs e)
+        private void EditButtonClick(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
             IsReadOnly = !IsReadOnly;
@@ -301,7 +271,7 @@ namespace CCD_DDS
             CalibrationButton.Visibility = Visibility.Collapsed;
             ToggleButtonVisibility(IsReadOnly);
             RefreshDataGrid();
-        }*/
+        }
 
         private async void SaveButtonClick(object sender, RoutedEventArgs e)
         {
@@ -316,6 +286,7 @@ namespace CCD_DDS
             ToggleButtonVisibility(IsReadOnly);
             //EditButton.Visibility = Visibility.Visible;
             CalibrationButton.Visibility = Visibility.Visible;
+            EditButton.Visibility = Visibility.Visible;
         }
 
         private void CancelButtonClick(object sender, RoutedEventArgs e)
@@ -331,6 +302,7 @@ namespace CCD_DDS
             ToggleButtonVisibility(IsReadOnly);
             //EditButton.Visibility = Visibility.Visible;
             CalibrationButton.Visibility = Visibility.Visible;
+            EditButton.Visibility= Visibility.Visible;
         }
         private void SaveDataToCsv()
         {
@@ -341,7 +313,7 @@ namespace CCD_DDS
                 using (StreamWriter writer = new StreamWriter(csvFilePath, false))
                 {
                     // Write header row
-                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status");
+                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status,Estimated Tank Level (%)");
 
                     // Write data rows
                     foreach (LeakData leakData in LeakDataList)
@@ -351,7 +323,7 @@ namespace CCD_DDS
 
                         string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
                         writer.WriteLine($"{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
-                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{leakData.Tolerance},{isSelected},{leakData.Status}");
+                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{leakData.Tolerance},{isSelected},{leakData.Status},{leakData.TankLevel}");
                     }
                 }
             }

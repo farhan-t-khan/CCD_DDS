@@ -162,15 +162,7 @@
                             <TextBlock Text="{Binding TankCapacity}" TextWrapping="Wrap" TextAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                    <!--<DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            -->
-                    <!--<TextBox Text="{Binding TankCapacity, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>-->
-                    <!--
-                            <ComboBox ItemsSource="{Binding DataContext.TankCapacityOptions, RelativeSource={RelativeSource AncestorType=Page}}"
-                                      SelectedItem="{Binding TankCapacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>-->
+
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <TextBox Text="{Binding TankCapacity, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" TextAlignment="Center"/>
@@ -232,7 +224,8 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Estimated Tank Level" Width="*" >
+                <DataGridTemplateColumn Header="Estimated Tank Level" Width="*" 
+                                        Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}, ConverterParameter=Inverse}">
                     <DataGridTemplateColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -241,78 +234,34 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
-                                <ProgressBar Value="{Binding TankLevel}" Minimum="0" Maximum="500">
+                                <ProgressBar Value="{Binding TankLevel}" Minimum="0" Maximum="100">
                                     <ProgressBar.Style>
                                         <Style TargetType="ProgressBar">
                                             <!-- Set initial color based on TankLevelColor -->
                                             <Setter Property="Foreground" Value="{Binding TankLevelColor}" />
                                             <Style.Triggers>
                                                 <!-- DataTriggers for different TankLevel values -->
-                                                <DataTrigger Binding="{Binding TankLevel}" Value="0">
+                                                <DataTrigger Binding="{Binding TankLevel}" Value="19">
                                                     <Setter Property="Foreground" Value="Red" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding TankLevel}" Value="50">
-                                                    <Setter Property="Foreground" Value="DarkRed" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding TankLevel}" Value="100">
-                                                    <Setter Property="Foreground" Value="Orange" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding TankLevel}" Value="150">
-                                                    <Setter Property="Foreground" Value="DarkOrange" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding TankLevel}" Value="200">
-                                                    <Setter Property="Foreground" Value="Gold" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding TankLevel}" Value="250">
+                                                <DataTrigger Binding="{Binding TankLevel}" Value="49">
                                                     <Setter Property="Foreground" Value="Yellow" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding TankLevel}" Value="300">
-                                                    <Setter Property="Foreground" Value="LightYellow" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding TankLevel}" Value="350">
-                                                    <Setter Property="Foreground" Value="GreenYellow" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding TankLevel}" Value="400">
-                                                    <Setter Property="Foreground" Value="LimeGreen" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding TankLevel}" Value="450">
+                                                <DataTrigger Binding="{Binding TankLevel}" Value="100">
                                                     <Setter Property="Foreground" Value="Green" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding TankLevel}" Value="500">
-                                                    <Setter Property="Foreground" Value="DarkGreen" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </ProgressBar.Style>
                                 </ProgressBar>
                                 <!-- Display the percentage -->
-                                <TextBlock Text="{Binding TankPercent, StringFormat={}{0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" />
+                                <!--<TextBlock Text="{Binding TankPercent, StringFormat={}{0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" />-->
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
-                <!--<DataGridTemplateColumn Header="Measured Conc (ppm)"
-                        Width="230"
-                        Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}, ConverterParameter=Inverse}">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding MeasuredConcentration}" TextWrapping="Wrap" TextAlignment="Center"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <TextBox Text="{Binding MeasuredConcentration, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" TextAlignment="Center"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>-->
-
-                <!--<DataGridTemplateColumn Header="Calibration Tolerance (%)"
+                
+                <DataGridTemplateColumn Header="Calibration Tolerance (%)"
                         Width="230"
                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
                     <DataGridTemplateColumn.CellTemplate>
@@ -325,27 +274,16 @@
                             <TextBox Text="{Binding Tolerance, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>-->
+                </DataGridTemplateColumn>
 
-                <!--<DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         Width="75" Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
                     <DataGridCheckBoxColumn.ElementStyle>
                         <Style TargetType="CheckBox">
                             <Setter Property="VerticalAlignment" Value="Center"/>
                         </Style>
                     </DataGridCheckBoxColumn.ElementStyle>
-                </DataGridCheckBoxColumn>-->
-
-                <!--<DataGridTemplateColumn Header="Status"
-                        Width="*"
-                        Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}, ConverterParameter=Inverse}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Status}" Foreground="{Binding Status, Converter={StaticResource StatusColorConverter}}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
-
+                </DataGridCheckBoxColumn>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -356,10 +294,10 @@
         </StackPanel>
         <StackPanel Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,20">
             <Button x:Name="CalibrationButton" Content="Calibration" Click="NavigateToCalibration" Margin="5"/>
-            <!--<Button x:Name="EditButton" Content="Calibration Setup" Margin="5" Click="EditButtonClick"/>-->
             <Button x:Name="DriftButton" Content="Drift" Click="NavigateToDrift" Margin="5"/>
             <Button x:Name="PrecisionButton" Content="Precision" Click="NavigateToPrecision" Margin="5"/>
             <Button x:Name="CalibrationCancelButton" Content="Cancel" Click="CalibrationCancelClick" Margin="5" Visibility="Collapsed"/>
+            <Button x:Name="EditButton" Content="Setup" Margin="5" Click="EditButtonClick"/>
             <!--<Button x:Name="QuitAppButton" Content="Exit" Click="QuitApplication_Click" HorizontalAlignment="Right" Visibility="Visible" Margin="5"/>-->
         </StackPanel>
     </Grid>
