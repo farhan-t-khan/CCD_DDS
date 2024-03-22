@@ -14,6 +14,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Diagnostics;
+
+
 
 namespace CCD_DDS
 {
@@ -593,6 +596,60 @@ namespace CCD_DDS
             await Task.Delay(1000);
             LeakDataList[0].Status = "";
             RefreshColumn(8);
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                ShowSystemKeyboard();
+            }
+        }
+
+        private void ShowSystemKeyboard()
+        {
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "osk.exe"),
+                    UseShellExecute = true,
+                };
+                Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to open the on-screen keyboard. Please open it manually using your device's accessibility options.");
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                CloseSystemKeyboard();
+            }
+        }
+
+        private void CloseSystemKeyboard()
+        {
+            Process[] processes = Process.GetProcessesByName("osk");
+            foreach (Process process in processes)
+            {
+                process.Kill();
+            }
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                InputMethod.SetIsInputMethodEnabled(textBox, false);
+                CloseSystemKeyboard() ;
+            }
         }
         private void QuitApplication_Click(object sender, RoutedEventArgs e)
         {

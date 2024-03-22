@@ -418,10 +418,13 @@ namespace CCD_DDS
                 selectedItems = selectedItems.OrderBy(item => int.Parse(item.Concentration)).ToList();
 
                 //Mark gas with highest concentration
-                var highest = selectedItems[selectedItems.Count - 1];
+                //var highest = selectedItems[selectedItems.Count - 1];
 
                 //Insert at the beginning of the list
-                selectedItems.Insert(0, highest);
+                //selectedItems.Insert(0, highest);
+
+                //Remove last element to calibrate the highest gas only once
+                //selectedItems.RemoveAt(selectedItems.Count - 1);
 
                 foreach (LeakData leakData in selectedItems)
                 {
