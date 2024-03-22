@@ -203,6 +203,21 @@
                             <DatePicker SelectedDate="{Binding ExpiryDate}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
+                    <DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding DaysUntilExpiry}" Value="0">
+                                    <Setter Property="Background" Value="Red" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DaysUntilExpiry}" Value="1">
+                                    <Setter Property="Background" Value="Yellow" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DaysUntilExpiry}" Value="2">
+                                    <Setter Property="Background" Value="{x:Null}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTemplateColumn.CellStyle>
                 </DataGridTemplateColumn>
 
                 <DataGridTemplateColumn Header="Lot Number">

@@ -381,114 +381,132 @@ namespace CCD_DDS
         {
             clickSoundPlayer.Play();
             //QuitAppButton.Visibility = Visibility.Collapsed;
-            EditButton.Visibility = Visibility.Collapsed;
-            CalibrationBackButton.Visibility = Visibility.Collapsed;
-            source = new CancellationTokenSource();
-            token = source.Token;
-            foreach (LeakData leakData in LeakDataList)
+
+            bool anyExpired = false;
+
+            foreach(LeakData leakData in SelectedList)
             {
-                leakData.Status = "";
-                leakData.MeasuredConcentration = "";
+                if(leakData.DaysUntilExpiry == 0)
+                {
+                    anyExpired = true;
+                }
             }
-            RefreshColumn(8);
-            RefreshColumn(6);
-            // Hide the other buttons and show the cancel button
-            CalibrateButton.Visibility = Visibility.Collapsed;
-            CalibrationCancelButton.Visibility = Visibility.Visible;
 
-            var selectedItems = SelectedList.Where(item => item.Port != "0").ToList();
-
-            //Sort by concentration
-            selectedItems = selectedItems.OrderBy(item => int.Parse(item.Concentration)).ToList();
-
-            //Mark gas with highest concentration
-            var highest = selectedItems[selectedItems.Count - 1];
-
-            //Insert at the beginning of the list
-            selectedItems.Insert(0, highest);
-
-            foreach (LeakData leakData in selectedItems)
+            if (anyExpired)
             {
-                // Check for cancellation before each iteration
-                if (token.IsCancellationRequested)
+                MessageBox.Show("One or more gases have expired.", "Expired", MessageBoxButton.OK, MessageBoxImage.Warning);
+            } else
+            {
+                EditButton.Visibility = Visibility.Collapsed;
+                CalibrationBackButton.Visibility = Visibility.Collapsed;
+                source = new CancellationTokenSource();
+                token = source.Token;
+                foreach (LeakData leakData in LeakDataList)
                 {
-                    // Reset UI and exit the method
-                    ResetUI();
-                    return;
+                    leakData.Status = "";
+                    leakData.MeasuredConcentration = "";
                 }
-
-                await ReadZeroGas();
-                // Update the status to "Reading Gas"
-                leakData.Status = "Reading Gas";
-                // Refresh the UI to reflect the change
                 RefreshColumn(8);
-                // Wait for a brief moment to simulate the reading process
-                await Task.Delay(3000);
+                RefreshColumn(6);
+                // Hide the other buttons and show the cancel button
+                CalibrateButton.Visibility = Visibility.Collapsed;
+                CalibrationCancelButton.Visibility = Visibility.Visible;
 
-                // Update the status to "Calibrating..."
-                //calSoundPlayer.Play();
-                //clickSoundPlayer.Play();
-                leakData.Status = "Calibrating...";
-                await Task.Delay(2000);
-                // Refresh the UI to reflect the change
-                RefreshColumn(8);
+                var selectedItems = SelectedList.Where(item => item.Port != "0").ToList();
 
-                //Simulate calibration dummy values
+                //Sort by concentration
+                selectedItems = selectedItems.OrderBy(item => int.Parse(item.Concentration)).ToList();
 
-                Random random = new Random();
-                double percent = random.Next(2, 4);
-                int sign = random.Next(0, 2);
+                //Mark gas with highest concentration
+                var highest = selectedItems[selectedItems.Count - 1];
 
-                if (sign == 0)
+                //Insert at the beginning of the list
+                selectedItems.Insert(0, highest);
+
+                foreach (LeakData leakData in selectedItems)
                 {
-                    double concentration = Convert.ToDouble(leakData.Concentration);
-                    double newMeasuredConcentration = concentration + (percent / 100) * concentration;
-                    leakData.MeasuredConcentration = ((int)Math.Round(newMeasuredConcentration)).ToString();
+                    // Check for cancellation before each iteration
+                    if (token.IsCancellationRequested)
+                    {
+                        // Reset UI and exit the method
+                        ResetUI();
+                        return;
+                    }
 
+                    await ReadZeroGas();
+                    // Update the status to "Reading Gas"
+                    leakData.Status = "Reading Gas";
+                    // Refresh the UI to reflect the change
+                    RefreshColumn(8);
+                    // Wait for a brief moment to simulate the reading process
+                    await Task.Delay(3000);
+
+                    // Update the status to "Calibrating..."
+                    //calSoundPlayer.Play();
+                    //clickSoundPlayer.Play();
+                    leakData.Status = "Calibrating...";
+                    await Task.Delay(2000);
+                    // Refresh the UI to reflect the change
+                    RefreshColumn(8);
+
+                    //Simulate calibration dummy values
+
+                    Random random = new Random();
+                    double percent = random.Next(2, 4);
+                    int sign = random.Next(0, 2);
+
+                    if (sign == 0)
+                    {
+                        double concentration = Convert.ToDouble(leakData.Concentration);
+                        double newMeasuredConcentration = concentration + (percent / 100) * concentration;
+                        leakData.MeasuredConcentration = ((int)Math.Round(newMeasuredConcentration)).ToString();
+
+                    }
+                    else
+                    {
+                        double concentration = Convert.ToDouble(leakData.Concentration);
+                        double newMeasuredConcentration = concentration - (percent / 100) * concentration;
+                        leakData.MeasuredConcentration = ((int)Math.Round(newMeasuredConcentration)).ToString();
+                    }
+
+
+                    // Wait for a brief moment to simulate the calibration process
+                    await Task.Delay(2000);
+
+                    //Calculate Pass or Fail according to Tolerance set
+                    double expectedConcentration = Convert.ToDouble(leakData.Concentration);
+                    double tolerancePercentage = Convert.ToDouble(leakData.Tolerance);
+
+                    double lowerBound = expectedConcentration - (expectedConcentration * tolerancePercentage / 100);
+                    double upperBound = expectedConcentration + (expectedConcentration * tolerancePercentage / 100);
+
+                    double measuredConcentration = Convert.ToDouble(leakData.MeasuredConcentration);
+
+                    if (measuredConcentration >= lowerBound && measuredConcentration <= upperBound)
+                    {
+                        leakData.Status = "Passed";
+                    }
+                    else
+                    {
+                        leakData.Status = "Failed";
+                    }
+
+                    // Refresh the UI to reflect the changes
+                    RefreshColumn(8);
+
+                    // Wait for a brief moment before moving to the next item
+                    await Task.Delay(500);
                 }
-                else
-                {
-                    double concentration = Convert.ToDouble(leakData.Concentration);
-                    double newMeasuredConcentration = concentration - (percent / 100) * concentration;
-                    leakData.MeasuredConcentration = ((int)Math.Round(newMeasuredConcentration)).ToString();
-                }
+                SaveCalData();
+                SaveDataToCsv();
+                RefreshAll();
 
-
-                // Wait for a brief moment to simulate the calibration process
-                await Task.Delay(2000);
-
-                //Calculate Pass or Fail according to Tolerance set
-                double expectedConcentration = Convert.ToDouble(leakData.Concentration);
-                double tolerancePercentage = Convert.ToDouble(leakData.Tolerance);
-
-                double lowerBound = expectedConcentration - (expectedConcentration * tolerancePercentage / 100);
-                double upperBound = expectedConcentration + (expectedConcentration * tolerancePercentage / 100);
-
-                double measuredConcentration = Convert.ToDouble(leakData.MeasuredConcentration);
-
-                if (measuredConcentration >= lowerBound && measuredConcentration <= upperBound)
-                {
-                    leakData.Status = "Passed";
-                }
-                else
-                {
-                    leakData.Status = "Failed";
-                }
-
-                // Refresh the UI to reflect the changes
-                RefreshColumn(8);
-
-                // Wait for a brief moment before moving to the next item
-                await Task.Delay(500);
+                CalibrateButton.Visibility = Visibility.Visible;
+                CalibrationCancelButton.Visibility = Visibility.Collapsed;
+                CalibrationBackButton.Visibility = Visibility.Visible;
+                EditButton.Visibility = Visibility.Visible;
             }
-            SaveCalData();
-            SaveDataToCsv();
-            RefreshAll();
 
-            CalibrateButton.Visibility = Visibility.Visible;
-            CalibrationCancelButton.Visibility = Visibility.Collapsed;
-            CalibrationBackButton.Visibility = Visibility.Visible;
-            EditButton.Visibility = Visibility.Visible;
         }
 
         private void CalibrationCancelClick(object sender, RoutedEventArgs e)
