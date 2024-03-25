@@ -20,12 +20,12 @@
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="Username:" Margin="5"/>
-            <TextBox x:Name="UsernameTextBox" Width="200" Height="30" Margin="5"/>
+            <TextBox x:Name="UsernameTextBox" Width="200" Height="30" Margin="5" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
         </StackPanel>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="Password:" Margin="5"/>
-            <PasswordBox x:Name="PasswordBox" Width="200" Height="30" Margin="5"/>
+            <PasswordBox x:Name="PasswordBox" Width="200" Height="30" Margin="5" GotFocus="PasswordBox_GotFocus" LostFocus="PasswordBox_LostFocus"/>
         </StackPanel>
 
         <Button Grid.Row="3" Content="Verify" Click="LoginButton_Click" Width="100" Height="30" HorizontalAlignment="Center" Margin="0,20,0,10"/>
