@@ -19,7 +19,7 @@
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
         <Style TargetType="Button">
-            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontSize" Value="40"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Padding" Value="15 10"/>
             <Setter Property="Background" Value="#3498DB"/>
@@ -53,7 +53,7 @@
             <Setter Property="BorderBrush" Value="#CCCCCC"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="GridLinesVisibility" Value="None"/>
-            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontSize" Value="30"/>
             <Setter Property="Foreground" Value="#333333"/>
             <Setter Property="RowHeaderWidth" Value="0"/>
             <Setter Property="SelectionMode" Value="Single"/>
@@ -78,7 +78,7 @@
         </Style>
     </Page.Resources>
     <Grid>
-        <TextBlock x:Name="ScreenNameTextBlock" Text="Precision"/>
+        <TextBlock x:Name="ScreenNameTextBlock" Text="Precision" FontSize="50"/>
         <!-- DataGrid -->
         <DataGrid x:Name="dataGridPrecision" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50"
                   Width="Auto" Height="Auto"
@@ -92,7 +92,7 @@
                 <!-- Define columns -->
                 <DataGridTextColumn Header="Port" Binding="{Binding Port}" Width="100" IsReadOnly="True"/>
                 <!-- Special handling for Leak Definition column -->
-                <DataGridTemplateColumn Header="Leak Definition (ppm)" Width="170">
+                <DataGridTemplateColumn Header="Leak Definition (ppm)" Width="300">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding LeakDefinition, Converter={StaticResource LeakDefinitionConverter}}" />
@@ -105,7 +105,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Concentration (ppm)" Width="160">
+                <DataGridTemplateColumn Header="Concentration (ppm)" Width="200">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Concentration}" />
@@ -144,7 +144,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Measurement 1 (ppm)" Width="*">
+                <DataGridTemplateColumn Header="Measurement 1 (ppm)" Width="302">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Measurement1}" />
@@ -157,7 +157,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Measurement 2 (ppm)" Width="*">
+                <DataGridTemplateColumn Header="Measurement 2 (ppm)" Width="302">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Measurement2}" />
@@ -170,7 +170,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Measurement 3 (ppm)" Width="*">
+                <DataGridTemplateColumn Header="Measurement 3 (ppm)" Width="302">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Measurement3}" />
@@ -183,13 +183,13 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTextColumn Header="Precision (%)" Width="100">
+                <DataGridTextColumn Header="Precision (%)" Width="200">
                     <DataGridTextColumn.Binding>
                         <Binding Path="Precision" UpdateSourceTrigger="PropertyChanged"/>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
 
-                <DataGridCheckBoxColumn Header="Selected" Binding="{Binding PrecisionIsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Width="75">
+                <DataGridCheckBoxColumn Header="Selected" Binding="{Binding PrecisionIsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Width="150">
                     <DataGridCheckBoxColumn.ElementStyle>
                         <Style TargetType="CheckBox">
                             <Setter Property="VerticalAlignment" Value="Center"/>
