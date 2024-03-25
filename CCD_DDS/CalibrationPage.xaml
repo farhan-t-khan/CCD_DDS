@@ -55,7 +55,7 @@
             <Setter Property="BorderBrush" Value="#CCCCCC"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="GridLinesVisibility" Value="None"/>
-            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="FontSize" Value="22"/>
             <Setter Property="Foreground" Value="#333333"/>
             <Setter Property="RowHeaderWidth" Value="0"/>
             <Setter Property="SelectionMode" Value="Single"/>
