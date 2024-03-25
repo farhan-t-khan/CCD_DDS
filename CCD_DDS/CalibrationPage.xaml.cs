@@ -230,13 +230,21 @@ namespace CCD_DDS
         private void EditButtonClick(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
-            IsReadOnly = !IsReadOnly;
-            IsEditMode = !IsEditMode;
-            EditButton.Visibility = Visibility.Collapsed;
-            CalibrationBackButton.Visibility = Visibility.Collapsed;
-            SaveButton.Visibility = Visibility.Visible;
-            ToggleButtonVisibility(IsReadOnly);
-            RefreshDataGrid();
+            //Show login window
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.ShowDialog();
+
+            if (loginWindow.IsAuthenticated)
+            {
+                clickSoundPlayer.Play();
+                IsReadOnly = !IsReadOnly;
+                IsEditMode = !IsEditMode;
+                EditButton.Visibility = Visibility.Collapsed;
+                CalibrationBackButton.Visibility = Visibility.Collapsed;
+                SaveButton.Visibility = Visibility.Visible;
+                ToggleButtonVisibility(IsReadOnly);
+                RefreshDataGrid();
+            }
         }
         private async void SaveButtonClick(object sender, RoutedEventArgs e)
         {

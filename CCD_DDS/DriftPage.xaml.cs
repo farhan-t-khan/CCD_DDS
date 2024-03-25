@@ -167,9 +167,16 @@ namespace CCD_DDS
         private void EditButtonClick(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
-            IsReadOnly = !IsReadOnly;
-            DriftEditButton.Visibility = Visibility.Collapsed;
-            ToggleButtonVisibility(IsReadOnly);
+            //Show login window
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.ShowDialog();
+
+            if (loginWindow.IsAuthenticated) {
+                clickSoundPlayer.Play();
+                IsReadOnly = !IsReadOnly;
+                DriftEditButton.Visibility = Visibility.Collapsed;
+                ToggleButtonVisibility(IsReadOnly);
+            }
         }
 
         private async void SaveButtonClick(object sender, RoutedEventArgs e)
