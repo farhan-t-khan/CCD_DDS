@@ -118,7 +118,7 @@
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <!-- Define columns -->
-                <DataGridTemplateColumn Header="Port" Width="100" IsReadOnly="True">
+                <DataGridTemplateColumn Header="Port" Width="55" IsReadOnly="True">
                     <DataGridTemplateColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -262,7 +262,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Estimated Tank Level" Width="300" 
+                <DataGridTemplateColumn Header="Estimated Tank Level" Width="209" 
                                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}, ConverterParameter=Inverse}">
 
                     <DataGridTemplateColumn.CellTemplate>

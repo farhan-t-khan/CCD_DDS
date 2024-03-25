@@ -115,12 +115,7 @@
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <!-- Define columns -->
-                <DataGridTemplateColumn Header="Port" Width="100" IsReadOnly="True">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
+                <DataGridTemplateColumn Header="Port" Width="55" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Port}" TextWrapping="Wrap" TextAlignment="Center"/>
@@ -129,12 +124,8 @@
                 </DataGridTemplateColumn>
                 <!--<DataGridTextColumn Header="Port" Binding="{Binding Port}" Width="*" FontSize="20" IsReadOnly="True"/>-->
                 <!-- Special handling for Leak Definition column -->
-                <DataGridTemplateColumn Header="Leak Definition (ppm)" Width="300">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
+                <DataGridTemplateColumn Header="Leak Definition (ppm)" Width="220">
+
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding LeakDefinition, Converter={StaticResource LeakDefinitionConverter}}"  TextWrapping="Wrap" TextAlignment="Center"/>
@@ -148,12 +139,8 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Tank Capacity (L)" Width="250">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
+                <DataGridTemplateColumn Header="Tank Capacity (L)" Width="180">
+
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding TankCapacity}" TextWrapping="Wrap" TextAlignment="Center" />
@@ -167,13 +154,9 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Estimated Tank Level (%)" Width="*"
+                <DataGridTemplateColumn Header="Estimated Tank Level (%)" Width="250"
                                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
+
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding TankLevel}" TextWrapping="Wrap" TextAlignment="Center" />
@@ -187,12 +170,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Expiry Date" Width="*">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
+                <DataGridTemplateColumn Header="Expiry Date" Width="125">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding ExpiryDate, StringFormat=MM/dd/yyyy}" TextWrapping="Wrap" TextAlignment="Center"/>
@@ -238,12 +216,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Certified Conc (ppm)" Width="300">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
+                <DataGridTemplateColumn Header="Certified Conc (ppm)" Width="210">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Concentration}" TextWrapping="Wrap" TextAlignment="Center"/>
@@ -257,13 +230,8 @@
                 </DataGridTemplateColumn>
 
                 <DataGridTemplateColumn Header="Measured Conc (ppm)"
-                        Width="302"
+                        Width="225"
                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}, ConverterParameter=Inverse}">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding MeasuredConcentration}" TextWrapping="Wrap" TextAlignment="Center"/>
@@ -277,7 +245,7 @@
                 </DataGridTemplateColumn>
 
                 <DataGridTemplateColumn Header="Calibration Tolerance (%)"
-                        Width="230"
+                        Width="250"
                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -291,7 +259,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="75" Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
+                                        Width="95" Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
                     <DataGridCheckBoxColumn.ElementStyle>
                         <Style TargetType="CheckBox">
                             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -299,7 +267,7 @@
                     </DataGridCheckBoxColumn.ElementStyle>
                 </DataGridCheckBoxColumn>
                 <DataGridTemplateColumn Header="Status"
-                        Width="*"
+                        Width="100"
                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}, ConverterParameter=Inverse}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
