@@ -78,7 +78,23 @@
         </Style>
     </Page.Resources>
     <Grid>
-        <TextBlock x:Name="ScreenNameTextBlock" Text="Drift"/>
+        <TextBlock x:Name="DriftScreenNameTextBlock">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="50"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Top"/>
+                    <Setter Property="Foreground" Value="SteelBlue"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="Text" Value="Drift"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                            <Setter Property="Text" Value="Setup"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
         <!-- DataGrid -->
         <DataGrid x:Name="dataGridDrift" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50"
                   Width="Auto" Height="Auto"
@@ -90,9 +106,9 @@
                   ColumnHeaderHeight="60">
             <DataGrid.Columns>
                 <!-- Define columns -->
-                <DataGridTextColumn Header="Port" Binding="{Binding Port}" Width="100" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Port" Binding="{Binding Port}" Width="50" IsReadOnly="True"/>
                 <!-- Special handling for Leak Definition column -->
-                <DataGridTemplateColumn Header="Leak Definition (ppm)" Width="300">
+                <DataGridTemplateColumn Header="Leak Def (ppm)" Width="160">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding LeakDefinition, Converter={StaticResource LeakDefinitionConverter}}" />
@@ -105,7 +121,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Concentration (ppm)" Width="300">
+                <DataGridTemplateColumn Header="Conc (ppm)" Width="125">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Concentration}" />
@@ -118,7 +134,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Date" Width="100">
+                <DataGridTemplateColumn Header="Date" Width="60">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftDate1, StringFormat=\{0:MM/dd/yyyy\}, UpdateSourceTrigger=PropertyChanged}" />
@@ -131,7 +147,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Time Zero" Width="150">
+                <DataGridTemplateColumn Header="Time Zero" Width="107">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftTime1, StringFormat=\{0:hh\\:mm\}, UpdateSourceTrigger=PropertyChanged}" />
@@ -144,7 +160,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Calibrated Conc (ppm)" Width="306">
+                <DataGridTemplateColumn Header="Cal Conc (ppm)" Width="160">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftConcentration1}" />
@@ -157,7 +173,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 
-                <DataGridTemplateColumn Header="Date" Width="100">
+                <DataGridTemplateColumn Header="Date" Width="60">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftDate2, StringFormat=\{0:MM/dd/yyyy\}, UpdateSourceTrigger=PropertyChanged}" />
@@ -170,7 +186,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 
-                <DataGridTemplateColumn Header="Time" Width="100">
+                <DataGridTemplateColumn Header="Time" Width="60">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftTime2, StringFormat=\{0:hh\\:mm\}, UpdateSourceTrigger=PropertyChanged}" />
@@ -183,7 +199,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Calibrated Conc (ppm)" Width="306">
+                <DataGridTemplateColumn Header="Cal Conc (ppm)" Width="160">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftConcentration2}" />
@@ -196,7 +212,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Drift (%)" Width="70">
+                <DataGridTemplateColumn Header="Drift (%)" Width="90">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftPercentage}" />
@@ -209,13 +225,13 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridCheckBoxColumn Header="Selected" Binding="{Binding DriftIsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Width="120">
+                <!--<DataGridCheckBoxColumn Header="Selected" Binding="{Binding DriftIsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Width="120">
                     <DataGridCheckBoxColumn.ElementStyle>
                         <Style TargetType="CheckBox">
                             <Setter Property="VerticalAlignment" Value="Center"/>
                         </Style>
                     </DataGridCheckBoxColumn.ElementStyle>
-                </DataGridCheckBoxColumn>
+                </DataGridCheckBoxColumn>-->
             </DataGrid.Columns>
         </DataGrid>
         <!-- Navigation Buttons -->
@@ -226,7 +242,7 @@
         <StackPanel Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,20">
             <Button x:Name="DriftStartButton" Content="Drift Check" Margin="5"/>
             <Button x:Name="DriftBackButton" Content="Back" Click="NavigateToHome" Margin="5"/>
-            <Button x:Name="DriftEditButton" Content="Setup" Click="EditButtonClick" Margin="5"/>
+            <!--<Button x:Name="DriftEditButton" Content="Setup" Click="EditButtonClick" Margin="5"/>-->
         </StackPanel>
     </Grid>
 </Page>

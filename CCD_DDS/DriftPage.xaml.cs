@@ -174,7 +174,7 @@ namespace CCD_DDS
             if (loginWindow.IsAuthenticated) {
                 clickSoundPlayer.Play();
                 IsReadOnly = !IsReadOnly;
-                DriftEditButton.Visibility = Visibility.Collapsed;
+                //DriftEditButton.Visibility = Visibility.Collapsed;
                 ToggleButtonVisibility(IsReadOnly);
             }
         }
@@ -189,7 +189,7 @@ namespace CCD_DDS
             // Toggle back to view mode
             IsReadOnly = true;
             ToggleButtonVisibility(IsReadOnly);
-            DriftEditButton.Visibility = Visibility.Visible;
+            //DriftEditButton.Visibility = Visibility.Visible;
         }
 
         private void CancelButtonClick(object sender, RoutedEventArgs e)
@@ -202,7 +202,7 @@ namespace CCD_DDS
             // Toggle back to view mode
             IsReadOnly = true;
             ToggleButtonVisibility(IsReadOnly);
-            DriftEditButton.Visibility = Visibility.Visible;
+            //DriftEditButton.Visibility = Visibility.Visible;
         }
         private void SaveDataToCsv()
         {

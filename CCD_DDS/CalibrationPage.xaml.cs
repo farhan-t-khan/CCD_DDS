@@ -239,7 +239,7 @@ namespace CCD_DDS
                 clickSoundPlayer.Play();
                 IsReadOnly = !IsReadOnly;
                 IsEditMode = !IsEditMode;
-                EditButton.Visibility = Visibility.Collapsed;
+                //EditButton.Visibility = Visibility.Collapsed;
                 CalibrationBackButton.Visibility = Visibility.Collapsed;
                 SaveButton.Visibility = Visibility.Visible;
                 ToggleButtonVisibility(IsReadOnly);
@@ -257,7 +257,7 @@ namespace CCD_DDS
             // Toggle back to view mode
             IsReadOnly = true;
             ToggleButtonVisibility(IsReadOnly);
-            EditButton.Visibility = Visibility.Visible;
+            //EditButton.Visibility = Visibility.Visible;
             CalibrationBackButton.Visibility = Visibility.Visible;
             SaveButton.Visibility = Visibility.Collapsed;
         }
@@ -272,7 +272,7 @@ namespace CCD_DDS
             // Toggle back to view mode
             IsReadOnly = true;
             ToggleButtonVisibility(IsReadOnly);
-            EditButton.Visibility = Visibility.Visible;
+            //EditButton.Visibility = Visibility.Visible;
             CalibrationBackButton.Visibility = Visibility.Visible;
             SaveButton.Visibility = Visibility.Collapsed;
         }
@@ -405,7 +405,7 @@ namespace CCD_DDS
                 MessageBox.Show("One or more gases have expired.", "Expired", MessageBoxButton.OK, MessageBoxImage.Warning);
             } else
             {
-                EditButton.Visibility = Visibility.Collapsed;
+                //EditButton.Visibility = Visibility.Collapsed;
                 CalibrationBackButton.Visibility = Visibility.Collapsed;
                 source = new CancellationTokenSource();
                 token = source.Token;
@@ -515,7 +515,7 @@ namespace CCD_DDS
                 CalibrateButton.Visibility = Visibility.Visible;
                 CalibrationCancelButton.Visibility = Visibility.Collapsed;
                 CalibrationBackButton.Visibility = Visibility.Visible;
-                EditButton.Visibility = Visibility.Visible;
+                //EditButton.Visibility = Visibility.Visible;
             }
 
         }

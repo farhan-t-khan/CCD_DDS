@@ -174,7 +174,7 @@ namespace CCD_DDS
             {
                 clickSoundPlayer.Play();
                 IsReadOnly = !IsReadOnly;
-                PrecisionEditButton.Visibility = Visibility.Collapsed;
+                //PrecisionEditButton.Visibility = Visibility.Collapsed;
                 ToggleButtonVisibility(IsReadOnly);
             }
 
@@ -190,7 +190,7 @@ namespace CCD_DDS
             // Toggle back to view mode
             IsReadOnly = true;
             ToggleButtonVisibility(IsReadOnly);
-            PrecisionEditButton.Visibility = Visibility.Visible;
+            //PrecisionEditButton.Visibility = Visibility.Visible;
         }
 
         private void CancelButtonClick(object sender, RoutedEventArgs e)
@@ -203,7 +203,7 @@ namespace CCD_DDS
             // Toggle back to view mode
             IsReadOnly = true;
             ToggleButtonVisibility(IsReadOnly);
-            PrecisionEditButton.Visibility = Visibility.Visible;
+            //PrecisionEditButton.Visibility = Visibility.Visible;
         }
         private void SaveDataToCsv()
         {

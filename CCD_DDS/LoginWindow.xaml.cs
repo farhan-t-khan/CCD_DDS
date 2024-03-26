@@ -47,49 +47,50 @@ namespace CCD_DDS
             }
         }
 
-        //FOR TEST ONLY
-        //private bool IsValidCredentials(string username, string password)
-        //{
-        //    // Replace this with your actual authentication logic
-        //    return username == "admin" && password == "admin";
-        //}
-
+        //FOR TEST ONLY. ALWAYS AUTHENTICATES
         private bool IsValidCredentials(string username, string password)
         {
-            string filePath = "credentials.txt";
-
-            try
-            {
-                // Read all lines from the credentials file
-                string[] lines = File.ReadAllLines(filePath);
-
-                foreach (string line in lines)
-                {
-                    // Split each line into username and hashed password parts
-                    string[] parts = line.Split(':');
-                    if (parts.Length == 2)
-                    {
-                        string storedUsername = parts[0];
-                        string storedHashedPassword = parts[1];
-
-                        // Compute the hash of the provided password
-                        string hashedPassword = ComputeHash(password);
-
-                        // Check if the provided username and hashed password match the stored credentials
-                        if (username == storedUsername && hashedPassword == storedHashedPassword)
-                        {
-                            return true; // Credentials are valid
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error reading credentials file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            return false; // Credentials are invalid
+            
+            return true;
         }
+
+        //THIS WILL CHECK FOR AUTHENTICATE
+        //private bool IsValidCredentials(string username, string password)
+        //{
+        //    string filePath = "credentials.txt";
+
+        //    try
+        //    {
+        //        // Read all lines from the credentials file
+        //        string[] lines = File.ReadAllLines(filePath);
+
+        //        foreach (string line in lines)
+        //        {
+        //            // Split each line into username and hashed password parts
+        //            string[] parts = line.Split(':');
+        //            if (parts.Length == 2)
+        //            {
+        //                string storedUsername = parts[0];
+        //                string storedHashedPassword = parts[1];
+
+        //                // Compute the hash of the provided password
+        //                string hashedPassword = ComputeHash(password);
+
+        //                // Check if the provided username and hashed password match the stored credentials
+        //                if (username == storedUsername && hashedPassword == storedHashedPassword)
+        //                {
+        //                    return true; // Credentials are valid
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error reading credentials file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    }
+
+        //    return false; // Credentials are invalid
+        //}
 
         private string ComputeHash(string input)
         {
