@@ -321,7 +321,7 @@ namespace CCD_DDS
             get { return _driftIsSelected; }
             set
             {
-                _precisionIsSelected = value;
+                _driftIsSelected = value;
                 OnPropertyChanged(nameof(DriftIsSelected));
             }
         }
