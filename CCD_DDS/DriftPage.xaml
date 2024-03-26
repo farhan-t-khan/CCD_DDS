@@ -98,7 +98,7 @@
         <!-- DataGrid -->
         <DataGrid x:Name="dataGridDrift" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50"
                   Width="Auto" Height="Auto"
-                  ItemsSource="{Binding LeakDataList}"
+                  ItemsSource="{Binding DriftDataList}"
                   CanUserAddRows="False" PreviewMouseLeftButtonDown="DataGrid_PreviewMouseLeftButtonDown"
                   BeginningEdit="DataGrid_BeginningEdit"
                   IsReadOnly="{Binding IsReadOnly}"

@@ -27,6 +27,7 @@ namespace CCD_DDS
         private SoundPlayer clickSoundPlayer;
         public List<string> LeakDefinitionOptions { get; set; }
         public List<LeakData> LeakDataList { get; set; }
+        public List<LeakData> DriftDataList { get; set; }
         private CancellationTokenSource source;
         private CancellationToken token;
         private bool _isReadOnly = true;
@@ -44,6 +45,7 @@ namespace CCD_DDS
             DataContext = this;
             IsReadOnly = true;
             LoadDataFromCsv();
+            LoadDriftDataFromCsv();
         }
         public void NavigateToHome(object sender, RoutedEventArgs e)
         {
@@ -105,6 +107,7 @@ namespace CCD_DDS
                         IsSelected = Convert.ToBoolean(values[8]),
                         Status = "",
                         TankLevel = Convert.ToDouble(values[10]),
+                        DriftIsSelected = Convert.ToBoolean(values[11]),
                     };
 
                     // If Port is 0, set the Leak Definition directly to "0"
@@ -120,6 +123,17 @@ namespace CCD_DDS
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading data from CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void LoadDriftDataFromCsv()
+        {
+            string csvFilePath = "TableData.csv";
+            DriftDataList = new List<LeakData>();
+            foreach(LeakData leakData in LeakDataList)
+            {
+                if (leakData.DriftIsSelected == true && Convert.ToInt64(leakData.Port) != 0) {
+                    DriftDataList.Add(leakData);
+                }
             }
         }
         private void SaveDriftData()
@@ -213,7 +227,7 @@ namespace CCD_DDS
                 using (StreamWriter writer = new StreamWriter(csvFilePath, false))
                 {
                     // Write header row
-                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status,Estimated Tank Level (%)");
+                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status,Estimated Tank Level (%),Drift Selected");
 
                     // Write data rows
                     foreach (LeakData leakData in LeakDataList)
@@ -223,7 +237,7 @@ namespace CCD_DDS
 
                         string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
                         writer.WriteLine($"{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
-                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{leakData.Tolerance},{isSelected},{leakData.Status},{leakData.TankLevel}");
+                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{leakData.Tolerance},{isSelected},{leakData.Status},{leakData.TankLevel},{leakData.DriftIsSelected}");
                     }
                 }
             }
@@ -254,12 +268,12 @@ namespace CCD_DDS
             if (depObj is DataGridCell cell)
             {
                 // Check if the cell corresponds to the "Selected" column and the row is for Port 0
-                if (cell.Column.Header.ToString() == "Selected" && cell.DataContext is LeakData leakData && leakData.Port == "0")
+                if (cell.Column.Header.ToString() == "Drift Selected" && cell.DataContext is LeakData leakData && leakData.Port == "0")
                 {
                     // Prevent the checkbox from being unchecked
                     e.Handled = true;
                 }
-                if (cell.Column.Header.ToString() == "Selected" && IsReadOnly)
+                if (cell.Column.Header.ToString() == "Drift Selected" && IsReadOnly)
                 {
                     // Prevent the checkbox from being modified
                     e.Handled = true;
@@ -304,6 +318,7 @@ namespace CCD_DDS
                 e.Handled = true;
             }
         }
+
 
         private void ResetUI()
         {
