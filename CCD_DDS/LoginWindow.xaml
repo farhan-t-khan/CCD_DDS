@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:CCD_DDS"
         mc:Ignorable="d"
         Title="Verify Credentials" Height="250" Width="400"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Icon="Resource/Bascom-Turner.ico">
         
     <Grid Background="#E0E0E0">
         <Grid.RowDefinitions>

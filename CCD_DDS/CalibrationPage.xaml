@@ -102,7 +102,7 @@
         </TextBlock>
 
         <!-- DataGrid -->
-        <DataGrid x:Name="dataGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50"
+        <DataGrid x:Name="dataGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"
                   Width="Auto" Height="Auto"
                   ItemsSource="{Binding LeakDataList}"
                   CanUserAddRows="False" PreviewMouseLeftButtonDown="DataGrid_PreviewMouseLeftButtonDown"
@@ -267,7 +267,7 @@
                     </DataGridCheckBoxColumn.ElementStyle>
                 </DataGridCheckBoxColumn>
                 <DataGridTemplateColumn Header="Status"
-                        Width="100"
+                        Width="124"
                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}, ConverterParameter=Inverse}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -279,7 +279,7 @@
         </DataGrid>
 
         <!-- Navigation Buttons -->
-        <StackPanel Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,150">
+        <StackPanel Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,100">
             <Button x:Name="SaveButton" Content="Save" Click="SaveButtonClick" Margin="5" Visibility="Collapsed"/>
             <Button x:Name="CancelButton" Content="Cancel" Click="CancelButtonClick" Margin="5" Visibility="Collapsed"/>
         </StackPanel>
