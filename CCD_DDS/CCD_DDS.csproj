@@ -10,6 +10,8 @@
   <ItemGroup>
     <None Remove="Bascom-Turner.ico" />
     <None Remove="Resource\click.wav" />
+    <None Remove="Resource\logo-byline.bmp" />
+    <None Remove="Resource\logo-byline.jpg" />
     <None Remove="Resource\logoblockonly.jpg" />
   </ItemGroup>
 
@@ -25,7 +27,15 @@
     <PackageReference Include="MahApps.Metro" Version="2.4.10" />
     <PackageReference Include="Prism.Core" Version="8.1.97" />
     <PackageReference Include="Prism.Wpf" Version="8.1.97" />
-    <Resource Include="Resource\logoblockonly.jpg" />
+    <Resource Include="Resource\logo-byline.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\logo-byline.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\logoblockonly.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

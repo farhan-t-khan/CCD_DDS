@@ -27,6 +27,7 @@ namespace CCD_DDS
         private SoundPlayer clickSoundPlayer;
         public List<string> LeakDefinitionOptions { get; set; }
         public List<LeakData> LeakDataList { get; set; }
+        public List<LeakData> PrecisionList { get; set; }
         private CancellationTokenSource source;
         private CancellationToken token;
         private bool _isReadOnly = true;
@@ -44,6 +45,7 @@ namespace CCD_DDS
             DataContext = this;
             IsReadOnly = true;
             LoadDataFromCsv();
+            LoadPrecisionDataFromCsv();
         }
         public void NavigateToHome(object sender, RoutedEventArgs e)
         {
@@ -120,6 +122,18 @@ namespace CCD_DDS
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading data from CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void LoadPrecisionDataFromCsv()
+        {
+            string csvFilePath = "TableData.csv";
+            PrecisionList = new List<LeakData>();
+            foreach (LeakData leakData in LeakDataList)
+            {
+                if (leakData.IsSelected == true && Convert.ToInt64(leakData.Port) != 0)
+                {
+                    PrecisionList.Add(leakData);
+                }
             }
         }
         private void SavePrecisionData()
