@@ -209,5 +209,6 @@
             <Button x:Name="PrecisionBackButton" Content="Back" Click="NavigateToHome" Margin="5"/>
             <!--<Button x:Name="PrecisionEditButton" Content="Setup" Click="EditButtonClick" Margin="5"/>-->
         </StackPanel>
+        <Image Source="/Resource/logo-byline.jpg" HorizontalAlignment="Left" VerticalAlignment="Top" Height="100" Margin="50 50 80 80" Panel.ZIndex="999"/>
     </Grid>
 </Page>
