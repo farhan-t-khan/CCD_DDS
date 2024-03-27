@@ -261,13 +261,19 @@ namespace CCD_DDS
             token = source.Token;
             foreach (LeakData leakData in PrecisionList)
             {
+                leakData.PrecisionDate = "";
+                leakData.PrecisionTime = "";
                 leakData.Measurement1 = "";
                 leakData.Measurement2 = "";
                 leakData.Measurement3 = "";
+                leakData.Precision = "";
             }
+            RefreshColumn(3);
+            RefreshColumn(4);
             RefreshColumn(5);
             RefreshColumn(6);
             RefreshColumn(7);
+            RefreshColumn(8);
             // Hide the other buttons and show the cancel button
             PrecisionStartButton.Visibility = Visibility.Collapsed;
             PrecisionBackButton.Visibility = Visibility.Collapsed;
@@ -278,7 +284,9 @@ namespace CCD_DDS
 
             foreach (LeakData leakData in selectedItems)
             {
-                for(int i = 0; i < 3; i++)
+                leakData.PrecisionDate = DateTime.Now.ToString("MM/dd/yyyy");
+                leakData.PrecisionTime = DateTime.Now.ToString("HH:mm:ss");
+                for (int i = 0; i < 3; i++)
                 {
                     if (token.IsCancellationRequested)
                     {

@@ -117,7 +117,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Date" Width="106">
+                <DataGridTemplateColumn Header="Date" Width="115">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding PrecisionDate, StringFormat=\{0:MM/dd/yyyy\}, UpdateSourceTrigger=PropertyChanged}"/>
@@ -130,7 +130,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Time" Width="60">
+                <DataGridTemplateColumn Header="Time" Width="85">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding PrecisionTime, StringFormat=\{0:hh\\:mm\}, UpdateSourceTrigger=PropertyChanged}" />
