@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Threading;
 using System.ComponentModel;
+using System.Diagnostics.Metrics;
 
 namespace CCD_DDS
 {
@@ -45,7 +46,7 @@ namespace CCD_DDS
             DataContext = this;
             IsReadOnly = true;
             LoadDataFromCsv();
-            LoadPrecisionDataFromCsv();
+            LoadPrecisionData();
         }
         public void NavigateToHome(object sender, RoutedEventArgs e)
         {
@@ -107,6 +108,13 @@ namespace CCD_DDS
                         IsSelected = Convert.ToBoolean(values[8]),
                         Status = "",
                         TankLevel = Convert.ToDouble(values[10]),
+                        DriftIsSelected = Convert.ToBoolean(values[11]),
+                        PrecisionDate = values[12],
+                        PrecisionTime = values[13],
+                        Measurement1 = values[14],
+                        Measurement2 = values[15],
+                        Measurement3 = values[16],
+                        Precision = values[17],
                     };
 
                     // If Port is 0, set the Leak Definition directly to "0"
@@ -124,9 +132,9 @@ namespace CCD_DDS
                 MessageBox.Show($"Error loading data from CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        private void LoadPrecisionDataFromCsv()
+        private void LoadPrecisionData()
         {
-            string csvFilePath = "TableData.csv";
+           
             PrecisionList = new List<LeakData>();
             foreach (LeakData leakData in LeakDataList)
             {
@@ -168,45 +176,6 @@ namespace CCD_DDS
             }
         }
 
-        private void ToggleButtonVisibility(bool IsReadOnly)
-        {
-            // Toggle visibility of navigation buttons
-            PrecisionBackButton.Visibility = IsReadOnly ? Visibility.Visible : Visibility.Collapsed;
-
-            // Toggle visibility of Save and Cancel buttons
-            SaveButton.Visibility = IsReadOnly ? Visibility.Collapsed : Visibility.Visible;
-            CancelButton.Visibility = IsReadOnly ? Visibility.Collapsed : Visibility.Visible;
-        }
-
-        private void EditButtonClick(object sender, RoutedEventArgs e)
-        {
-            clickSoundPlayer.Play();
-            //Show login window
-            LoginWindow loginWindow = new LoginWindow();
-            loginWindow.ShowDialog();
-            if (loginWindow.IsAuthenticated)
-            {
-                clickSoundPlayer.Play();
-                IsReadOnly = !IsReadOnly;
-                //PrecisionEditButton.Visibility = Visibility.Collapsed;
-                ToggleButtonVisibility(IsReadOnly);
-            }
-
-        }
-
-        private async void SaveButtonClick(object sender, RoutedEventArgs e)
-        {
-            clickSoundPlayer.Play();
-            // Perform saving logic here
-            SaveDataToCsv();
-            // Reload data to refresh the table contents
-            RefreshDataGrid();
-            // Toggle back to view mode
-            IsReadOnly = true;
-            ToggleButtonVisibility(IsReadOnly);
-            //PrecisionEditButton.Visibility = Visibility.Visible;
-        }
-
         private void CancelButtonClick(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
@@ -216,8 +185,9 @@ namespace CCD_DDS
             RefreshDataGrid();
             // Toggle back to view mode
             IsReadOnly = true;
-            ToggleButtonVisibility(IsReadOnly);
-            //PrecisionEditButton.Visibility = Visibility.Visible;
+            PrecisionStartButton.Visibility = Visibility.Visible;
+            PrecisionBackButton.Visibility = Visibility.Visible;
+            PrecisionCancelButton.Visibility = Visibility.Collapsed;
         }
         private void SaveDataToCsv()
         {
@@ -228,7 +198,7 @@ namespace CCD_DDS
                 using (StreamWriter writer = new StreamWriter(csvFilePath, false))
                 {
                     // Write header row
-                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status,Estimated Tank Level (%)");
+                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status,Estimated Tank Level (%),Drift Selected,Precision Date,Precision Time,Measurement1,Measurement2,Measurement3,Precision");
 
                     // Write data rows
                     foreach (LeakData leakData in LeakDataList)
@@ -238,7 +208,8 @@ namespace CCD_DDS
 
                         string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
                         writer.WriteLine($"{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
-                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{leakData.Tolerance},{isSelected},{leakData.Status},{leakData.TankLevel}");
+                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{leakData.Tolerance},{isSelected},{leakData.Status},{leakData.TankLevel},{leakData.DriftIsSelected}," +
+                            $"{leakData.PrecisionDate},{leakData.PrecisionTime},{leakData.Measurement1},{leakData.Measurement2},{leakData.Measurement3},{leakData.Precision}");
                     }
                 }
             }
@@ -256,69 +227,6 @@ namespace CCD_DDS
             dataGridPrecision.ItemsSource = LeakDataList;
         }
 
-        private void DataGrid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            DependencyObject depObj = (DependencyObject)e.OriginalSource;
-
-            // Traverse the visual tree to find the DataGridCell
-            while (depObj != null && !(depObj is DataGridCell))
-            {
-                depObj = VisualTreeHelper.GetParent(depObj);
-            }
-
-            if (depObj is DataGridCell cell)
-            {
-                // Check if the cell corresponds to the "Selected" column and the row is for Port 0
-                if (cell.Column.Header.ToString() == "Selected" && cell.DataContext is LeakData leakData && leakData.Port == "0")
-                {
-                    // Prevent the checkbox from being unchecked
-                    e.Handled = true;
-                }
-                if (cell.Column.Header.ToString() == "Selected" && IsReadOnly)
-                {
-                    // Prevent the checkbox from being modified
-                    e.Handled = true;
-                }
-            }
-        }
-
-        private void DataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
-        {
-            if (e.Column.Header.ToString() == "Leak Definition" || e.Column.Header.ToString() == "Concentration (ppm)" || e.Column.Header.ToString() == "Measured Concentration (ppm)")
-            {
-                if (e.Row.Item is LeakData item && item.Port == "0")
-                {
-                    e.Cancel = true;
-                }
-            }
-        }
-        private void DataGrid_TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            // Validate input to allow only numeric values and a single decimal point
-            TextBox textBox = sender as TextBox;
-            if (!string.IsNullOrEmpty(e.Text) && !char.IsDigit(e.Text[0]) && e.Text[0] != '.')
-            {
-                e.Handled = true;
-            }
-            else if (e.Text[0] == '.' && textBox.Text.Contains("."))
-            {
-                // Allowing only one decimal point
-                e.Handled = true;
-            }
-        }
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            // Validate input to allow only numeric values and a single decimal point
-            if (!string.IsNullOrEmpty(e.Text) && !char.IsDigit(e.Text[0]) && e.Text[0] != '.')
-            {
-                e.Handled = true;
-            }
-            else if (e.Text[0] == '.' && ((TextBox)sender).Text.Contains("."))
-            {
-                // Allowing only one decimal point
-                e.Handled = true;
-            }
-        }
 
         private void ResetUI()
         {
@@ -327,17 +235,136 @@ namespace CCD_DDS
 
         private void RefreshColumn(int columnIndex)
         {
-            // Iterate through each row in the DataGrid
-            foreach (var item in dataGridPrecision.Items)
+            if (columnIndex >= 0 && columnIndex < dataGridPrecision.Columns.Count)
             {
-                // Get the corresponding property of the item based on the column index
-                var property = item.GetType().GetProperty(dataGridPrecision.Columns[columnIndex].SortMemberPath);
+                // Iterate through each row in the DataGrid
+                foreach (var item in dataGridPrecision.Items)
+                {
+                    // Get the corresponding property of the item based on the column index
+                    var sortMemberPath = dataGridPrecision.Columns[columnIndex].SortMemberPath;
+                    var property = item.GetType().GetProperty(sortMemberPath);
 
-                // Update the property value
-                property?.SetValue(item, property.GetValue(item));
+                    if (property != null)
+                    {
+                        // Update the property value
+                        property.SetValue(item, property.GetValue(item));
+                    }
+                }
             }
         }
 
+        private async void PrecisionCheck(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            //QuitAppButton.Visibility = Visibility.Collapsed;
+            source = new CancellationTokenSource();
+            token = source.Token;
+            foreach (LeakData leakData in PrecisionList)
+            {
+                leakData.Measurement1 = "";
+                leakData.Measurement2 = "";
+                leakData.Measurement3 = "";
+            }
+            RefreshColumn(5);
+            RefreshColumn(6);
+            RefreshColumn(7);
+            // Hide the other buttons and show the cancel button
+            PrecisionStartButton.Visibility = Visibility.Collapsed;
+            PrecisionBackButton.Visibility = Visibility.Collapsed;
+            PrecisionCancelButton.Visibility = Visibility.Visible;
+
+            var selectedItems = PrecisionList.Where(item => item.Port != "0").ToList();
+
+
+            foreach (LeakData leakData in selectedItems)
+            {
+                for(int i = 0; i < 3; i++)
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        // Reset UI and exit the method
+                        ResetUI();
+                        return;
+                    }
+
+                    // Update the status to "Reading"
+                    var property = typeof(LeakData).GetProperty($"Measurement{i + 1}");
+                    if (property != null)
+                    {
+                        // Update the status to "Reading"
+                        property.SetValue(leakData, "Reading...");
+                    }
+                    // Refresh the UI to reflect the change
+                    RefreshColumn(5);
+                    // Wait for a brief moment to simulate the reading process
+                    await Task.Delay(3000);
+
+
+                    //Simulate precision dummy values
+
+                    Random random = new Random();
+                    double percent = random.Next(2, 4);
+                    int sign = random.Next(0, 2);
+
+                    double concentration = Convert.ToDouble(leakData.Concentration);
+
+                    if (sign == 0)
+                    { 
+                        double newMeasuredConcentration = concentration + (percent / 100) * concentration;
+                        if (property != null && property.PropertyType == typeof(string))
+                        {
+                            property.SetValue(leakData, ((int)Math.Round(newMeasuredConcentration)).ToString());
+                        }
+
+                    }
+                    else
+                    {
+                        double newMeasuredConcentration = concentration - (percent / 100) * concentration;
+                        if (property != null && property.PropertyType == typeof(string))
+                        {
+                            property.SetValue(leakData, ((int)Math.Round(newMeasuredConcentration)).ToString());
+                        }
+                    }
+
+                    // Calculate and update Precision property
+
+                    
+                    // Wait for a brief moment
+                    await Task.Delay(2000);
+
+
+                    // Refresh the UI to reflect the changes
+                    RefreshColumn(5);
+                    RefreshColumn(6);
+                    RefreshColumn(7);
+
+                    // Wait for a brief moment before moving to the next item
+                    await Task.Delay(500);
+                }
+                double precision = CalculatePrecision(leakData);
+                leakData.Precision = precision.ToString("0.00");
+                RefreshColumn(8);
+            }
+
+            RefreshAll();
+            SaveDataToCsv();
+            PrecisionStartButton.Visibility = Visibility.Visible;
+            PrecisionBackButton.Visibility = Visibility.Visible;
+            PrecisionCancelButton.Visibility = Visibility.Collapsed;
+
+        }
+        private double CalculatePrecision(LeakData leakData)
+        {
+            double meas1 = double.Parse(leakData.Measurement1);
+            double meas2 = double.Parse(leakData.Measurement2);
+            double meas3 = double.Parse(leakData.Measurement3);
+            double concentration = double.Parse(leakData.Concentration);
+
+            double averageDifference = (Math.Abs(meas1 - concentration) + Math.Abs(meas2 - concentration) + Math.Abs(meas3 - concentration)) / 3;
+            double precision = averageDifference / concentration * 100;
+
+            return precision;
+        }
 
         private void RefreshAll()
         {

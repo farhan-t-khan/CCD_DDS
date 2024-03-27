@@ -49,30 +49,8 @@ namespace CCD_DDS
         public List<LeakData> SelectedList { get; set; }
         private CancellationTokenSource source;
         private CancellationToken token;
-        private bool _isReadOnly = true;
-        public bool _isEditMode = false;
 
-        public bool IsEditMode
-        {
-            get { return _isEditMode; }
-            set
-            {
-                _isEditMode = value;
-                OnPropertyChanged(nameof(IsEditMode));
-            }
-        }
-        public bool IsReadOnly
-        {
-            get { return _isReadOnly; }
-            set
-            {
-                _isReadOnly = value;
-                OnPropertyChanged(nameof(IsReadOnly));
 
-                // Update DataGrid background color based on edit mode
-                DataGridBackground = value ? Brushes.White : Brushes.LightGray;
-            }
-        }
 
         private Brush _dataGridBackground = Brushes.White;
         public Brush DataGridBackground
@@ -93,7 +71,6 @@ namespace CCD_DDS
             LeakDefinitionOptions = new List<string> { "100", "200", "500", "1000", "2000", "5000", "10000", "25000" };
             TankCapacityOptions = new List<string> { "Travel", "Small", "Medium", "Large" };
             DataContext = this;
-            IsReadOnly = true;
             // Load data from CSV
             LoadDataFromCsv();
             LoadSelected();
@@ -227,7 +204,7 @@ namespace CCD_DDS
             // Toggle visibility of Save and Cancel buttons
             CancelButton.Visibility = IsReadOnly ? Visibility.Collapsed : Visibility.Visible;
         }
-        private void EditButtonClick(object sender, RoutedEventArgs e)
+        private void CalibrationSetupButtonClick(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
             //Show login window
@@ -237,12 +214,11 @@ namespace CCD_DDS
             if (loginWindow.IsAuthenticated)
             {
                 clickSoundPlayer.Play();
-                IsReadOnly = !IsReadOnly;
-                IsEditMode = !IsEditMode;
+                
                 //EditButton.Visibility = Visibility.Collapsed;
                 CalibrationBackButton.Visibility = Visibility.Collapsed;
                 SaveButton.Visibility = Visibility.Visible;
-                ToggleButtonVisibility(IsReadOnly);
+                
                 RefreshDataGrid();
             }
         }
@@ -251,12 +227,9 @@ namespace CCD_DDS
             clickSoundPlayer.Play();
             // Perform saving logic here
             SaveDataToCsv();
-            IsEditMode = !IsEditMode;
             // Reload data to refresh the table contents
             RefreshDataGrid();
-            // Toggle back to view mode
-            IsReadOnly = true;
-            ToggleButtonVisibility(IsReadOnly);
+
             //EditButton.Visibility = Visibility.Visible;
             CalibrationBackButton.Visibility = Visibility.Visible;
             SaveButton.Visibility = Visibility.Collapsed;
@@ -264,14 +237,11 @@ namespace CCD_DDS
         private void CancelButtonClick(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
-            IsEditMode = !IsEditMode;
             // Perform cancel logic here
 
             // Reload data to refresh the table contents
             RefreshDataGrid();
             // Toggle back to view mode
-            IsReadOnly = true;
-            ToggleButtonVisibility(IsReadOnly);
             //EditButton.Visibility = Visibility.Visible;
             CalibrationBackButton.Visibility = Visibility.Visible;
             SaveButton.Visibility = Visibility.Collapsed;
@@ -285,7 +255,7 @@ namespace CCD_DDS
                 using (StreamWriter writer = new StreamWriter(csvFilePath, false))
                 {
                     // Write header row
-                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status,Estimated Tank Level (%)");
+                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status,Estimated Tank Level (%),Drift Selected");
 
                     // Write data rows
                     foreach (LeakData leakData in LeakDataList)
@@ -295,7 +265,7 @@ namespace CCD_DDS
 
                         string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
                         writer.WriteLine($"{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
-                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{leakData.Tolerance},{isSelected},{leakData.Status},{leakData.TankLevel}");
+                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{leakData.Tolerance},{isSelected},{leakData.Status},{leakData.TankLevel},{leakData.DriftIsSelected}");
                     }
                 }
             }
@@ -311,80 +281,11 @@ namespace CCD_DDS
             dataGrid.ItemsSource = null;
             LoadDataFromCsv();
             LoadSelected();
-            //dataGrid.ItemsSource = LeakDataList;
-            if (IsEditMode)
-            {
-                dataGrid.ItemsSource = LeakDataList;
-            }
-            else
-            {
-                dataGrid.ItemsSource = SelectedList;
-            }
+            dataGrid.ItemsSource = SelectedList; 
         }
 
-        private void DataGrid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            DependencyObject depObj = (DependencyObject)e.OriginalSource;
 
-            // Traverse the visual tree to find the DataGridCell
-            while (depObj != null && !(depObj is DataGridCell))
-            {
-                depObj = VisualTreeHelper.GetParent(depObj);
-            }
 
-            if (depObj is DataGridCell cell)
-            {
-                // Check if the cell corresponds to the "Selected" column and the row is for Port 0
-                if (cell.Column.Header.ToString() == "Selected" && cell.DataContext is LeakData leakData && leakData.Port == "0")
-                {
-                    // Prevent the checkbox from being unchecked
-                    e.Handled = true;
-                }
-                if (cell.Column.Header.ToString() == "Selected" && IsReadOnly)
-                {
-                    // Prevent the checkbox from being modified
-                    e.Handled = true;
-                }
-            }
-        }
-
-        private void DataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
-        {
-            if (e.Column.Header.ToString() == "Leak Definition (ppm)" || e.Column.Header.ToString() == "Certified Conc (ppm)" || e.Column.Header.ToString() == "Calibration Tolerance (%)" || e.Column.Header.ToString() == "Measured Concentration (ppm)")
-            {
-                if (e.Row.Item is LeakData item && item.Port == "0")
-                {
-                    e.Cancel = true;
-                }
-            }
-        }
-        private void DataGrid_TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            // Validate input to allow only numeric values and a single decimal point
-            TextBox textBox = sender as TextBox;
-            if (!string.IsNullOrEmpty(e.Text) && !char.IsDigit(e.Text[0]) && e.Text[0] != '.')
-            {
-                e.Handled = true;
-            }
-            else if (e.Text[0] == '.' && textBox.Text.Contains("."))
-            {
-                // Allowing only one decimal point
-                e.Handled = true;
-            }
-        }
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            // Validate input to allow only numeric values and a single decimal point
-            if (!string.IsNullOrEmpty(e.Text) && !char.IsDigit(e.Text[0]) && e.Text[0] != '.')
-            {
-                e.Handled = true;
-            }
-            else if (e.Text[0] == '.' && ((TextBox)sender).Text.Contains("."))
-            {
-                // Allowing only one decimal point
-                e.Handled = true;
-            }
-        }
         private async void StartCalibration(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
@@ -409,7 +310,7 @@ namespace CCD_DDS
                 CalibrationBackButton.Visibility = Visibility.Collapsed;
                 source = new CancellationTokenSource();
                 token = source.Token;
-                foreach (LeakData leakData in LeakDataList)
+                foreach (LeakData leakData in SelectedList)
                 {
                     leakData.Status = "";
                     leakData.MeasuredConcentration = "";
@@ -545,7 +446,7 @@ namespace CCD_DDS
             CalibrationCancelButton.Visibility = Visibility.Collapsed;
         }
 
-        private void RefreshColumn(int columnIndex)
+/*        private void RefreshColumn(int columnIndex)
         {
             // Iterate through each row in the DataGrid
             foreach (var item in dataGrid.Items)
@@ -555,6 +456,25 @@ namespace CCD_DDS
 
                 // Update the property value
                 property?.SetValue(item, property.GetValue(item));
+            }
+        }*/
+        private void RefreshColumn(int columnIndex)
+        {
+            if (columnIndex >= 0 && columnIndex < dataGrid.Columns.Count)
+            {
+                // Iterate through each row in the DataGrid
+                foreach (var item in dataGrid.Items)
+                {
+                    // Get the corresponding property of the item based on the column index
+                    var sortMemberPath = dataGrid.Columns[columnIndex].SortMemberPath;
+                    var property = item.GetType().GetProperty(sortMemberPath);
+
+                    if (property != null)
+                    {
+                        // Update the property value
+                        property.SetValue(item, property.GetValue(item));
+                    }
+                }
             }
         }
 
@@ -584,16 +504,11 @@ namespace CCD_DDS
             LeakDataList[0].Status = "";
             RefreshColumn(8);
         }
-        private void QuitApplication_Click(object sender, RoutedEventArgs e)
+        private void NavigateToSetup(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to exit?", "Confirm Exit", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                Application.Current.Shutdown();
-            }
+            ScreenNameTextBlock.Text = "Setup";
+            NavigationService.Navigate(new SetupPage());
         }
-
     }
 }

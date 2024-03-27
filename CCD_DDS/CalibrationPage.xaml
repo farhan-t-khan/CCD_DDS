@@ -92,11 +92,6 @@
                     <Setter Property="Foreground" Value="SteelBlue"/>
                     <Setter Property="FontWeight" Value="Bold"/>
                     <Setter Property="Text" Value="Calibration"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsEditMode}" Value="True">
-                            <Setter Property="Text" Value="Setup"/>
-                        </DataTrigger>
-                    </Style.Triggers>
                 </Style>
             </TextBlock.Style>
         </TextBlock>
@@ -105,9 +100,8 @@
         <DataGrid x:Name="dataGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"
                   Width="Auto" Height="Auto"
                   ItemsSource="{Binding LeakDataList}"
-                  CanUserAddRows="False" PreviewMouseLeftButtonDown="DataGrid_PreviewMouseLeftButtonDown"
-                  BeginningEdit="DataGrid_BeginningEdit"
-                  IsReadOnly="{Binding IsReadOnly}"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
                   Background="{Binding DataGridBackground}" 
                   ColumnHeaderHeight="60">
             <DataGrid.Resources>
@@ -149,12 +143,12 @@
 
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding TankCapacity, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" TextAlignment="Center"/>
+                            <TextBox Text="{Binding TankCapacity, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Estimated Tank Level (%)" Width="250"
+                <!--<DataGridTemplateColumn Header="Estimated Tank Level (%)" Width="250"
                                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
 
                     <DataGridTemplateColumn.CellTemplate>
@@ -168,7 +162,7 @@
                             <TextBox Text="{Binding TankLevel, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>
+                </DataGridTemplateColumn>-->
 
                 <DataGridTemplateColumn Header="Expiry Date" Width="125">
                     <DataGridTemplateColumn.CellTemplate>
@@ -224,7 +218,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Concentration, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" TextAlignment="Center"/>
+                            <TextBox Text="{Binding Concentration, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
@@ -239,12 +233,12 @@
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding MeasuredConcentration, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" TextAlignment="Center"/>
+                            <TextBox Text="{Binding MeasuredConcentration, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Calibration Tolerance (%)"
+                <!--<DataGridTemplateColumn Header="Calibration Tolerance (%)"
                         Width="250"
                         Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
                     <DataGridTemplateColumn.CellTemplate>
@@ -257,18 +251,20 @@
                             <TextBox Text="{Binding Tolerance, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>
-                <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                </DataGridTemplateColumn>-->
+                
+                <!--<DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         Width="95" Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}">
                     <DataGridCheckBoxColumn.ElementStyle>
                         <Style TargetType="CheckBox">
                             <Setter Property="VerticalAlignment" Value="Center"/>
                         </Style>
                     </DataGridCheckBoxColumn.ElementStyle>
-                </DataGridCheckBoxColumn>
+                </DataGridCheckBoxColumn>-->
+                
                 <DataGridTemplateColumn Header="Status"
                         Width="124"
-                        Visibility="{Binding Data.IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}, ConverterParameter=Inverse}">
+                        Visibility="Visible">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Status}" Foreground="{Binding Status, Converter={StaticResource StatusColorConverter}}" />
@@ -286,7 +282,7 @@
         <StackPanel Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,20">
             <Button x:Name="CalibrateButton" Content="Calibrate" Click="StartCalibration" Margin="5"/>
             <Button x:Name="CalibrationBackButton" Content="Back" Click="NavigateToHome" Margin="5"/>
-            <!--<Button x:Name="EditButton" Content="Setup" Margin="5" Click="EditButtonClick"/>-->
+            <!--<Button x:Name="CalibrationSetupButton" Content="Setup" Margin="5" Click="CalibrationSetupButtonClick"/>-->
             <Button x:Name="CalibrationCancelButton" Content="Cancel" Click="CalibrationCancelClick" Margin="5" Visibility="Collapsed"/>
             <!--<Button x:Name="QuitAppButton" Content="Exit" Click="QuitApplication_Click" HorizontalAlignment="Right" Visibility="Visible" Margin="5"/>-->
         </StackPanel>

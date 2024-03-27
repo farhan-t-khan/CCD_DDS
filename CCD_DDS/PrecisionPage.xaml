@@ -83,8 +83,7 @@
         <DataGrid x:Name="dataGridPrecision" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50"
                   Width="Auto" Height="Auto"
                   ItemsSource="{Binding PrecisionList}"
-                  CanUserAddRows="False" PreviewMouseLeftButtonDown="DataGrid_PreviewMouseLeftButtonDown"
-                  BeginningEdit="DataGrid_BeginningEdit"
+                  CanUserAddRows="False"
                   IsReadOnly="{Binding IsReadOnly}"
                   Background="{Binding DataGridBackground}"
                   ColumnHeaderHeight="60">
@@ -113,15 +112,15 @@
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Concentration, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                            <TextBox Text="{Binding Concentration, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Date" Width="60">
+                <DataGridTemplateColumn Header="Date" Width="106">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding PrecisionDate, StringFormat=\{0:MM/dd/yyyy\}, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Text="{Binding PrecisionDate, StringFormat=\{0:MM/dd/yyyy\}, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -147,7 +146,7 @@
                 <DataGridTemplateColumn Header="Meas 1 (ppm)" Width="150">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Measurement1}" />
+                            <TextBlock Text="{Binding Measurement1}" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -160,12 +159,12 @@
                 <DataGridTemplateColumn Header="Meas 2 (ppm)" Width="150">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Measurement2}" />
+                            <TextBlock Text="{Binding Measurement2}" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Measurement2, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" />
+                            <TextBox Text="{Binding Measurement2, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
@@ -173,7 +172,7 @@
                 <DataGridTemplateColumn Header="Meas 3 (ppm)" Width="150">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Measurement3}" />
+                            <TextBlock Text="{Binding Measurement3}" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -201,11 +200,11 @@
         </DataGrid>
         <!-- Navigation Buttons -->
         <StackPanel Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,150">
-            <Button x:Name="SaveButton" Content="Save" Click="SaveButtonClick" Margin="5" Visibility="Collapsed"/>
-            <Button x:Name="CancelButton" Content="Cancel" Click="CancelButtonClick" Margin="5" Visibility="Collapsed"/>
+            <!--<Button x:Name="PrecisionSaveButton" Content="Save" Click="SaveButtonClick" Margin="5" Visibility="Collapsed"/>-->
+            <Button x:Name="PrecisionCancelButton" Content="Cancel" Click="CancelButtonClick" Margin="5" Visibility="Collapsed"/>
         </StackPanel>
         <StackPanel Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,20">
-            <Button x:Name="PrecisionStartButton" Content="Precision Check" Margin="5"/>
+            <Button x:Name="PrecisionStartButton" Content="Precision Check" Click="PrecisionCheck" Margin="5"/>
             <Button x:Name="PrecisionBackButton" Content="Back" Click="NavigateToHome" Margin="5"/>
             <!--<Button x:Name="PrecisionEditButton" Content="Setup" Click="EditButtonClick" Margin="5"/>-->
         </StackPanel>

@@ -20,20 +20,19 @@ namespace CCD_DDS
         private int _tankPercent;
         private int _daysUntilExpiry=0;
 
-        private DateTime? _precisionDate;
-        private TimeSpan? _precisionTime;
+        private string? _precisionDate;
+        private string? _precisionTime;
         private string? _measurement1;
         private string? _measurement2;
         private string? _measurement3;
         private string? _precision;
-        private bool _precisionIsSelected;
 
-        private DateTime? _driftDate1;
-        private TimeOnly? _driftTime1;
+        private string? _driftDate1;
+        private string? _driftTime1;
         private string? _driftConcentration1;
         private string? _driftConcentration2;
-        private DateTime? _driftDate2;
-        private TimeOnly? _driftTime2;
+        private string? _driftDate2;
+        private string? _driftTime2;
         private string? _driftPercentage;
         private bool _driftIsSelected;
 
@@ -178,7 +177,7 @@ namespace CCD_DDS
             }
         }
 
-        public DateTime? PrecisionDate
+        public string? PrecisionDate
         {
             get { return _precisionDate; }
             set
@@ -188,7 +187,7 @@ namespace CCD_DDS
             }
         }
 
-        public TimeSpan? PrecisionTime
+        public string? PrecisionTime
         {
             get { return _precisionTime; }
             set
@@ -234,15 +233,6 @@ namespace CCD_DDS
             }
         }
 
-        public bool PrecisionIsSelected
-        {
-            get { return _precisionIsSelected; }
-            set
-            {
-                _precisionIsSelected = value;
-                OnPropertyChanged(nameof(PrecisionIsSelected));
-            }
-        }
 
 /*        
         
@@ -250,7 +240,7 @@ namespace CCD_DDS
         private string? _driftPercentage;*/
 
 
-        public DateTime? DriftDate1
+        public string? DriftDate1
         {
             get { return _driftDate1; }
             set
@@ -260,7 +250,7 @@ namespace CCD_DDS
             }
         }
 
-        public TimeOnly? DriftTime1
+        public string? DriftTime1
         {
             get { return _driftTime1; }
             set
@@ -279,7 +269,7 @@ namespace CCD_DDS
                 OnPropertyChanged(nameof(DriftConcentration1));
             }
         }
-        public DateTime? DriftDate2
+        public string? DriftDate2
         {
             get { return _driftDate2; }
             set
@@ -288,7 +278,7 @@ namespace CCD_DDS
                 OnPropertyChanged(nameof(DriftDate2));
             }
         }
-        public TimeOnly? DriftTime2
+        public string? DriftTime2
         {
             get { return _driftTime2; }
             set

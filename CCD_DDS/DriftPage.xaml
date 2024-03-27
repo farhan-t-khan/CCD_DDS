@@ -99,9 +99,8 @@
         <DataGrid x:Name="dataGridDrift" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50"
                   Width="Auto" Height="Auto"
                   ItemsSource="{Binding DriftDataList}"
-                  CanUserAddRows="False" PreviewMouseLeftButtonDown="DataGrid_PreviewMouseLeftButtonDown"
-                  BeginningEdit="DataGrid_BeginningEdit"
-                  IsReadOnly="{Binding IsReadOnly}"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
                   Background="{Binding DataGridBackground}"
                   ColumnHeaderHeight="60">
             <DataGrid.Columns>
@@ -207,7 +206,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding DriftConcenctration2, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" />
+                            <TextBox Text="{Binding DriftConcenctration2, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
@@ -224,14 +223,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-
-                <!--<DataGridCheckBoxColumn Header="Selected" Binding="{Binding DriftIsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Width="120">
-                    <DataGridCheckBoxColumn.ElementStyle>
-                        <Style TargetType="CheckBox">
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridCheckBoxColumn.ElementStyle>
-                </DataGridCheckBoxColumn>-->
             </DataGrid.Columns>
         </DataGrid>
         <!-- Navigation Buttons -->
