@@ -1,224 +1,678 @@
-﻿using System;
+﻿using CsvHelper.Configuration;
+using CsvHelper;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Media;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Media;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.IO;
-using System.Formats.Asn1;
-using System.Globalization;
-using CsvHelper;
-using CsvHelper.Configuration;
+using System.Diagnostics;
 
 namespace CCD_DDS
 {
     public partial class SetupPage : Page
     {
-        private const string FileName = "SetupData.csv";
-        //private const string FileName = "GasData.csv";
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         private SoundPlayer clickSoundPlayer;
+        private SoundPlayer calSoundPlayer;
+        public List<string> LeakDefinitionOptions { get; set; }
+        public List<string> TankCapacityOptions { get; set; }
+        public List<LeakData> LeakDataList { get; set; }
+        public List<LeakData> SelectedList { get; set; }
+        private CancellationTokenSource source;
+        private CancellationToken token;
+        private bool _isReadOnly = true;
+        public bool _isEditMode = false;
+
+        public bool IsEditMode
+        {
+            get { return _isEditMode; }
+            set
+            {
+                _isEditMode = value;
+                OnPropertyChanged(nameof(IsEditMode));
+            }
+        }
+        public bool IsReadOnly
+        {
+            get { return _isReadOnly; }
+            set
+            {
+                _isReadOnly = value;
+                OnPropertyChanged(nameof(IsReadOnly));
+
+                // Update DataGrid background color based on edit mode
+                DataGridBackground = value ? Brushes.White : Brushes.LightGray;
+            }
+        }
+
+        private Brush _dataGridBackground = Brushes.White;
+        public Brush DataGridBackground
+        {
+            get { return _dataGridBackground; }
+            set
+            {
+                _dataGridBackground = value;
+                OnPropertyChanged(nameof(DataGridBackground));
+            }
+        }
+
         public SetupPage()
         {
-            clickSoundPlayer = new SoundPlayer("Resource\\click.wav");
             InitializeComponent();
-            LoadDataFromFile();
+            clickSoundPlayer = new SoundPlayer("Resource\\click.wav");
+            //calSoundPlayer = new SoundPlayer("Resource\\cal.wav");
+            LeakDefinitionOptions = new List<string> { "100", "200", "500", "1000", "2000", "5000", "10000", "25000" };
+            //TankCapacityOptions = new List<string> { "Travel", "Small", "Medium", "Large"};
+            DataContext = this;
+            IsReadOnly = true;
+            // Load data from CSV
+            LoadDataFromCsv();
+            LoadSelected();
+            RefreshDataGrid();
+            //AssignRandomTankLevels();
+            //LoadCalData();
+            //SaveDataToCsv();
         }
-        // Method to load data from CSV file
-        private void LoadDataFromFile()
+        private void LoadDataFromCsv()
         {
+            string csvFilePath = "TableData.csv";
+            LeakDataList = new List<LeakData>();
+
             try
             {
-                // Check if the file exists
-                if (File.Exists(FileName))
-                {
-                    // Open the CSV file for reading
-                    using (var reader = new StreamReader(FileName))
-                    using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-                    {
-                        // Read the records into GasData objects
-                        var records = csv.GetRecords<GasData>().ToList();
+                // Read all lines from the CSV file
+                string[] lines = File.ReadAllLines(csvFilePath);
 
-                        // Populate the UI with the data
-                        foreach (var gasData in records)
-                        {
-                            switch (gasData.Gas)
-                            {
-                                case "Gas 1":
-                                    Gas1ConcentrationTextBox.Text = gasData.Concentration;
-                                    Gas1AmountTextBox.Text = gasData.Amount;
-                                    Gas1ExpirationDatePicker.SelectedDate = ParseDate(gasData.Expiration);
-                                    Gas1CheckBox.IsChecked = ParseBool(gasData.Selected);
-                                    break;
-                                case "Gas 2":
-                                    Gas2ConcentrationTextBox.Text = gasData.Concentration;
-                                    Gas2AmountTextBox.Text = gasData.Amount;
-                                    Gas2ExpirationDatePicker.SelectedDate = ParseDate(gasData.Expiration);
-                                    Gas2CheckBox.IsChecked = ParseBool(gasData.Selected);
-                                    break;
-                                case "Gas 3":
-                                    Gas3ConcentrationTextBox.Text = gasData.Concentration;
-                                    Gas3AmountTextBox.Text = gasData.Amount;
-                                    Gas3ExpirationDatePicker.SelectedDate = ParseDate(gasData.Expiration);
-                                    Gas3CheckBox.IsChecked = ParseBool(gasData.Selected);
-                                    break;
-                                case "Gas 4":
-                                    Gas4ConcentrationTextBox.Text = gasData.Concentration;
-                                    Gas4AmountTextBox.Text = gasData.Amount;
-                                    Gas4ExpirationDatePicker.SelectedDate = ParseDate(gasData.Expiration);
-                                    Gas4CheckBox.IsChecked = ParseBool(gasData.Selected);
-                                    break;
-                                case "Gas 5":
-                                    Gas5ConcentrationTextBox.Text = gasData.Concentration;
-                                    Gas5AmountTextBox.Text = gasData.Amount;
-                                    Gas5ExpirationDatePicker.SelectedDate = ParseDate(gasData.Expiration);
-                                    Gas5CheckBox.IsChecked = ParseBool(gasData.Selected);
-                                    break;
-                                default:
-                                    // Handle unrecognized gas names if necessary
-                                    break;
-                            }
-                        }
+                // Skip the header row
+                for (int i = 1; i < lines.Length; i++)
+                {
+                    // Split the current line by commas
+                    string[] values = lines[i].Split(',');
+
+                    // Create a new LeakData object and populate its properties
+                    LeakData leakData = new LeakData
+                    {
+                        Port = values[0],
+                        LeakDefinition = values[1],
+                        Concentration = values[2],
+                        TankCapacity = values[3],
+                        ExpiryDate = string.IsNullOrWhiteSpace(values[4]) ? null : DateTime.Parse(values[4]),
+                        LotNumber = values[5],
+                        MeasuredConcentration = values[6],
+                        Tolerance = values[7],
+                        IsSelected = Convert.ToBoolean(values[8]),
+                        Status = "",
+                        TankLevel = Convert.ToDouble(values[10]),
+                        DriftIsSelected = Convert.ToBoolean(values[11]),
+                    };
+
+                    // If Port is 0, set the Leak Definition directly to "0"
+                    if (values[0] == "0")
+                    {
+                        leakData.LeakDefinition = "0";
                     }
+
+                    // Add the LeakData object to the list
+                    LeakDataList.Add(leakData);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred while loading data: {ex.Message}");
+                MessageBox.Show($"Error loading data from CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-        private DateTime? ParseDate(string date)
+        private void LoadSelected()
         {
-            return string.IsNullOrEmpty(date) ? null : (DateTime?)DateTime.Parse(date);
-        }
-
-        private bool? ParseBool(string value)
-        {
-            if (bool.TryParse(value, out bool result))
+            SelectedList = new List<LeakData>();
+            for (int i = 0; i < LeakDataList.Count; i++)
             {
-                return result;
+                if (LeakDataList[i].IsSelected)
+                {
+                    SelectedList.Add(LeakDataList[i]);
+                }
             }
-            return null;
         }
-        public void NavigateToHome(object sender, RoutedEventArgs e)
+        private void LoadCalData()
+        {
+            string csvFilePath = "CalRecord_03062024_1000.csv";
+
+            try
+            {
+                // Read all lines from the CSV file
+                string[] lines = File.ReadAllLines(csvFilePath);
+
+                // Skip the header row
+                for (int i = 1; i < lines.Length; i++)
+                {
+                    // Split the current line by commas
+                    string[] values = lines[i].Split(',');
+                    LeakDataList[i - 1].MeasuredConcentration = values[1];
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading data from CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void AssignRandomTankLevels()
+        {
+            Random random = new Random();
+
+            foreach (var leakData in SelectedList)
+            {
+                // Generate a random tank level between 0 and 100
+                double randomTankLevel = random.NextDouble() * 100;
+                leakData.TankLevel = randomTankLevel;
+
+                // Assign percentage
+                leakData.TankPercent = (int)(leakData.TankLevel);
+            }
+        }
+
+
+        private void SaveCalData()
+        {
+            string csvFilePath = "Calibration.csv";
+
+            try
+            {
+                // Open the file in append mode, creating it if it doesn't exist
+                using (StreamWriter writer = new StreamWriter(csvFilePath, true))
+                {
+                    // Check if the file is empty to determine if the header needs to be written
+                    if (writer.BaseStream.Length == 0)
+                    {
+                        writer.WriteLine("Calibration Date Time,Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm)");
+                    }
+
+                    // Write data rows
+                    foreach (LeakData leakData in SelectedList)
+                    {
+                        if (leakData.IsSelected)
+                        {
+                            string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
+                            string calDateTime = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
+
+                            writer.WriteLine($"{calDateTime},{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
+                                $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration}");
+
+                        }
+                    }
+                    // Write a divider line after each set of records
+                    writer.WriteLine("-----------------------------------");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving data to CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+        private void NavigateToCalibration(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
-            NavigationService.Navigate(new HomePage());
+            ScreenNameTextBlock.Text = "Calibration";
+            NavigationService.Navigate(new CalibrationPage());
         }
-        /*        private void SaveButton_Click(object sender, RoutedEventArgs e)
-                {
-                    try
-                    {
-                        // Create or append to the CSV file
-                        using (var writer = new StreamWriter(FileName, append: false))
-                        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                        {
-                            // Write headers
-                            csv.WriteHeader<GasData>();
-                            csv.NextRecord();
 
-                            // Write the records
-                            WriteGasData(csv, "Gas 1", Gas1ConcentrationTextBox.Text, Gas1AmountTextBox.Text, Gas1ExpirationDatePicker.SelectedDate, Gas1CheckBox.IsChecked ?? false);
-                            WriteGasData(csv, "Gas 2", Gas2ConcentrationTextBox.Text, Gas2AmountTextBox.Text, Gas2ExpirationDatePicker.SelectedDate, Gas2CheckBox.IsChecked ?? false);
-                            WriteGasData(csv, "Gas 3", Gas3ConcentrationTextBox.Text, Gas3AmountTextBox.Text, Gas3ExpirationDatePicker.SelectedDate, Gas3CheckBox.IsChecked ?? false);
-                            WriteGasData(csv, "Gas 4", Gas4ConcentrationTextBox.Text, Gas4AmountTextBox.Text, Gas4ExpirationDatePicker.SelectedDate, Gas4CheckBox.IsChecked ?? false);
-                            WriteGasData(csv, "Gas 5", Gas5ConcentrationTextBox.Text, Gas5AmountTextBox.Text, Gas5ExpirationDatePicker.SelectedDate, Gas5CheckBox.IsChecked ?? false);
-
-                            MessageBox.Show("Data saved successfully!");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"An error occurred while saving data: {ex.Message}");
-                    }
-                }*/
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private void NavigateToDrift(object sender, RoutedEventArgs e)
         {
+            clickSoundPlayer.Play();
+            ScreenNameTextBlock.Text = "Drift";
+            NavigationService.Navigate(new DriftPage());
+        }
+
+        private void NavigateToPrecision(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            ScreenNameTextBlock.Text = "Precision";
+            NavigationService.Navigate(new PrecisionPage());
+        }
+
+        private void NavigateToSetup(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            ScreenNameTextBlock.Text = "Setup";
+            NavigationService.Navigate(new SetupPage());
+        }
+
+        private void ToggleButtonVisibility(bool IsReadOnly)
+        {
+            // Toggle visibility of navigation buttons
+            DriftButton.Visibility = IsReadOnly ? Visibility.Visible : Visibility.Collapsed;
+            PrecisionButton.Visibility = IsReadOnly ? Visibility.Visible : Visibility.Collapsed;
+
+            // Toggle visibility of Save and Cancel buttons
+            SaveButton.Visibility = IsReadOnly ? Visibility.Collapsed : Visibility.Visible;
+            CancelButton.Visibility = IsReadOnly ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        private void EditButtonClick(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+
+            //Show login window
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.ShowDialog();
+
+            //Check if authentication succeeded
+            if (loginWindow.IsAuthenticated)
+            {
+                clickSoundPlayer.Play();
+                IsReadOnly = !IsReadOnly;
+                IsEditMode = !IsEditMode;
+                EditButton.Visibility = Visibility.Collapsed;
+                CalibrationButton.Visibility = Visibility.Collapsed;
+                ToggleButtonVisibility(IsReadOnly);
+                RefreshDataGrid();
+            }
+
+        }
+
+        private async void SaveButtonClick(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            // Perform saving logic here
+            SaveDataToCsv();
+            IsEditMode = !IsEditMode;
+            // Reload data to refresh the table contents
+            RefreshDataGrid();
+            // Toggle back to view mode
+            IsReadOnly = true;
+            ToggleButtonVisibility(IsReadOnly);
+            //EditButton.Visibility = Visibility.Visible;
+            CalibrationButton.Visibility = Visibility.Visible;
+            EditButton.Visibility = Visibility.Visible;
+        }
+
+        private void CancelButtonClick(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            IsEditMode = !IsEditMode;
+            // Perform cancel logic here
+
+            // Reload data to refresh the table contents
+            RefreshDataGrid();
+            // Toggle back to view mode
+            IsReadOnly = true;
+            ToggleButtonVisibility(IsReadOnly);
+            //EditButton.Visibility = Visibility.Visible;
+            CalibrationButton.Visibility = Visibility.Visible;
+            EditButton.Visibility = Visibility.Visible;
+        }
+        private void SaveDataToCsv()
+        {
+            string csvFilePath = "TableData.csv";
+
             try
             {
-                // Create or append to the CSV file
-                using (var writer = new StreamWriter(FileName, append: false))
-                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                using (StreamWriter writer = new StreamWriter(csvFilePath, false))
                 {
-                    // Write headers
-                    csv.WriteHeader<GasData>();
-                    csv.NextRecord();
+                    // Write header row
+                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status,Estimated Tank Level (%),Drift Selected");
 
-                    // Write the records
-                    WriteGasData(csv, "Gas 1", Gas1ConcentrationTextBox.Text, Gas1AmountTextBox.Text, Gas1ExpirationDatePicker.SelectedDate, Gas1CheckBox.IsChecked ?? false);
-                    WriteGasData(csv, "Gas 2", Gas2ConcentrationTextBox.Text, Gas2AmountTextBox.Text, Gas2ExpirationDatePicker.SelectedDate, Gas2CheckBox.IsChecked ?? false);
-                    WriteGasData(csv, "Gas 3", Gas3ConcentrationTextBox.Text, Gas3AmountTextBox.Text, Gas3ExpirationDatePicker.SelectedDate, Gas3CheckBox.IsChecked ?? false);
-                    WriteGasData(csv, "Gas 4", Gas4ConcentrationTextBox.Text, Gas4AmountTextBox.Text, Gas4ExpirationDatePicker.SelectedDate, Gas4CheckBox.IsChecked ?? false);
-                    WriteGasData(csv, "Gas 5", Gas5ConcentrationTextBox.Text, Gas5AmountTextBox.Text, Gas5ExpirationDatePicker.SelectedDate, Gas5CheckBox.IsChecked ?? false);
+                    // Write data rows
+                    foreach (LeakData leakData in LeakDataList)
+                    {
+                        //Selected value is boolean and needs special handling
+                        string isSelected = leakData.IsSelected ? "True" : "False";
 
-                    MessageBox.Show("Data saved successfully!");
+                        string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
+                        writer.WriteLine($"{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
+                            $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{leakData.Tolerance},{isSelected},{leakData.Status},{leakData.TankLevel},{leakData.DriftIsSelected}");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred while saving data: {ex.Message}");
+                MessageBox.Show($"Error saving data to CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void WriteGasData(CsvWriter csv, string gas, string concentration, string amount, DateTime? expiration, bool selected)
+        private void RefreshDataGrid()
         {
-            csv.WriteField(gas);
-            csv.WriteField(concentration);
-            csv.WriteField(amount);
-            csv.WriteField(expiration?.ToString() ?? string.Empty);
-            csv.WriteField(selected.ToString()); // Convert bool? to string
-            csv.NextRecord();
+            // Reload data to refresh the table contents
+            dataGrid.ItemsSource = null;
+            LoadDataFromCsv();
+            LoadSelected();
+            //dataGrid.ItemsSource = LeakDataList;
+            if (IsEditMode)
+            {
+                dataGrid.ItemsSource = LeakDataList;
+            }
+            else
+            {
+                dataGrid.ItemsSource = SelectedList;
+            }
         }
 
-        private void NumericTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void DataGrid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DependencyObject depObj = (DependencyObject)e.OriginalSource;
+
+            // Traverse the visual tree to find the DataGridCell
+            while (depObj != null && !(depObj is DataGridCell))
+            {
+                depObj = VisualTreeHelper.GetParent(depObj);
+            }
+
+            if (depObj is DataGridCell cell)
+            {
+                // Check if the cell corresponds to the "Selected" column and the row is for Port 0
+                if ((cell.Column.Header.ToString() == "Cal" || cell.Column.Header.ToString() == "Drift") && cell.DataContext is LeakData leakData && leakData.Port == "0")
+                {
+                    // Prevent the checkbox from being unchecked
+                    e.Handled = true;
+                }
+                if ((cell.Column.Header.ToString() == "Cal" || cell.Column.Header.ToString() == "Drift") && IsReadOnly)
+                {
+                    // Prevent the checkbox from being modified
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void DataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            if (e.Column.Header.ToString() == "Leak Definition (ppm)" || e.Column.Header.ToString() == "Certified Conc (ppm)" || e.Column.Header.ToString() == "Calibration Tolerance (%)" || e.Column.Header.ToString() == "Measured Concentration (ppm)")
+            {
+                if (e.Row.Item is LeakData item && item.Port == "0")
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+        private void DataGrid_TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Validate input to allow only numeric values and a single decimal point
+            TextBox textBox = sender as TextBox;
+            if (!string.IsNullOrEmpty(e.Text) && !char.IsDigit(e.Text[0]) && e.Text[0] != '.')
+            {
+                e.Handled = true;
+            }
+            else if (e.Text[0] == '.' && textBox.Text.Contains("."))
+            {
+                // Allowing only one decimal point
+                e.Handled = true;
+            }
+        }
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Validate input to allow only numeric values and a single decimal point
+            if (!string.IsNullOrEmpty(e.Text) && !char.IsDigit(e.Text[0]) && e.Text[0] != '.')
+            {
+                e.Handled = true;
+            }
+            else if (e.Text[0] == '.' && ((TextBox)sender).Text.Contains("."))
+            {
+                // Allowing only one decimal point
+                e.Handled = true;
+            }
+        }
+        private async void StartCalibration(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            //QuitAppButton.Visibility = Visibility.Collapsed;
+            source = new CancellationTokenSource();
+            token = source.Token;
+            foreach (LeakData leakData in LeakDataList)
+            {
+                leakData.Status = "";
+                leakData.MeasuredConcentration = "";
+            }
+            RefreshColumn(8);
+            RefreshColumn(6);
+            // Hide the other buttons and show the cancel button
+            DriftButton.Visibility = Visibility.Collapsed;
+            PrecisionButton.Visibility = Visibility.Collapsed;
+            //EditButton.Visibility = Visibility.Collapsed;
+            CalibrationCancelButton.Visibility = Visibility.Visible;
+
+            var selectedItems = SelectedList.Where(item => item.Port != "0").ToList();
+
+            //Sort by concentration
+            selectedItems = selectedItems.OrderBy(item => int.Parse(item.Concentration)).ToList();
+
+            //Mark gas with highest concentration
+            var highest = selectedItems[selectedItems.Count - 1];
+
+            //Insert at the beginning of the list
+            selectedItems.Insert(0, highest);
+
+            foreach (LeakData leakData in selectedItems)
+            {
+                // Check for cancellation before each iteration
+                if (token.IsCancellationRequested)
+                {
+                    // Reset UI and exit the method
+                    ResetUI();
+                    return;
+                }
+
+                await ReadZeroGas();
+                // Update the status to "Reading Gas"
+                leakData.Status = "Reading Gas";
+                // Refresh the UI to reflect the change
+                RefreshColumn(8);
+                // Wait for a brief moment to simulate the reading process
+                await Task.Delay(3000);
+
+                // Update the status to "Calibrating..."
+                //calSoundPlayer.Play();
+                //clickSoundPlayer.Play();
+                leakData.Status = "Calibrating...";
+                await Task.Delay(2000);
+                // Refresh the UI to reflect the change
+                RefreshColumn(8);
+
+                //Simulate calibration dummy values
+
+                Random random = new Random();
+                double percent = random.Next(2, 4);
+                int sign = random.Next(0, 2);
+
+                if (sign == 0)
+                {
+                    double concentration = Convert.ToDouble(leakData.Concentration);
+                    double newMeasuredConcentration = concentration + (percent / 100) * concentration;
+                    leakData.MeasuredConcentration = ((int)Math.Round(newMeasuredConcentration)).ToString();
+
+                }
+                else
+                {
+                    double concentration = Convert.ToDouble(leakData.Concentration);
+                    double newMeasuredConcentration = concentration - (percent / 100) * concentration;
+                    leakData.MeasuredConcentration = ((int)Math.Round(newMeasuredConcentration)).ToString();
+                }
+
+
+                // Wait for a brief moment to simulate the calibration process
+                await Task.Delay(2000);
+
+                //Calculate Pass or Fail according to Tolerance set
+                double expectedConcentration = Convert.ToDouble(leakData.Concentration);
+                double tolerancePercentage = Convert.ToDouble(leakData.Tolerance);
+
+                double lowerBound = expectedConcentration - (expectedConcentration * tolerancePercentage / 100);
+                double upperBound = expectedConcentration + (expectedConcentration * tolerancePercentage / 100);
+
+                double measuredConcentration = Convert.ToDouble(leakData.MeasuredConcentration);
+
+                if (measuredConcentration >= lowerBound && measuredConcentration <= upperBound)
+                {
+                    leakData.Status = "Passed";
+                }
+                else
+                {
+                    leakData.Status = "Failed";
+                }
+
+                // Refresh the UI to reflect the changes
+                RefreshColumn(8);
+
+                // Wait for a brief moment before moving to the next item
+                await Task.Delay(500);
+            }
+            SaveCalData();
+            SaveDataToCsv();
+            RefreshAll();
+
+
+            DriftButton.Visibility = Visibility.Visible;
+            PrecisionButton.Visibility = Visibility.Visible;
+            //EditButton.Visibility = Visibility.Visible;
+            CalibrationCancelButton.Visibility = Visibility.Collapsed;
+            //QuitAppButton.Visibility = Visibility.Visible;
+
+        }
+
+        private void CalibrationCancelClick(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            // Cancel ongoing calibrations
+            if (source != null)
+            {
+                source.Cancel();
+            }
+            // Show the other buttons and hide the cancel button
+            DriftButton.Visibility = Visibility.Visible;
+            PrecisionButton.Visibility = Visibility.Visible;
+            //EditButton.Visibility = Visibility.Visible;
+            CalibrationCancelButton.Visibility = Visibility.Collapsed;
+        }
+
+        private void ResetUI()
+        {
+            foreach (LeakData leakData in LeakDataList)
+            {
+                leakData.Status = "";
+            }
+            RefreshAll();
+            // Show the other buttons and hide the cancel button
+            DriftButton.Visibility = Visibility.Visible;
+            PrecisionButton.Visibility = Visibility.Visible;
+            //EditButton.Visibility = Visibility.Visible;
+            CalibrationCancelButton.Visibility = Visibility.Collapsed;
+        }
+
+        private void RefreshColumn(int columnIndex)
+        {
+            // Iterate through each row in the DataGrid
+            foreach (var item in dataGrid.Items)
+            {
+                // Get the corresponding property of the item based on the column index
+                var property = item.GetType().GetProperty(dataGrid.Columns[columnIndex].SortMemberPath);
+
+                // Update the property value
+                property?.SetValue(item, property.GetValue(item));
+            }
+        }
+
+
+        private void RefreshAll()
+        {
+            // This method forces the DataGrid to refresh its items, ensuring the UI reflects the changes immediately
+            dataGrid.Items.Refresh();
+        }
+
+        private async Task ReadZeroGas()
+        {
+            // Check for cancellation before starting the operation
+            if (token.IsCancellationRequested)
+            {
+                // Perform any necessary cleanup and exit early
+                ResetUI();
+                return;
+            }
+
+            LeakDataList[0].Status = "Reading Gas";
+            RefreshColumn(8);
+            await Task.Delay(3000);
+            LeakDataList[0].Status = "Done";
+            RefreshColumn(8);
+            await Task.Delay(1000);
+            LeakDataList[0].Status = "";
+            RefreshColumn(8);
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
-
-            // Check if the input is a digit or a single decimal point
-            foreach (char c in e.Text)
+            if (textBox != null)
             {
-                if (!char.IsDigit(c) && c != '.')
+                ShowSystemKeyboard();
+            }
+        }
+
+        private void ShowSystemKeyboard()
+        {
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    e.Handled = true; // Mark the event as handled to prevent non-numeric input
-                    return;
-                }
+                    FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "osk.exe"),
+                    UseShellExecute = true,
+                };
+                Process.Start(startInfo);
             }
-
-            // Check if the input is a decimal point and if the text is empty
-            if (e.Text == "." && string.IsNullOrEmpty(textBox.Text))
+            catch (Exception ex)
             {
-                textBox.Text = "0."; // Attach "0" and the decimal point
-                textBox.CaretIndex = textBox.Text.Length; // Move the caret to the end
-                e.Handled = true; // Mark the event as handled
-                return;
+                MessageBox.Show("Failed to open the on-screen keyboard. Please open it manually using your device's accessibility options.");
+                Debug.WriteLine(ex.Message);
             }
+        }
 
-            // Check if the input is a decimal point and the text already contains one
-            if (e.Text == "." && textBox.Text.Contains("."))
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
             {
-                e.Handled = true; // Mark the event as handled to prevent multiple decimal points
-                return;
+                CloseSystemKeyboard();
             }
+        }
 
-            // Check if the input contains a decimal point, and if so, prevent another one
-            if (e.Text == "." && textBox.SelectionLength == 0)
+        private void CloseSystemKeyboard()
+        {
+            Process[] processes = Process.GetProcessesByName("osk");
+            foreach (Process process in processes)
             {
-                int caretIndex = textBox.CaretIndex;
-                int decimalIndex = textBox.Text.IndexOf('.');
-                if (decimalIndex != -1 && caretIndex > decimalIndex)
-                {
-                    e.Handled = true;
-                    return;
-                }
+                process.Kill();
+            }
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                InputMethod.SetIsInputMethodEnabled(textBox, false);
+                CloseSystemKeyboard();
+            }
+        }
+        private void QuitApplication_Click(object sender, RoutedEventArgs e)
+        {
+            clickSoundPlayer.Play();
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to exit?", "Confirm Exit", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
             }
         }
     }

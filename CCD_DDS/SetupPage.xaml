@@ -5,20 +5,25 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:CCD_DDS"
       mc:Ignorable="d" 
-      d:DesignHeight="1200" d:DesignWidth="800"
+      d:DesignHeight="450" d:DesignWidth="800"
       Title="SetupPage">
     <Page.Resources>
+        <local:LeakDefinitionConverter x:Key="LeakDefinitionConverter" />
+        <local:TankCapacityConverter x:Key="TankCapacityConverter" />
+        <local:StatusColorConverter x:Key="StatusColorConverter" />
+        <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <!-- Styles for various controls -->
         <Style TargetType="TextBlock">
-            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontSize" Value="30"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="Foreground" Value="SteelBlue"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
         <Style TargetType="Button">
-            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontSize" Value="40"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Margin" Value="0 0 0 20"/>
             <Setter Property="Padding" Value="15 10"/>
             <Setter Property="Background" Value="#3498DB"/>
             <Setter Property="Foreground" Value="White"/>
@@ -32,7 +37,7 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 CornerRadius="5"
-                                Padding="10">
+                                Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -44,99 +49,278 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <!-- Style for DataGrid -->
+        <Style TargetType="DataGrid">
+            <Setter Property="RowBackground" Value="#F0F0F0"/>
+            <Setter Property="AlternatingRowBackground" Value="#EAEAEA"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="RowHeaderWidth" Value="0"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="Cell"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+            <Setter Property="CanUserResizeColumns" Value="False"/>
+            <Setter Property="CanUserReorderColumns" Value="False"/>
+            <Setter Property="CanUserSortColumns" Value="False"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <!-- Trigger to change background color when in edit mode -->
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsReadOnly}" Value="False">
+                    <Setter Property="RowBackground" Value="LightBlue"/>
+                    <Setter Property="AlternatingRowBackground" Value="LightBlue"/>
+                    <Setter Property="BorderBrush" Value="#CCCCCC"/>
+                    <Setter Property="Foreground" Value="#333333"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Page.Resources>
+
     <Grid>
-        <TextBlock x:Name="ScreenNameTextBlock" Text="Setup" Margin="0 20 0 10" FontSize="30"/>
-        <!-- Input fields for Gas 1 -->
-        <StackPanel Margin="20 60 0 0">
-            <TextBlock Text="Gas 1" HorizontalAlignment="Left"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Concentration (ppm):" Margin="0 2 5 0"/>
-                <TextBox x:Name="Gas1ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Amount(L):" Margin="0 2 5 0"/>
-                <TextBox x:Name="Gas1AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Expiration Date:" Margin="0 5 5 0"/>
-                <DatePicker x:Name="Gas1ExpirationDatePicker" Margin="0 5" Width="200" HorizontalAlignment="Left"/>
-            </StackPanel>
-            <CheckBox x:Name="Gas1CheckBox" Content="Selected"/>
-        </StackPanel>
-        <!-- Input fields for Gas 2 -->
-        <StackPanel Margin="20 220 0 0">
-            <TextBlock Text="Gas 2" HorizontalAlignment="Left"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Concentration(ppm):" Margin="0 2 5 0"/>
-                <TextBox x:Name="Gas2ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Amount(L):" Margin="0 2 5 0"/>
-                <TextBox x:Name="Gas2AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Expiration Date:" Margin="0 5 5 0"/>
-                <DatePicker x:Name="Gas2ExpirationDatePicker" Margin="0 5" Width="200" HorizontalAlignment="Left"/>
-            </StackPanel>
-            <CheckBox x:Name="Gas2CheckBox" Content="Selected"/>
-        </StackPanel>
-        <!-- Input fields for Gas 3 -->
-        <StackPanel Margin="20 380 0 0">
-            <TextBlock Text="Gas 3" HorizontalAlignment="Left"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Concentration(ppm):" Margin="0 2 5 0"/>
-                <TextBox x:Name="Gas3ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Amount(L):" Margin="0 2 5 0"/>
-                <TextBox x:Name="Gas3AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Expiration Date:" Margin="0 5 5 0"/>
-                <DatePicker x:Name="Gas3ExpirationDatePicker" Margin="0 5" Width="200" HorizontalAlignment="Left"/>
-            </StackPanel>
-            <CheckBox x:Name="Gas3CheckBox" Content="Selected"/>
-        </StackPanel>
+        <!-- Header TextBlock -->
+        <TextBlock x:Name="ScreenNameTextBlock">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="50"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Top"/>
+                    <Setter Property="Foreground" Value="SteelBlue"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="Text" Value="Setup"/>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
 
-        <!-- Input fields for Gas 4 -->
-        <StackPanel Margin="20 540 0 0">
-            <TextBlock Text="Gas 4" HorizontalAlignment="Left"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Concentration(ppm):" Margin="0 2 5 0"/>
-                <TextBox x:Name="Gas4ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Amount(L):" Margin="0 2 5 0"/>
-                <TextBox x:Name="Gas4AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Expiration Date:" Margin="0 5 5 0"/>
-                <DatePicker x:Name="Gas4ExpirationDatePicker" Margin="0 5" Width="200" HorizontalAlignment="Left"/>
-            </StackPanel>
-            <CheckBox x:Name="Gas4CheckBox" Content="Selected"/>
-        </StackPanel>
+        <!-- DataGrid -->
+        <DataGrid x:Name="dataGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"
+                  Width="Auto" Height="Auto"
+                  ItemsSource="{Binding LeakDataList}"
+                  CanUserAddRows="False" PreviewMouseLeftButtonDown="DataGrid_PreviewMouseLeftButtonDown"
+                  BeginningEdit="DataGrid_BeginningEdit"
+                  IsReadOnly="False"
+                  Background="{Binding DataGridBackground}" 
+                  ColumnHeaderHeight="60"
+                  KeyboardNavigation.TabNavigation="Local">
+            <DataGrid.Resources>
+                <local:BindingProxy x:Key="proxy" Data="{Binding}" />
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <!-- Define columns -->
+                <DataGridTemplateColumn Header="Port" Width="55" IsReadOnly="True">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Port}" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!--<DataGridTextColumn Header="Port" Binding="{Binding Port}" Width="*" FontSize="20" IsReadOnly="True"/>-->
+                <!-- Special handling for Leak Definition column -->
+                <DataGridTemplateColumn Header="Leak Def (ppm)" Width="160">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding LeakDefinition, Converter={StaticResource LeakDefinitionConverter}}"  TextWrapping="Wrap" TextAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding DataContext.LeakDefinitionOptions, RelativeSource={RelativeSource AncestorType=Page}}"
+                                      SelectedItem="{Binding LeakDefinition, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
 
-        <!-- Input fields for Gas 5 -->
-        <StackPanel Margin="20 700 0 0">
-            <TextBlock Text="Gas 5" HorizontalAlignment="Left"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Concentration(ppm):" Margin="0 2 5 0"/>
-                <TextBox x:Name="Gas5ConcentrationTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Amount(L):" Margin="0 2 5 0"/>
-                <TextBox x:Name="Gas5AmountTextBox" Margin="0 5" Text="" PreviewTextInput="NumericTextBox_PreviewTextInput" Width="100"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Expiration Date:" Margin="0 5 5 0"/>
-                <DatePicker x:Name="Gas5ExpirationDatePicker" Margin="0 5" Width="200" HorizontalAlignment="Left"/>
-            </StackPanel>
-            <CheckBox x:Name="Gas5CheckBox" Content="Selected"/>
-        </StackPanel>
+                <DataGridTemplateColumn Header="Tank Capacity (L)" Width="180">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding TankCapacity}" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding TankCapacity, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" TextAlignment="Center"
+                                     GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
 
-        <!-- Button to save the data -->
-        <Button Content="Save" Click="SaveButton_Click" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="50 0 0 20"/>
-        <Button Content="Back" Click="NavigateToHome" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="50 0 150 20"/>
+                <DataGridTemplateColumn Header="Est. Tank Level (%)" Width="190"
+                                        Visibility="Visible">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding TankLevel}" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding TankLevel, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" TextAlignment="Center"
+                                     GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Expiry Date" Width="150">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ExpiryDate, StringFormat=MM/dd/yyyy}" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding ExpiryDate}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                    <DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding DaysUntilExpiry}" Value="0">
+                                    <Setter Property="Background" Value="Red" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DaysUntilExpiry}" Value="1">
+                                    <Setter Property="Background" Value="Yellow" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DaysUntilExpiry}" Value="2">
+                                    <Setter Property="Background" Value="{x:Null}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTemplateColumn.CellStyle>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Lot Number">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding LotNumber}" TextWrapping="Wrap" TextAlignment="Center" Width="100"
+                                       GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding LotNumber, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" TextAlignment="Center" PreviewKeyDown="TextBox_KeyDown" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Certified Conc (ppm)" Width="210">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Concentration}" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Concentration, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextWrapping="Wrap" TextAlignment="Center"
+                                     GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Estimated Tank Level" Width="209" 
+                                        Visibility="Visible">
+
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <ProgressBar Value="{Binding TankLevel}" Minimum="0" Maximum="100">
+                                    <ProgressBar.Style>
+                                        <Style TargetType="ProgressBar">
+                                            <!-- Set initial color based on TankLevelColor -->
+                                            <Setter Property="Foreground" Value="{Binding TankLevelColor}" />
+                                            <Style.Triggers>
+                                                <!-- DataTriggers for different TankLevel values -->
+                                                <DataTrigger Binding="{Binding TankLevel}" Value="19">
+                                                    <Setter Property="Foreground" Value="Red" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding TankLevel}" Value="49">
+                                                    <Setter Property="Foreground" Value="Yellow" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding TankLevel}" Value="100">
+                                                    <Setter Property="Foreground" Value="Green" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ProgressBar.Style>
+                                </ProgressBar>
+                                <!-- Display the percentage -->
+                                <!--<TextBlock Text="{Binding TankPercent, StringFormat={}{0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" />-->
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Cal Tolerance (%)"
+                        Width="180"
+                        Visibility="Visible">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Tolerance}" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Tolerance, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"
+                                     GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridCheckBoxColumn Header="Cal" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="50" Visibility="Visible">
+                    <DataGridCheckBoxColumn.ElementStyle>
+                        <Style TargetType="CheckBox">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridCheckBoxColumn.ElementStyle>
+                </DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn Header="Drift" Binding="{Binding DriftIsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="60" Visibility="Visible">
+                    <DataGridCheckBoxColumn.ElementStyle>
+                        <Style TargetType="CheckBox">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridCheckBoxColumn.ElementStyle>
+                </DataGridCheckBoxColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Navigation Buttons -->
+        <StackPanel Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,100">
+            <Button x:Name="SaveButton" Content="Save" Click="SaveButtonClick" Margin="5" Visibility="Collapsed"/>
+            <Button x:Name="CancelButton" Content="Cancel" Click="CancelButtonClick" Margin="5" Visibility="Collapsed"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,20">
+            <Button x:Name="CalibrationButton" Content="Calibration" Click="NavigateToCalibration" Margin="5"/>
+            <Button x:Name="DriftButton" Content="Drift" Click="NavigateToDrift" Margin="5"/>
+            <Button x:Name="PrecisionButton" Content="Precision" Click="NavigateToPrecision" Margin="5"/>
+            <Button x:Name="CalibrationCancelButton" Content="Cancel" Click="CalibrationCancelClick" Margin="5" Visibility="Collapsed"/>
+            <Button x:Name="EditButton" Content="Setup" Margin="5" Click="EditButtonClick"/>
+            <!--<Button x:Name="QuitAppButton" Content="Exit" Click="QuitApplication_Click" HorizontalAlignment="Right" Visibility="Visible" Margin="5"/>-->
+        </StackPanel>
+        <Image Source="/Resource/logo-byline.jpg" HorizontalAlignment="Left" VerticalAlignment="Top" Height="100" Margin="50 50 80 80" Panel.ZIndex="999"/>
     </Grid>
 </Page>
