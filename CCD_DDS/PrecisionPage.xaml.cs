@@ -115,6 +115,13 @@ namespace CCD_DDS
                         Measurement2 = values[15],
                         Measurement3 = values[16],
                         Precision = values[17],
+                        DriftDate1 = values[18],
+                        DriftTime1 = values[19],
+                        DriftConcentration1 = values[20],
+                        DriftDate2 = values[21],
+                        DriftTime2 = values[22],
+                        DriftConcentration2 = values[23],
+                        DriftPercentage = values[24],
                     };
 
                     // If Port is 0, set the Leak Definition directly to "0"
@@ -198,7 +205,7 @@ namespace CCD_DDS
                 using (StreamWriter writer = new StreamWriter(csvFilePath, false))
                 {
                     // Write header row
-                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status,Estimated Tank Level (%),Drift Selected,Precision Date,Precision Time,Measurement1,Measurement2,Measurement3,Precision");
+                    writer.WriteLine("Port,Leak Definition (ppm),Concentration (ppm),Tank Capacity,Expiry Date,Lot Number,Measured Concentration (ppm),Calibration Tolerance (%),Selected,Status,Estimated Tank Level (%),Drift Selected,Precision Date,Precision Time,Measurement1,Measurement2,Measurement3,Precision,Drift Date 1,Drift Time 1,Drift Concentration 1,Drift Date 2,Drift Time 2,Drift Concentration 2,Drift Percentage");
 
                     // Write data rows
                     foreach (LeakData leakData in LeakDataList)
@@ -209,7 +216,7 @@ namespace CCD_DDS
                         string expiryDate = leakData.ExpiryDate.HasValue ? leakData.ExpiryDate.Value.ToString("MM/dd/yyyy") : "";
                         writer.WriteLine($"{leakData.Port},{leakData.LeakDefinition},{leakData.Concentration},{leakData.TankCapacity}," +
                             $"{expiryDate},{leakData.LotNumber},{leakData.MeasuredConcentration},{leakData.Tolerance},{isSelected},{leakData.Status},{leakData.TankLevel},{leakData.DriftIsSelected}," +
-                            $"{leakData.PrecisionDate},{leakData.PrecisionTime},{leakData.Measurement1},{leakData.Measurement2},{leakData.Measurement3},{leakData.Precision}");
+                            $"{leakData.PrecisionDate},{leakData.PrecisionTime},{leakData.Measurement1},{leakData.Measurement2},{leakData.Measurement3},{leakData.Precision},{leakData.DriftDate1},{leakData.DriftTime1},{leakData.DriftConcentration1},{leakData.DriftDate2},{leakData.DriftTime2},{leakData.DriftConcentration2},{leakData.DriftPercentage}");
                     }
                 }
             }

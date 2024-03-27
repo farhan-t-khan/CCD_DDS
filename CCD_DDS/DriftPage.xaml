@@ -133,7 +133,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Date" Width="60">
+                <DataGridTemplateColumn Header="Date" Width="115">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftDate1, StringFormat=\{0:MM/dd/yyyy\}, UpdateSourceTrigger=PropertyChanged}" />
@@ -146,7 +146,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Time Zero" Width="107">
+                <DataGridTemplateColumn Header="Time-0" Width="85">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftTime1, StringFormat=\{0:hh\\:mm\}, UpdateSourceTrigger=PropertyChanged}" />
@@ -172,7 +172,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 
-                <DataGridTemplateColumn Header="Date" Width="60">
+                <DataGridTemplateColumn Header="Date" Width="115">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftDate2, StringFormat=\{0:MM/dd/yyyy\}, UpdateSourceTrigger=PropertyChanged}" />
@@ -185,7 +185,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 
-                <DataGridTemplateColumn Header="Time" Width="60">
+                <DataGridTemplateColumn Header="Time" Width="85">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftTime2, StringFormat=\{0:hh\\:mm\}, UpdateSourceTrigger=PropertyChanged}" />
