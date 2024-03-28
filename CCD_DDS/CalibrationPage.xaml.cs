@@ -14,7 +14,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-
+using System.Windows.Threading;
 
 namespace CCD_DDS
 {
@@ -75,8 +75,19 @@ namespace CCD_DDS
             LoadDataFromCsv();
             LoadSelected();
             RefreshDataGrid();
-            //LoadCalData();
-            //SaveDataToCsv();
+            // Start a timer to update the clock every second
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += Timer_Tick;
+            timer.Start();
+
+            // Set the current date
+            DateTextBlock.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
+        }
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            // Update the clock text every second
+            ClockTextBlock.Text = DateTime.Now.ToString("hh:mm:ss tt");
         }
         private void LoadDataFromCsv()
         {

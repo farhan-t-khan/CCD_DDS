@@ -12,6 +12,7 @@
         <local:TankCapacityConverter x:Key="TankCapacityConverter" />
         <local:StatusColorConverter x:Key="StatusColorConverter" />
         <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <local:ExpiryDateBackgroundConverter x:Key="ExpiryDateBackgroundConverter" />
         <!-- Styles for various controls -->
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="30"/>
@@ -190,6 +191,11 @@
                             </Style.Triggers>
                         </Style>
                     </DataGridTemplateColumn.CellStyle>
+                    <!--<DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="{Binding DaysUntilExpiry, Mode=TwoWay, Converter={StaticResource ExpiryDateBackgroundConverter}}" />
+                        </Style>
+                    </DataGridTemplateColumn.CellStyle>-->
                 </DataGridTemplateColumn>
 
                 <DataGridTemplateColumn Header="Lot Number">
@@ -287,5 +293,12 @@
             <!--<Button x:Name="QuitAppButton" Content="Exit" Click="QuitApplication_Click" HorizontalAlignment="Right" Visibility="Visible" Margin="5"/>-->
         </StackPanel>
         <Image Source="/Resource/logo-byline.jpg" HorizontalAlignment="Left" VerticalAlignment="Top" Height="100" Margin="50 50 80 80" Panel.ZIndex="999"/>
+        <!-- Clock TextBlock -->
+        <TextBlock x:Name="ClockTextBlock" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,10"
+                   FontSize="20" FontWeight="Bold" Foreground="SteelBlue"/>
+
+        <!-- Date TextBlock -->
+        <TextBlock x:Name="DateTextBlock" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,30"
+                   FontSize="16" Foreground="SteelBlue"/>
     </Grid>
 </Page>

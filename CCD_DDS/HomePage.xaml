@@ -13,7 +13,7 @@
         <local:TankCapacityConverter x:Key="TankCapacityConverter" />
         <local:StatusColorConverter x:Key="StatusColorConverter" />
         <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
+        <local:ExpiryDateBackgroundConverter x:Key="ExpiryDateBackgroundConverter" />
         <!-- Styles for various controls -->
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="30"/>
@@ -206,6 +206,11 @@
                             </Style.Triggers>
                         </Style>
                     </DataGridTemplateColumn.CellStyle>
+                    <!--<DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="{Binding DaysUntilExpiry, Converter={StaticResource ExpiryDateBackgroundConverter}}" />
+                        </Style>
+                    </DataGridTemplateColumn.CellStyle>-->
                 </DataGridTemplateColumn>
 
                 <DataGridTemplateColumn Header="Lot Number">

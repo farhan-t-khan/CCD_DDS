@@ -18,7 +18,7 @@ namespace CCD_DDS
         private double _tankLevel;
         private string _tankLevelColor;
         private int _tankPercent;
-        private int _daysUntilExpiry=0;
+        private int _daysUntilExpiry;
 
         private string? _precisionDate;
         private string? _precisionTime;
@@ -120,11 +120,9 @@ namespace CCD_DDS
             get { return _daysUntilExpiry; }
             set
             {
-                if (_daysUntilExpiry != value)
-                {
-                    _daysUntilExpiry = value;
-                    OnPropertyChanged(nameof(DaysUntilExpiry));
-                }
+                _daysUntilExpiry = value;
+                OnPropertyChanged(nameof(DaysUntilExpiry));
+                
             }
         }
 
@@ -358,18 +356,34 @@ namespace CCD_DDS
             {
                 TimeSpan difference = ExpiryDate.Value - DateTime.Today;
                 DaysUntilExpiry = (int)difference.TotalDays;
-                if (DaysUntilExpiry < 5) {
+                if (DaysUntilExpiry < 0)
+                {
                     DaysUntilExpiry = 0;
-                } 
-                else if (DaysUntilExpiry < 60) {
+                }
+                else if (DaysUntilExpiry < 60)
+                {
                     DaysUntilExpiry = 1;
-                } else { DaysUntilExpiry = 2; }
+                }
+                else { DaysUntilExpiry = 2; }
             }
             else
             {
                 DaysUntilExpiry = 0;
             }
         }
+
+        //private void CalculateDaysUntilExpiry()
+        //{
+        //    if (ExpiryDate.HasValue)
+        //    {
+        //        TimeSpan difference = ExpiryDate.Value.Date - DateTime.Today;
+        //        DaysUntilExpiry = (int)Math.Ceiling(difference.TotalDays); // Round up to the nearest whole day
+        //    }
+        //    else
+        //    {
+        //        DaysUntilExpiry = 0;
+        //    }
+        //}
 
 
 
