@@ -376,8 +376,11 @@ namespace CCD_DDS
                     // Refresh the UI to reflect the change
                     RefreshColumn(8);
 
-                    //Simulate calibration dummy values
+                    //Record Date and Time for use in Drift Check
+                    leakData.DriftDate1 = DateTime.Now.ToString("MM/dd/yyyy");
+                    leakData.DriftTime1 = DateTime.Now.ToString("HH:mm:ss");
 
+                    //Simulate calibration dummy values
                     Random random = new Random();
                     double percent = random.Next(2, 4);
                     int sign = random.Next(0, 2);
@@ -387,6 +390,7 @@ namespace CCD_DDS
                         double concentration = Convert.ToDouble(leakData.Concentration);
                         double newMeasuredConcentration = concentration + (percent / 100) * concentration;
                         leakData.MeasuredConcentration = ((int)Math.Round(newMeasuredConcentration)).ToString();
+                        leakData.DriftConcentration1 = leakData.MeasuredConcentration;
 
                     }
                     else
@@ -394,6 +398,7 @@ namespace CCD_DDS
                         double concentration = Convert.ToDouble(leakData.Concentration);
                         double newMeasuredConcentration = concentration - (percent / 100) * concentration;
                         leakData.MeasuredConcentration = ((int)Math.Round(newMeasuredConcentration)).ToString();
+                        leakData.DriftConcentration1 = leakData.MeasuredConcentration;
                     }
 
 

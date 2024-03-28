@@ -142,9 +142,10 @@ namespace CCD_DDS
         {
             string csvFilePath = "TableData.csv";
             DriftDataList = new List<LeakData>();
-            foreach(LeakData leakData in LeakDataList)
+            foreach (LeakData leakData in LeakDataList)
             {
-                if (leakData.DriftIsSelected == true && Convert.ToInt64(leakData.Port) != 0) {
+                if (leakData.DriftIsSelected == true && Convert.ToInt64(leakData.Port) != 0)
+                {
                     DriftDataList.Add(leakData);
                 }
             }
@@ -181,54 +182,129 @@ namespace CCD_DDS
             }
         }
 
-        private void ToggleButtonVisibility(bool IsReadOnly)
-        {
-            // Toggle visibility of navigation buttons
-            DriftBackButton.Visibility = IsReadOnly ? Visibility.Visible : Visibility.Collapsed;
 
-            // Toggle visibility of Save and Cancel buttons
-            SaveButton.Visibility = IsReadOnly ? Visibility.Collapsed : Visibility.Visible;
-            CancelButton.Visibility = IsReadOnly ? Visibility.Collapsed : Visibility.Visible;
-        }
-
-        private void EditButtonClick(object sender, RoutedEventArgs e)
+        private async void DriftCheck(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
-            //Show login window
-            LoginWindow loginWindow = new LoginWindow();
-            loginWindow.ShowDialog();
-
-            if (loginWindow.IsAuthenticated) {
-                clickSoundPlayer.Play();
-                IsReadOnly = !IsReadOnly;
-                //DriftEditButton.Visibility = Visibility.Collapsed;
-                ToggleButtonVisibility(IsReadOnly);
+            //QuitAppButton.Visibility = Visibility.Collapsed;
+            source = new CancellationTokenSource();
+            token = source.Token;
+            foreach (LeakData leakData in DriftDataList)
+            {
+                leakData.DriftDate2 = "";
+                leakData.DriftTime2 = "";
+                leakData.DriftConcentration2 = "";
+                leakData.DriftPercentage = "";
             }
+            RefreshColumn(3);
+            RefreshColumn(4);
+            RefreshColumn(5);
+            RefreshColumn(6);
+            RefreshColumn(7);
+            RefreshColumn(8);
+            RefreshColumn(9);
+            // Hide the other buttons and show the cancel button
+            DriftStartButton.Visibility = Visibility.Collapsed;
+            DriftBackButton.Visibility = Visibility.Collapsed;
+            DriftCancelButton.Visibility = Visibility.Visible;
+
+            var selectedItems = DriftDataList.Where(item => item.Port != "0").ToList();
+
+
+            foreach (LeakData leakData in selectedItems)
+            {
+
+                if (token.IsCancellationRequested)
+                {
+                    // Reset UI and exit the method
+                    ResetUI();
+                    return;
+                }
+
+                if (leakData.DriftConcentration1 == null)
+                {
+                    leakData.DriftPercentage = "Calibrate First";
+                    continue;
+                }
+
+                //Set DriftDate2 and DriftTime2 to Current time
+                leakData.DriftDate2 = DateTime.Now.ToString("MM/dd/yyyy");
+                leakData.DriftTime2 = DateTime.Now.ToString("HH:mm:ss");
+
+                // Update the status to "Reading"
+                leakData.DriftConcentration2 = "Reading";
+                // Refresh the UI to reflect the change
+                RefreshColumn(6);
+                RefreshColumn(7);
+                RefreshColumn(8);
+                // Wait for a brief moment to simulate the reading process
+                await Task.Delay(3000);
+
+                //Simulate Measured now Concentration
+                Random random = new Random();
+                double percent = random.Next(0, 5);
+                int sign = random.Next(0, 2);
+
+                if (sign == 0)
+                {
+                    double concentration = Convert.ToDouble(leakData.Concentration);
+                    double newMeasuredConcentration = concentration + (percent / 100) * concentration;
+                    leakData.DriftConcentration2 = ((int)Math.Round(newMeasuredConcentration)).ToString();
+                    
+
+                }
+                else
+                {
+                    double concentration = Convert.ToDouble(leakData.Concentration);
+                    double newMeasuredConcentration = concentration - (percent / 100) * concentration;
+                    leakData.DriftConcentration2 = ((int)Math.Round(newMeasuredConcentration)).ToString();
+                    
+                }
+                RefreshColumn(8);
+
+
+             
+                //Calculate Drift
+
+                double measured = double.Parse(leakData.DriftConcentration2);
+                double calibrated = double.Parse(leakData.DriftConcentration1);
+                double drift = ((measured - calibrated) / calibrated) * 100;
+                leakData.DriftPercentage = drift.ToString("0.00");
+
+
+                // Refresh the UI to reflect the changes
+                await Task.Delay(1000);
+                RefreshColumn(9);
+
+                // Wait for a brief moment before moving to the next item
+                await Task.Delay(500);
+            }
+
+            RefreshAll();
+            SaveDataToCsv();
+            DriftStartButton.Visibility = Visibility.Visible;
+            DriftBackButton.Visibility = Visibility.Visible;
+            DriftCancelButton.Visibility = Visibility.Collapsed;
+
         }
 
-        private async void SaveButtonClick(object sender, RoutedEventArgs e)
-        {
-            clickSoundPlayer.Play();
-            // Perform saving logic here
-            SaveDataToCsv();
-            // Reload data to refresh the table contents
-            RefreshDataGrid();
-            // Toggle back to view mode
-            IsReadOnly = true;
-            ToggleButtonVisibility(IsReadOnly);
-            //DriftEditButton.Visibility = Visibility.Visible;
-        }
+
 
         private void CancelButtonClick(object sender, RoutedEventArgs e)
         {
             clickSoundPlayer.Play();
             // Perform cancel logic here
-
+            if (source != null)
+            {
+                source.Cancel();
+            }
             // Reload data to refresh the table contents
             RefreshDataGrid();
             // Toggle back to view mode
-            IsReadOnly = true;
-            ToggleButtonVisibility(IsReadOnly);
+            DriftStartButton.Visibility = Visibility.Visible;
+            DriftBackButton.Visibility = Visibility.Visible;
+            DriftCancelButton.Visibility = Visibility.Collapsed;
+
             //DriftEditButton.Visibility = Visibility.Visible;
         }
         private void SaveDataToCsv()
@@ -266,7 +342,7 @@ namespace CCD_DDS
             // Reload data to refresh the table contents
             dataGridDrift.ItemsSource = null;
             LoadDataFromCsv();
-            dataGridDrift.ItemsSource = LeakDataList;
+            dataGridDrift.ItemsSource = DriftDataList;
         }
 
         private void DataGrid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

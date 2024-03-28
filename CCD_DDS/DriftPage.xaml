@@ -123,7 +123,7 @@
                 <DataGridTemplateColumn Header="Conc (ppm)" Width="125">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Concentration}" />
+                            <TextBlock Text="{Binding Concentration}" TextAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -133,7 +133,12 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Date" Width="115">
+                <DataGridTemplateColumn Header="Date" Width="118">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftDate1, StringFormat=\{0:MM/dd/yyyy\}, UpdateSourceTrigger=PropertyChanged}" />
@@ -162,7 +167,7 @@
                 <DataGridTemplateColumn Header="Cal Conc (ppm)" Width="160">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding DriftConcentration1}" />
+                            <TextBlock Text="{Binding DriftConcentration1}" TextAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -172,7 +177,12 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 
-                <DataGridTemplateColumn Header="Date" Width="115">
+                <DataGridTemplateColumn Header="Date" Width="118">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DriftDate2, StringFormat=\{0:MM/dd/yyyy\}, UpdateSourceTrigger=PropertyChanged}" />
@@ -201,7 +211,7 @@
                 <DataGridTemplateColumn Header="Cal Conc (ppm)" Width="160">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding DriftConcentration2}" />
+                            <TextBlock Text="{Binding DriftConcentration2}" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -227,11 +237,11 @@
         </DataGrid>
         <!-- Navigation Buttons -->
         <StackPanel Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,150">
-            <Button x:Name="SaveButton" Content="Save" Click="SaveButtonClick" Margin="5" Visibility="Collapsed"/>
-            <Button x:Name="CancelButton" Content="Cancel" Click="CancelButtonClick" Margin="5" Visibility="Collapsed"/>
+            <!--<Button x:Name="SaveButton" Content="Save" Click="SaveButtonClick" Margin="5" Visibility="Collapsed"/>-->
+            <Button x:Name="DriftCancelButton" Content="Cancel" Click="CancelButtonClick" Margin="5" Visibility="Collapsed"/>
         </StackPanel>
         <StackPanel Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,20">
-            <Button x:Name="DriftStartButton" Content="Drift Check" Margin="5"/>
+            <Button x:Name="DriftStartButton" Content="Drift Check" Click="DriftCheck" Margin="5"/>
             <Button x:Name="DriftBackButton" Content="Back" Click="NavigateToHome" Margin="5"/>
             <!--<Button x:Name="DriftEditButton" Content="Setup" Click="EditButtonClick" Margin="5"/>-->
         </StackPanel>

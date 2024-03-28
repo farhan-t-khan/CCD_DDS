@@ -187,7 +187,10 @@ namespace CCD_DDS
         {
             clickSoundPlayer.Play();
             // Perform cancel logic here
-
+            if (source != null)
+            {
+                source.Cancel();
+            }
             // Reload data to refresh the table contents
             RefreshDataGrid();
             // Toggle back to view mode
@@ -231,7 +234,7 @@ namespace CCD_DDS
             // Reload data to refresh the table contents
             dataGridPrecision.ItemsSource = null;
             LoadDataFromCsv();
-            dataGridPrecision.ItemsSource = LeakDataList;
+            dataGridPrecision.ItemsSource = PrecisionList;
         }
 
 
