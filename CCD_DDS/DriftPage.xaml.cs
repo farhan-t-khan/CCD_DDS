@@ -221,10 +221,17 @@ namespace CCD_DDS
                     return;
                 }
 
-                if (leakData.DriftConcentration1 == null)
+                if (string.IsNullOrEmpty(leakData.DriftConcentration1))
                 {
                     leakData.DriftPercentage = "Calibrate First";
-                    continue;
+                    continue; // Skip to the next item
+                }
+
+                if (!double.TryParse(leakData.DriftConcentration1, out double calibratedthing))
+                {
+                    // Handle cases where DriftConcentration1 cannot be parsed into a double
+                    // For example, display an error message or log the issue
+                    continue; // Skip to the next item
                 }
 
                 //Set DriftDate2 and DriftTime2 to Current time
@@ -242,7 +249,7 @@ namespace CCD_DDS
 
                 //Simulate Measured now Concentration
                 Random random = new Random();
-                double percent = random.Next(0, 5);
+                double percent = random.Next(0, 3);
                 int sign = random.Next(0, 2);
 
                 if (sign == 0)
