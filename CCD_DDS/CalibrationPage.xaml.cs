@@ -447,6 +447,7 @@ namespace CCD_DDS
             // Show the other buttons and hide the cancel button
             CalibrateButton.Visibility = Visibility.Visible;
             CalibrationCancelButton.Visibility = Visibility.Collapsed;
+            CalibrationBackButton.Visibility = Visibility.Visible;
         }
 
         private void ResetUI()
