@@ -96,7 +96,7 @@
             </TextBlock.Style>
         </TextBlock>
         <!-- DataGrid -->
-        <DataGrid x:Name="dataGridDrift" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50"
+        <DataGrid x:Name="dataGridDrift" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"
                   Width="Auto" Height="Auto"
                   ItemsSource="{Binding DriftDataList}"
                   CanUserAddRows="False"
