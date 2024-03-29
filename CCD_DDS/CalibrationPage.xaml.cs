@@ -81,13 +81,17 @@ namespace CCD_DDS
             timer.Tick += Timer_Tick;
             timer.Start();
 
-            // Set the current date
+            // Set the initial clock time and date
+            ClockTextBlock.Text = DateTime.Now.ToString("HH:mm:ss");
             DateTextBlock.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
         }
         private void Timer_Tick(object sender, EventArgs e)
         {
-            // Update the clock text every second
-            ClockTextBlock.Text = DateTime.Now.ToString("hh:mm:ss tt");
+            // Update the clock every second
+            ClockTextBlock.Text = DateTime.Now.ToString("HH:mm:ss");
+
+            // Update the date
+            DateTextBlock.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
         }
         private void LoadDataFromCsv()
         {
