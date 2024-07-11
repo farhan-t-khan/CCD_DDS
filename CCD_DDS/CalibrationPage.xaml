@@ -300,5 +300,9 @@
         <!-- Date TextBlock -->
         <TextBlock x:Name="DateTextBlock" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,30"
                    FontSize="16" Foreground="SteelBlue"/>
+
+        <!-- Model and Serial TextBlocks -->
+        <TextBlock x:Name="ModelTextBlock" Text="Model:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,200,0,0" FontSize="20"/>
+        <TextBlock x:Name="SerialTextBlock" Text="Serial:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,230,0,0" FontSize="20"/>
     </Grid>
 </Page>

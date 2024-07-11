@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using USBHID;
 
 namespace CCD_DDS
 {
@@ -15,7 +16,6 @@ namespace CCD_DDS
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-
         }
     }
 }

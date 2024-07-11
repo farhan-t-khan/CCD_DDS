@@ -15,6 +15,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using static USBHID.Core.SharedData;
+using static USBHID.Core;
+using USBHID;
 
 namespace CCD_DDS
 {
@@ -80,10 +83,15 @@ namespace CCD_DDS
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += Timer_Tick;
             timer.Start();
+            Core coreWindow = new Core();
 
             // Set the initial clock time and date
             ClockTextBlock.Text = DateTime.Now.ToString("HH:mm:ss");
             DateTextBlock.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
+
+            //Add Model and Serial from detector
+            ModelTextBlock.Text = "Model: " + SharedData.ModelAndSerial[0];
+            SerialTextBlock.Text = "Serial: " + SharedData.ModelAndSerial[1];
         }
         private void Timer_Tick(object sender, EventArgs e)
         {

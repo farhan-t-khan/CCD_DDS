@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Prism;
+using USBHID;
+
 namespace CCD_DDS
 {
     /// <summary>
@@ -25,7 +27,7 @@ namespace CCD_DDS
         public MainWindow()
         {
             InitializeComponent();
-            MainContentFrame.Navigate(new HomePage()); 
+            MainContentFrame.Navigate(new HomePage());
         }
     }
 }
