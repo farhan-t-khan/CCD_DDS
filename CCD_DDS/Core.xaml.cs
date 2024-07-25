@@ -84,7 +84,8 @@ namespace USBHID
                 success = 0;
 
             byte[] buf = new byte[264];
-            USBSendPacket(new byte[] { 0x2a });           
+            //USBSendPacket(new byte[] { 0x2a });
+            USBSendPacket(new byte[] { 0x00 });
             var n = USBReceivePacket(ref buf,8);
             USBSendPacket(new byte[] { 0x10 });
             n = USBReceivePacket(ref buf,8);
@@ -343,6 +344,29 @@ namespace USBHID
             DetectorFlashRoot.pad = new byte[113];
          }
 
+        public void CalibrationSuccessful()
+        {
+            byte[] buf = new byte[264];
+            USBSendPacket(new byte[] { 0x2a });
+            var n = USBReceivePacket(ref buf, 8);
+            USBSendPacket(new byte[] { 0x10 });
+            n = USBReceivePacket(ref buf, 8);
+            USBReadFlashBlock(0, ref buf);
+        }
+
+        public void PumpOn()
+        {
+            byte[] buf = new byte[264];
+            USBSendPacket(new byte[] { 0x20 });
+            var n = USBReceivePacket(ref buf, 8);
+        }
+
+        public void PumpOff()
+        {
+            byte[] buf = new byte[264];
+            USBSendPacket(new byte[] { 0x21 });
+            var n = USBReceivePacket(ref buf, 8);
+        }
 
         void    Entry(object sender, EventArgs Data)
         {

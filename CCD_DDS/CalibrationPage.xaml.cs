@@ -326,6 +326,10 @@ namespace CCD_DDS
 
         private async void StartCalibration(object sender, RoutedEventArgs e)
         {
+            //Experiment with commands
+            Core coreWindow = new Core();
+            coreWindow.PumpOn();
+
             clickSoundPlayer.Play();
             //QuitAppButton.Visibility = Visibility.Collapsed;
 
@@ -460,8 +464,11 @@ namespace CCD_DDS
                 CalibrationCancelButton.Visibility = Visibility.Collapsed;
                 CalibrationBackButton.Visibility = Visibility.Visible;
                 //EditButton.Visibility = Visibility.Visible;
-            }
 
+                //Experiment with commands
+                coreWindow.CalibrationSuccessful();
+                coreWindow.PumpOff();
+            }
         }
 
         private void CalibrationCancelClick(object sender, RoutedEventArgs e)
