@@ -86,16 +86,27 @@ namespace USBHID
 
             int success;
             if (DetectRovExUSB())
+            {
                 success = 1;
-            else
-                success = 0;
+                SetupUSB();
+            }
+            else if (DetectRovExBluetooth())
+            {
+                success = 1;
+                SetupBluetooth();
+            }
 
-            byte[] buf = new byte[264];
+            else
+            {
+                string[] modelAndSerial = new string [2];
+                SharedData.ModelAndSerial = modelAndSerial;
+            }
+/*            byte[] buf = new byte[264];
             //USBSendPacket(new byte[] { 0x2a });
             USBSendPacket(new byte[] { 0x00 });
-            var n = USBReceivePacket(ref buf,8);
+            var n = USBReceivePacket(ref buf, 8);
             USBSendPacket(new byte[] { 0x10 });
-            n = USBReceivePacket(ref buf,8);
+            n = USBReceivePacket(ref buf, 8);
             USBReadFlashBlock(0, ref buf);
             InitializeDetectorFlashRoot();
 
@@ -119,7 +130,7 @@ namespace USBHID
 
             n = (uint)ComPort.BytesToRead;
             n = (uint)ComPort.Read(buf,0,ComPort.BytesToRead);
-            ComPort.Close();
+            ComPort.Close();*/
         }
 
         private bool DetectRovExBluetooth()
@@ -201,13 +212,43 @@ namespace USBHID
 
         private void SetupUSB()
         {
+            /*            byte[] buf = new byte[264];
+                        USBSendPacket(new byte[] { 0x00 });
+                        var n = USBReceivePacket(ref buf, 8);
+                        USBSendPacket(new byte[] { 0x10 });
+                        n = USBReceivePacket(ref buf, 8);
+                        USBReadFlashBlock(0, ref buf);
+                        InitializeDetectorFlashRoot();*/
             byte[] buf = new byte[264];
+            //USBSendPacket(new byte[] { 0x2a });
             USBSendPacket(new byte[] { 0x00 });
             var n = USBReceivePacket(ref buf, 8);
             USBSendPacket(new byte[] { 0x10 });
             n = USBReceivePacket(ref buf, 8);
             USBReadFlashBlock(0, ref buf);
             InitializeDetectorFlashRoot();
+
+            //USBReadFlashRoot();
+            string[] modelAndSerial = USBReadFlashRoot();
+            SharedData.ModelAndSerial = modelAndSerial;
+            string[] ArrayComPortsNames = null;
+            SerialPort ComPort = new SerialPort();
+
+            ArrayComPortsNames = SerialPort.GetPortNames();
+
+            ComPort.BaudRate = 9600;
+            ComPort.DataBits = 8;
+            ComPort.Parity = Parity.None;
+            ComPort.StopBits = StopBits.One;
+            ComPort.Handshake = Handshake.None;
+            ComPort.PortName = "COM4";
+            ComPort.Open();
+            //ComPort.Write("Hello World");
+            while (ComPort.BytesToWrite > 0) ;
+
+            n = (uint)ComPort.BytesToRead;
+            n = (uint)ComPort.Read(buf, 0, ComPort.BytesToRead);
+            ComPort.Close();
         }
 
         // if USB connected, calculates CRC and sends out 8 bytes as two 6 byte packets
