@@ -20,6 +20,7 @@
     <Content Include="Resource\click.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <PackageReference Include="32feet.NET" Version="3.5.0" />
     <PackageReference Include="CsvHelper" Version="31.0.1" />
     <PackageReference Include="DevExpress.Data" Version="23.2.4" />
     <PackageReference Include="LiveCharts" Version="0.9.7" />

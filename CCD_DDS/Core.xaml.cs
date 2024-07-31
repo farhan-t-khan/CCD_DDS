@@ -16,7 +16,9 @@ using System.Threading.Tasks;
 using System.Text;
 using System.Linq;
 using CCD_DDS;
-
+using System.Net.Sockets;
+using InTheHand.Net.Bluetooth;
+using InTheHand.Net.Sockets;
 //==========================================================================================================================================================================================================
 // END_HEADER      END_HEADER      END_HEADER      END_HEADER      END_HEADER      END_HEADER      END_HEADER      END_HEADER      END_HEADER      END_HEADER      END_HEADER      END_HEADER
 //==========================================================================================================================================================================================================
@@ -53,8 +55,15 @@ namespace USBHID
         //static Timer ReadTimer;
         //static Timer WriteTimer;
 
+        //USB-related fields
         static IntPtr USBHandle;
         static Flash_Root DetectorFlashRoot = new Flash_Root();
+
+        //Bluetooth-related fields
+        private BluetoothClient bluetoothClient;
+        private NetworkStream bluetoothStream;
+        private string BluetoothDeviceName;
+
         //==========================================================================================================================================================================================================
         // END_DATA      END_DATA      END_DATA      END_DATA      END_DATA      END_DATA      END_DATA      END_DATA      END_DATA      END_DATA      END_DATA      END_DATA      END_DATA      END_DATA
         //==========================================================================================================================================================================================================
@@ -63,12 +72,10 @@ namespace USBHID
         // CODE      CODE      CODE      CODE      CODE      CODE      CODE      CODE      CODE      CODE      CODE      CODE      CODE      CODE      CODE      CODE      CODE      CODE      CODE      CODE
         //==========================================================================================================================================================================================================
 
-
         public static class SharedData
         {
             public static string[] ModelAndSerial { get; set; }
         }
-
 
         public Core()
         {
@@ -115,6 +122,23 @@ namespace USBHID
             ComPort.Close();
         }
 
+        private bool DetectRovExBluetooth()
+        {
+            BluetoothClient bc = new BluetoothClient();
+            BluetoothDeviceInfo[] devices = bc.DiscoverDevices();
+            foreach (BluetoothDeviceInfo device in devices)
+            {
+                if (device.DeviceName == BluetoothDeviceName)
+                {
+                    bluetoothClient = new BluetoothClient();
+                    bluetoothClient.Connect(device.DeviceAddress, BluetoothService.SerialPort);
+                    bluetoothStream = bluetoothClient.GetStream();
+                    return true;
+                }
+            }
+            return false;
+        }
+
         // scans USB for HID devices and sets USBHandle if it detectors "Bascom Turner", "Gas-Guardian"; if no detection then USBHandle = IntPtr.Zero
         public bool DetectRovExUSB()
         {
@@ -138,6 +162,52 @@ namespace USBHID
                 }
             }
             return false;
+        }
+        private void SetupBluetooth()
+        {
+            byte[] buf = new byte[264];
+            SendBluetoothPacket(new byte[] { 0x00 });
+            var n = ReceiveBluetoothPacket(ref buf, 8);
+            SendBluetoothPacket(new byte[] { 0x10 });
+            n = ReceiveBluetoothPacket(ref buf, 8);
+            ReadBluetoothFlashBlock(0, ref buf);
+            InitializeDetectorFlashRoot();
+        }
+        // Implement common methods for USB and Bluetooth communication
+        private void SendBluetoothPacket(byte[] pkt)
+        {
+            bluetoothStream.Write(pkt, 0, pkt.Length);
+        }
+
+        private uint ReceiveBluetoothPacket(ref byte[] buf, uint rxsize)
+        {
+            byte[] rxbuf = new byte[512];
+            int bytesRead = bluetoothStream.Read(rxbuf, 0, rxbuf.Length);
+            Array.Copy(rxbuf, buf, bytesRead);
+            return (uint)bytesRead;
+        }
+
+        private bool ReadBluetoothFlashBlock(UInt32 bn, ref byte[] buf)
+        {
+            byte b0 = (byte)(bn & 0xFF);
+            byte b1 = (byte)((bn >> 8) & 0xFF);
+            byte b2 = (byte)((bn >> 16) & 0xFF);
+            byte b3 = (byte)((bn >> 24) & 0xFF);
+            SendBluetoothPacket(new byte[] { 0x01, b3, b2, b1, b0 });
+
+            uint n = ReceiveBluetoothPacket(ref buf, 264);
+            return n == 264;
+        }
+
+        private void SetupUSB()
+        {
+            byte[] buf = new byte[264];
+            USBSendPacket(new byte[] { 0x00 });
+            var n = USBReceivePacket(ref buf, 8);
+            USBSendPacket(new byte[] { 0x10 });
+            n = USBReceivePacket(ref buf, 8);
+            USBReadFlashBlock(0, ref buf);
+            InitializeDetectorFlashRoot();
         }
 
         // if USB connected, calculates CRC and sends out 8 bytes as two 6 byte packets
