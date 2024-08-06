@@ -15,7 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using static USBHID.Core.SharedData;
+//using static USBHID.Core.SharedData;
 using static USBHID.Core;
 using USBHID;
 
@@ -68,6 +68,7 @@ namespace CCD_DDS
 
         public CalibrationPage()
         {
+            Core coreWindow = new Core();
             InitializeComponent();
             clickSoundPlayer = new SoundPlayer("Resource\\click.wav");
             //calSoundPlayer = new SoundPlayer("Resource\\cal.wav");
@@ -83,15 +84,23 @@ namespace CCD_DDS
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += Timer_Tick;
             timer.Start();
-            Core coreWindow = new Core();
+            
 
             // Set the initial clock time and date
             ClockTextBlock.Text = DateTime.Now.ToString("HH:mm:ss");
             DateTextBlock.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
 
             //Add Model and Serial from detector
-            ModelTextBlock.Text = "Model: " + SharedData.ModelAndSerial[0];
-            SerialTextBlock.Text = "Serial: " + SharedData.ModelAndSerial[1];
+            ModelTextBlock.Text = "Model: " + coreWindow.Model;
+            SerialTextBlock.Text = "Serial: " + coreWindow.Serial;
+
+            if(coreWindow.Model is null || coreWindow.Serial is null)
+            {
+                CalibrateButton.Visibility = Visibility.Collapsed;
+            } else
+            {
+                CalibrateButton.Visibility = Visibility.Visible;
+            }
         }
         private void Timer_Tick(object sender, EventArgs e)
         {
@@ -328,7 +337,7 @@ namespace CCD_DDS
         {
             //Experiment with commands
             Core coreWindow = new Core();
-            coreWindow.PumpOn();
+            //coreWindow.PumpOn();
 
             clickSoundPlayer.Play();
             //QuitAppButton.Visibility = Visibility.Collapsed;
@@ -466,8 +475,8 @@ namespace CCD_DDS
                 //EditButton.Visibility = Visibility.Visible;
 
                 //Experiment with commands
-                coreWindow.CalibrationSuccessful();
-                coreWindow.PumpOff();
+                //coreWindow.CalibrationSuccessful();
+                //coreWindow.PumpOff();
             }
         }
 
