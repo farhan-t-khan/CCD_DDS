@@ -144,6 +144,48 @@ namespace USBHID
         // used to receive USB packets from USBRxThread
         static public byte[] USBInputBuffer = new Byte[512];
         static public uint USBInputBufferLength;
+        /*        public uint ReceivePacket(ref byte[] buf, uint rxsize)
+                {
+                    if (USBHandle == IntPtr.Zero)   // get out if no USB connection
+                        return 0;
+
+                    byte[] rxbuf = new byte[512];  // holds all bytes received
+                    uint rxbytes = 0;
+                    uint i;
+                USBReceivePacket_Retry:
+                    USBInputBufferLength = 0;
+                    Thread USBRxThread = new Thread(new ThreadStart(ReadUSBThread));
+                    USBRxThread.Start();
+
+                    // 100ms timeout to receive data
+                    for (i = 0; i < 10; i++)
+                    {
+                        Thread.Sleep(10);
+                        if (USBInputBufferLength > 0)
+                            break;
+                    }
+                    if (USBRxThread.IsAlive)
+                        USBRxThread.Abort();
+
+                    // if we received nothing, we probably need to re-open handle to the detector
+                    if (USBInputBufferLength == 0)
+                        DetectRovEx();
+                    else
+                    {
+                        Array.Copy(USBInputBuffer, 0, rxbuf, rxbytes, USBInputBufferLength);
+                        rxbytes += USBInputBufferLength;
+                        if (rxbytes < rxsize / 8 * 9 + 9)
+                            goto USBReceivePacket_Retry;    // retry until we recieve 0 bytes
+                    }
+
+                    for (i = 0; i < rxsize / 8; i++) // skip first 9 received bytes and strip off first byte from every 9 bytes.
+                    {
+                        Array.Copy(rxbuf, i * 9 + 9 + 1, buf, i * 8, 8);
+                    }
+
+                    return (rxbytes - 9) * 8 / 9;
+                }*/
+
         public uint ReceivePacket(ref byte[] buf, uint rxsize)
         {
             if (USBHandle == IntPtr.Zero)   // get out if no USB connection
@@ -152,8 +194,11 @@ namespace USBHID
             byte[] rxbuf = new byte[512];  // holds all bytes received
             uint rxbytes = 0;
             uint i;
+
         USBReceivePacket_Retry:
             USBInputBufferLength = 0;
+
+            CancellationTokenSource cts = new CancellationTokenSource();
             Thread USBRxThread = new Thread(new ThreadStart(ReadUSBThread));
             USBRxThread.Start();
 
@@ -164,8 +209,9 @@ namespace USBHID
                 if (USBInputBufferLength > 0)
                     break;
             }
-            if (USBRxThread.IsAlive)
-                USBRxThread.Abort();
+            USBRxThread = null;
+            cts.Cancel();  // Signal the thread to stop
+            //USBRxThread.Join();  // Wait for the thread to complete
 
             // if we received nothing, we probably need to re-open handle to the detector
             if (USBInputBufferLength == 0)
@@ -175,7 +221,7 @@ namespace USBHID
                 Array.Copy(USBInputBuffer, 0, rxbuf, rxbytes, USBInputBufferLength);
                 rxbytes += USBInputBufferLength;
                 if (rxbytes < rxsize / 8 * 9 + 9)
-                    goto USBReceivePacket_Retry;    // retry until we recieve 0 bytes
+                    goto USBReceivePacket_Retry;    // retry until we receive 0 bytes
             }
 
             for (i = 0; i < rxsize / 8; i++) // skip first 9 received bytes and strip off first byte from every 9 bytes.

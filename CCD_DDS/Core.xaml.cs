@@ -6,7 +6,7 @@ using System.Windows.Controls;
 
 namespace USBHID
 {
-    public partial class Core : Window
+    public partial class Core
     {
 /*        [StructLayout(LayoutKind.Sequential)]
         public struct Flash_Root

@@ -26,13 +26,24 @@ namespace CCD_DDS
     /// </summary>
     public partial class CalibrationPage : Page, INotifyPropertyChanged
     {
-
+        private SoundPlayer clickSoundPlayer;
+        private SoundPlayer calSoundPlayer;
+        public List<string> LeakDefinitionOptions { get; set; }
+        public List<string> TankCapacityOptions { get; set; }
+        public List<LeakData> LeakDataList { get; set; }
+        public List<LeakData> SelectedList { get; set; }
+        private CancellationTokenSource source;
+        private CancellationToken token;
+        private Core? coreWindow;
+        private bool disposed = false;
 
         public void NavigateToHome(object sender, RoutedEventArgs e)
         {
+            coreWindow = null;
             clickSoundPlayer.Play();
             NavigationService.Navigate(new HomePage());
         }
+
 
 
         //////////////////////
@@ -43,15 +54,6 @@ namespace CCD_DDS
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        private SoundPlayer clickSoundPlayer;
-        private SoundPlayer calSoundPlayer;
-        public List<string> LeakDefinitionOptions { get; set; }
-        public List<string> TankCapacityOptions { get; set; }
-        public List<LeakData> LeakDataList { get; set; }
-        public List<LeakData> SelectedList { get; set; }
-        private CancellationTokenSource source;
-        private CancellationToken token;
 
 
 
@@ -68,7 +70,7 @@ namespace CCD_DDS
 
         public CalibrationPage()
         {
-            Core coreWindow = new Core();
+            coreWindow = new Core();
             InitializeComponent();
             clickSoundPlayer = new SoundPlayer("Resource\\click.wav");
             //calSoundPlayer = new SoundPlayer("Resource\\cal.wav");

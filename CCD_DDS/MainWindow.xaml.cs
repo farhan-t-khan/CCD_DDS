@@ -29,5 +29,11 @@ namespace CCD_DDS
             InitializeComponent();
             MainContentFrame.Navigate(new HomePage());
         }
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            // Clean up resources
+            Application.Current.Shutdown();
+        }
     }
 }
