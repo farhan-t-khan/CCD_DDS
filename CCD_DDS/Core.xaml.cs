@@ -64,17 +64,17 @@ namespace USBHID
             // Perform actions after the window has loaded
         }
 
-        private void SendPacket(byte[] pkt)
+        public void SendPacket(byte[] pkt)
         {
             communication.SendPacket(pkt);
         }
 
-        private uint ReceivePacket(ref byte[] buf, uint size)
+        public uint ReceivePacket(ref byte[] buf, uint size)
         {
             return communication.ReceivePacket(ref buf, size);
         }
 
-        private void ReadFlashBlock(uint blockNumber, ref byte[] buf)
+        public void ReadFlashBlock(uint blockNumber, ref byte[] buf)
         {
             communication.ReadFlashBlock(blockNumber, ref buf);
         }

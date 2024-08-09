@@ -337,10 +337,9 @@ namespace CCD_DDS
 
         private async void StartCalibration(object sender, RoutedEventArgs e)
         {
-            //Experiment with commands
+            //The object coreWindow interracts with the detector
             Core coreWindow = new Core();
-            //coreWindow.PumpOn();
-
+            
             clickSoundPlayer.Play();
             //QuitAppButton.Visibility = Visibility.Collapsed;
 
@@ -387,7 +386,7 @@ namespace CCD_DDS
 
                 //Remove last element to calibrate the highest gas only once
                 //selectedItems.RemoveAt(selectedItems.Count - 1);
-
+                bool detectorCalPassed = true;
                 foreach (LeakData leakData in selectedItems)
                 {
                     // Check for cancellation before each iteration
@@ -399,6 +398,10 @@ namespace CCD_DDS
                     }
 
                     await ReadZeroGas();
+
+                    //Turn detector pump on 
+                    detectorPump(coreWindow, true);
+                    
                     // Update the status to "Reading Gas"
                     leakData.Status = "Reading Gas";
                     // Refresh the UI to reflect the change
@@ -411,6 +414,10 @@ namespace CCD_DDS
                     //clickSoundPlayer.Play();
                     leakData.Status = "Calibrating...";
                     await Task.Delay(2000);
+                    
+                    //Turn detector pump off
+                    detectorPump(coreWindow, false);
+                    
                     // Refresh the UI to reflect the change
                     RefreshColumn(8);
 
@@ -459,6 +466,7 @@ namespace CCD_DDS
                     else
                     {
                         leakData.Status = "Failed";
+                        detectorCalPassed = false;
                     }
 
                     // Refresh the UI to reflect the changes
@@ -470,6 +478,15 @@ namespace CCD_DDS
                 SaveCalData();
                 SaveDataToCsv();
                 RefreshAll();
+
+                //Send Calibration passed or Failed to detector
+                if (detectorCalPassed)
+                {
+                    coreWindow.SendPacket(new byte[] { 0x2a });
+                } else
+                {
+                    coreWindow.SendPacket(new byte[] { 0x2b });
+                }
 
                 CalibrateButton.Visibility = Visibility.Visible;
                 CalibrationCancelButton.Visibility = Visibility.Collapsed;
@@ -556,10 +573,14 @@ namespace CCD_DDS
                 ResetUI();
                 return;
             }
-
+            
+            Core coreWindow = new Core();
+            
+            detectorPump(coreWindow, true);
             LeakDataList[0].Status = "Reading Gas";
             RefreshColumn(8);
             await Task.Delay(3000);
+            detectorPump(coreWindow, false);
             LeakDataList[0].Status = "Done";
             RefreshColumn(8);
             await Task.Delay(1000);
@@ -571,6 +592,19 @@ namespace CCD_DDS
             clickSoundPlayer.Play();
             ScreenNameTextBlock.Text = "Setup";
             NavigationService.Navigate(new SetupPage());
+        }
+
+        //Detector pump ON/OFF
+        private void detectorPump(Core coreWindow, bool state)
+        {
+            if (state)
+            {
+                coreWindow.SendPacket(new byte[] { 0x20 });
+            } else
+            {
+                coreWindow.SendPacket(new byte[] { 0x21 });
+            }
+            
         }
     }
 }

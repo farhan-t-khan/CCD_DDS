@@ -376,5 +376,18 @@ namespace USBHID
             n = (uint)ComPort.Read(buf, 0, ComPort.BytesToRead);
             ComPort.Close();
         }
+
+        public void pumpOn()
+        {
+            byte[] buf = new byte[264];
+            SendPacket(new byte[] { 0x20 });
+            var n = ReceivePacket(ref buf, 8);
+        }
+        public void pumpOff()
+        {
+            byte[] buf = new byte[264];
+            SendPacket(new byte[] { 0x21 });
+            var n = ReceivePacket(ref buf, 8);
+        }
     }
 }
