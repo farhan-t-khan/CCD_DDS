@@ -35,6 +35,7 @@ namespace CCD_DDS
         private CancellationTokenSource source;
         private CancellationToken token;
         private Core? coreWindow;
+        private DockingStationController? controller;
         private bool disposed = false;
 
         public void NavigateToHome(object sender, RoutedEventArgs e)
@@ -71,6 +72,7 @@ namespace CCD_DDS
         public CalibrationPage()
         {
             coreWindow = new Core();
+            controller = new DockingStationController();
             InitializeComponent();
             clickSoundPlayer = new SoundPlayer("Resource\\click.wav");
             //calSoundPlayer = new SoundPlayer("Resource\\cal.wav");

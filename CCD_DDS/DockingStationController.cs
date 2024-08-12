@@ -10,8 +10,10 @@ namespace CCD_DDS
     public class DockingStationController
     {
         private SerialPort _serialPort;
+        string portName = "COM6";
+        int baudRate = 9600;
 
-        public DockingStationController(string portName, int baudRate)
+        public DockingStationController()
         {
             _serialPort = new SerialPort(portName, baudRate);
             _serialPort.Open();
@@ -19,7 +21,7 @@ namespace CCD_DDS
 
         public bool AirValveOn()
         {
-            // Placeholder, actual implementation needed based on your requirements
+            // Placeholder, actual implementation needed
             return true;
         }
 
