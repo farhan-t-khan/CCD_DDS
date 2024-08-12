@@ -7,7 +7,7 @@ using System.IO.Ports;
 
 namespace CCD_DDS
 {
-    public class DockingStationController
+    public partial class DockingStationController
     {
         private SerialPort _serialPort;
         string portName = "COM6";

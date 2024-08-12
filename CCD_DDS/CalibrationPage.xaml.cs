@@ -41,6 +41,8 @@ namespace CCD_DDS
         public void NavigateToHome(object sender, RoutedEventArgs e)
         {
             coreWindow = null;
+            controller.Close();
+            controller = null;
             clickSoundPlayer.Play();
             NavigationService.Navigate(new HomePage());
         }
