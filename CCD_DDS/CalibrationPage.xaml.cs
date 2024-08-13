@@ -41,7 +41,11 @@ namespace CCD_DDS
         public void NavigateToHome(object sender, RoutedEventArgs e)
         {
             coreWindow = null;
-            controller.Close();
+
+            if (controller != null)
+            {
+                controller.Close();
+            }
             controller = null;
             clickSoundPlayer.Play();
             NavigationService.Navigate(new HomePage());
@@ -505,6 +509,9 @@ namespace CCD_DDS
 
         private void CalibrationCancelClick(object sender, RoutedEventArgs e)
         {
+            detectorPump(coreWindow, false);
+            controller.CloseValves();
+
             clickSoundPlayer.Play();
             // Cancel ongoing calibrations
             if (source != null)
@@ -581,10 +588,15 @@ namespace CCD_DDS
             Core coreWindow = new Core();
             
             detectorPump(coreWindow, true);
+            controller.AirValveOn();
+
             LeakDataList[0].Status = "Reading Gas";
             RefreshColumn(8);
             await Task.Delay(3000);
+            
             detectorPump(coreWindow, false);
+            controller.CloseValves();
+
             LeakDataList[0].Status = "Done";
             RefreshColumn(8);
             await Task.Delay(1000);
