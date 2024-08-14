@@ -40,6 +40,8 @@ namespace CCD_DDS
 
         public void NavigateToHome(object sender, RoutedEventArgs e)
         {
+            setLedsToDefault();
+            
             coreWindow = null;
 
             if (controller != null)
@@ -405,6 +407,9 @@ namespace CCD_DDS
                         return;
                     }
 
+                    controller.YellowLedOff();
+                    controller.GreenLedOn();
+
                     await ReadZeroGas();
 
                     //Turn detector pump on 
@@ -424,7 +429,7 @@ namespace CCD_DDS
                     await Task.Delay(2000);
                     
                     //Turn detector pump off
-                    detectorPump(coreWindow, false);
+                    //detectorPump(coreWindow, false);
                     
                     // Refresh the UI to reflect the change
                     RefreshColumn(8);
@@ -496,6 +501,17 @@ namespace CCD_DDS
                     coreWindow.SendPacket(new byte[] { 0x2b });
                 }
 
+                controller.GreenLedOff();
+
+                if(detectorCalPassed)
+                {
+                    controller.YellowLedOn();
+                } else
+                {
+                    controller.RedLedOn();
+                }
+                
+
                 CalibrateButton.Visibility = Visibility.Visible;
                 CalibrationCancelButton.Visibility = Visibility.Collapsed;
                 CalibrationBackButton.Visibility = Visibility.Visible;
@@ -503,7 +519,7 @@ namespace CCD_DDS
 
                 //Experiment with commands
                 //coreWindow.CalibrationSuccessful();
-                //coreWindow.PumpOff();
+                detectorPump(coreWindow, false);
             }
         }
 
@@ -511,6 +527,8 @@ namespace CCD_DDS
         {
             detectorPump(coreWindow, false);
             controller.CloseValves();
+            
+            setLedsToDefault();
 
             clickSoundPlayer.Play();
             // Cancel ongoing calibrations
@@ -594,7 +612,7 @@ namespace CCD_DDS
             RefreshColumn(8);
             await Task.Delay(3000);
             
-            detectorPump(coreWindow, false);
+            //detectorPump(coreWindow, false);
             controller.CloseValves();
 
             LeakDataList[0].Status = "Done";
@@ -621,6 +639,13 @@ namespace CCD_DDS
                 coreWindow.SendPacket(new byte[] { 0x21 });
             }
             
+        }
+
+        private void setLedsToDefault()
+        {
+            controller.GreenLedOff();
+            controller.RedLedOff();
+            controller.YellowLedOn();
         }
     }
 }
