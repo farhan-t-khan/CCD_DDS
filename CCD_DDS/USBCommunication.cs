@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.IO.Ports;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -312,13 +314,13 @@ namespace USBHID
             SharedData[] modelAndSerial = new SharedData[2];
             //Write out in a human readable format
             string serialNumber = Encoding.ASCII.GetString(DetectorFlashRoot.unit_serial_number);
-            
+
             Serial = serialNumber;
             //Console.WriteLine("Serial Number: " + serialNumber);
-            
+
 
             string modelNumber = Encoding.ASCII.GetString(DetectorFlashRoot.unit_model_number);
-            
+
             Model = modelNumber;
             //Console.WriteLine("Model Number: " + modelNumber);
 
@@ -388,6 +390,127 @@ namespace USBHID
             byte[] buf = new byte[264];
             SendPacket(new byte[] { 0x21 });
             var n = ReceivePacket(ref buf, 8);
+        }
+
+        /*        public string readCalibrationResults()
+                {
+                    byte[] buf = new byte[264];
+                    SendPacket(new byte[] { 0x17 });
+                    var n = ReceivePacket(ref buf, 8);
+                    return n.ToString();
+                }*/
+
+        /*        public string readCalibrationResults()
+                {
+                    byte[] buf = new byte[264];
+                    byte[] pageAddressBytes = new byte[4];
+                    int pageAddress = 0;
+
+                    // Step 1: Send the 0x17 command to get the calibration start page address
+                    SendPacket(new byte[] { 0x17 });
+                    var n = ReceivePacket(ref buf, 8);
+
+                    // Check if the response is valid
+                    if (n >= 8 && buf[0] == 0x17 && buf[1] == 0x06)
+                    {
+                        // Extract the page address from the response (last 4 bytes)
+                        pageAddressBytes = new byte[] { buf[4], buf[5], buf[6], buf[7] };
+                        pageAddress = BitConverter.ToInt32(pageAddressBytes, 0);
+
+                        // Step 2: Read the calibration data from the starting page address
+                        SendPacket(new byte[] { 0x01 }
+                            .Concat(BitConverter.GetBytes(pageAddress))
+                            .ToArray());
+                        var dataLength = ReceivePacket(ref buf, 264);
+
+                        // Check if the response is valid
+                        if (dataLength >= 264 && buf[0] == 0x01 && buf[1] == 0x06)
+                        {
+                            // Convert data to string for demonstration (adjust according to your needs)
+                            return BitConverter.ToString(buf.Skip(2).ToArray()).Replace("-", " ");
+                        }
+                        else
+                        {
+                            return "Error reading calibration data. Start Address was: " + n + "\n"
+                                + "buf[0] = " + buf[0] + ", buf[1] = " + buf[1] + "\n"
+                                + BitConverter.ToString(buf.Skip(2).ToArray()).Replace("-", " ");
+                        }
+                    }
+                    else
+                    {
+                        return "Error retrieving calibration start page address";
+                    }
+                }*/
+
+        public string readCalibrationResults()
+        {
+            byte[] buf = new byte[264]; // Assuming a page size of 264 bytes
+            int rootPageAddress = 0x00000000; // Replace with actual root page address
+            int callogDbStartPage = 0;
+            uint callogDbSize = 0;
+
+            using (StreamWriter writer = new StreamWriter("CallogDbLog.txt", true))
+            {
+                try
+                {
+                    // Step 1: Read the root directory page
+                    SendPacket(new byte[] { 0x01 }.Concat(BitConverter.GetBytes(rootPageAddress)).ToArray());
+                    uint n = ReceivePacket(ref buf, 264);
+
+                    if (n >= 264 && buf[0] == 0x01)
+                    {
+                        // Step 2: Parse the directory entries
+                        for (int i = 0; i < 264; i += 28)
+                        {
+                            //parsing of the directory entry
+                            byte fileType = buf[i];
+                            int drid = BitConverter.ToInt16(buf, i + 2);
+                            int startPage = BitConverter.ToInt32(buf, i + 10);
+                            uint sizeInPages = (uint)BitConverter.ToInt32(buf, i + 14);
+
+                            if (drid == 0x15) // Directory ID of callog.db
+                            {
+                                callogDbStartPage = startPage;
+                                callogDbSize = sizeInPages;
+                                break;
+                            }
+                        }
+
+                        if (callogDbStartPage > 0 && callogDbSize > 0)
+                        {
+                            // Step 3: Read the callog.db file
+                            SendPacket(new byte[] { 0x01 }.Concat(BitConverter.GetBytes(callogDbStartPage)).ToArray());
+                            uint dataLength = ReceivePacket(ref buf, 264 * callogDbSize);
+
+                            if (dataLength >= callogDbSize * 264)
+                            {
+                                // Process the read data
+                                return BitConverter.ToString(buf).Replace("-", " ");
+                            }
+                            else
+                            {
+                                writer.WriteLine("Error reading callog.db data.");
+                                return "Error reading callog.db data.";
+                            }
+                        }
+                        else
+                        {
+                            writer.WriteLine("callog.db not found in directory.");
+                            return "callog.db not found in directory.";
+                        }
+                    }
+                    else
+                    {
+                        writer.WriteLine("Error reading root directory page.");
+                        return "Error reading root directory page.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    writer.WriteLine($"Exception: {ex.Message}");
+                    return "Error occurred during callog.db read.";
+                }
+            }
         }
     }
 }

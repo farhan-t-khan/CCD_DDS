@@ -79,8 +79,11 @@ namespace CCD_DDS
 
         public CalibrationPage()
         {
+            //Establishes communication
             coreWindow = new Core();
+            //Establishes communication with the internal board
             controller = new DockingStationController();
+            
             InitializeComponent();
             clickSoundPlayer = new SoundPlayer("Resource\\click.wav");
             //calSoundPlayer = new SoundPlayer("Resource\\cal.wav");
@@ -106,7 +109,26 @@ namespace CCD_DDS
             ModelTextBlock.Text = "Model: " + coreWindow.Model;
             SerialTextBlock.Text = "Serial: " + coreWindow.Serial;
 
-            if(coreWindow.Model is null || coreWindow.Serial is null)
+            //Display raw cal record in txt file
+            // Path to the output text file
+            string outputFilePath = "RawCalRecord.txt";
+
+            
+
+            try
+            {
+                // Write the raw calibration data to the text file
+                File.WriteAllText(outputFilePath, coreWindow.CalData);
+
+                // Optional: Notify the user that the data has been written
+                Console.WriteLine($"Raw calibration record saved to {outputFilePath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error writing to file: {ex.Message}");
+            }
+
+            if (coreWindow.Model is null || coreWindow.Serial is null)
             {
                 CalibrateButton.Visibility = Visibility.Collapsed;
             } else

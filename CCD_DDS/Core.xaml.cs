@@ -34,6 +34,9 @@ namespace USBHID
 
         public string? Model;
         public string? Serial;
+
+        public string? CalData;
+
         public Core()
         {
             InitializeComponent();
@@ -48,6 +51,10 @@ namespace USBHID
                 usbCommunication.Setup();
                 Model = usbCommunication.Model;
                 Serial = usbCommunication.Serial;
+
+                //Log Cal data for debug
+                CalData = usbCommunication.readCalibrationResults();
+                Console.WriteLine(CalData);
             }
 /*            else if (bluetoothCommunication.DetectRovEx())
             {
