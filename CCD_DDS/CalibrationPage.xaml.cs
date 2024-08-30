@@ -81,6 +81,7 @@ namespace CCD_DDS
         {
             //Establishes communication
             coreWindow = new Core();
+            
             //Establishes communication with the internal board
             controller = new DockingStationController();
             
@@ -90,10 +91,12 @@ namespace CCD_DDS
             LeakDefinitionOptions = new List<string> { "100", "200", "500", "1000", "2000", "5000", "10000", "25000" };
             TankCapacityOptions = new List<string> { "Travel", "Small", "Medium", "Large" };
             DataContext = this;
-            // Load data from CSV
+
+/*            // Load data from CSV
             LoadDataFromCsv();
             LoadSelected();
-            RefreshDataGrid();
+            RefreshDataGrid();*/
+
             // Start a timer to update the clock every second
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
@@ -113,7 +116,15 @@ namespace CCD_DDS
             // Path to the output text file
             string outputFilePath = "RawCalRecord.txt";
 
-            
+
+            if(string.IsNullOrEmpty(coreWindow.Model) || string.IsNullOrEmpty(coreWindow.Serial))
+            {
+                NavigateToConnectionErrorPage();
+
+            } else
+            {
+                InitializeTable();
+            }
 
             try
             {
@@ -135,6 +146,40 @@ namespace CCD_DDS
             {
                 CalibrateButton.Visibility = Visibility.Visible;
             }
+        }
+
+        private void InitializeTable()
+        {
+            // Load data from CSV
+            LoadDataFromCsv();
+            LoadSelected();
+            RefreshDataGrid();
+        }
+
+        //Delegate Storage. loadHandler stores the lambda expression to target the same delegate instance for subscribing and unsubscribing.
+        private RoutedEventHandler loadedHandler;
+        private void NavigateToConnectionErrorPage()
+        {
+            // Ensure that the handler is not attached more than once
+            if (loadedHandler != null)
+            {
+                this.Loaded -= loadedHandler; // Safely detach if it was previously attached
+            }
+
+            clickSoundPlayer.Play();
+            ScreenNameTextBlock.Text = "Connect Detector";
+
+            // Prepare the handler
+            loadedHandler = (s, e) =>
+            {
+                // Navigate to the ConnectionErrorPage and unsubscribe the handler
+                NavigationService.Navigate(new ConnectionErrorPage());
+                this.Loaded -= loadedHandler;
+                loadedHandler = null; // Clear the handler reference to avoid re-attachment
+            };
+
+            // Attach the handler to the Loaded event
+            this.Loaded += loadedHandler;
         }
         private void Timer_Tick(object sender, EventArgs e)
         {

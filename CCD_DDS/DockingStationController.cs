@@ -16,7 +16,10 @@ namespace CCD_DDS
         public DockingStationController()
         {
             _serialPort = new SerialPort(portName, baudRate);
-            _serialPort.Open();
+            if(_serialPort.IsOpen)
+            {
+                _serialPort.Open();
+            }
         }
 
         public bool AirValveOn()
