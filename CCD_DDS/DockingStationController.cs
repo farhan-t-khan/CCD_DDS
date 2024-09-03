@@ -16,7 +16,7 @@ namespace CCD_DDS
         public DockingStationController()
         {
             _serialPort = new SerialPort(portName, baudRate);
-            if(_serialPort.IsOpen)
+            if(!_serialPort.IsOpen)
             {
                 _serialPort.Open();
             }
